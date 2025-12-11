@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Pedidos - Galaxy Comics</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- ===== ENCABEZADO ===== -->
+  <header style="background: none; position: relative; overflow: hidden;">
+    <img src="img/banner-fondo.png" alt="Fondo tipo cómic"
+         style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+    <img src="img/logo.png" alt="Logo Galaxy Comics" class="logo">
+    <h1>GALAXY COMICS</h1>
+    
+    <!-- CONTENEDOR PARA USUARIO LOGUEADO -->
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <span id="nombreUsuarioHeader" style="display: none; font-family: 'Poppins', sans-serif; font-weight: bold; color: white; font-size: 16px; background: rgba(255, 59, 59, 0.8); padding: 8px 15px; border-radius: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+        <!-- Aquí aparecerá el nombre del usuario -->
+      </span>
+      
+      <a id="usuarioLink" href="#">
+        <img id="iconoUsuario" src="img/btn-login.png" alt="Iniciar sesión" class="btn-login">
+      </a>
+      
+      <!-- CONTADOR DE CARRITO -->
+      <a href="carrito.html" style="position: relative; text-decoration: none;">
+        <i class="fas fa-shopping-cart" style="font-size: 24px; color: white;"></i>
+        <span id="carritoContador" class="carrito-contador" style="display: none; position: absolute; top: -8px; right: -8px; background: #ff3b3b; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+          0
+        </span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ===== BARRA DE NAVEGACIÓN ===== -->
+  <nav style="position: relative; overflow: hidden;">
+    <img src="img/nav-bar.png" alt="Barra de navegación"
+         style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="Comics.html">Cómics</a></li>
+      <li><a href="Coleccion.html">Coleccionables</a></li>
+      <li><a href="Autores.html">Autores</a></li>
+      <li><a href="Pedidos.html">Pedidos Personalizados</a></li>
+      <li><a href="carrito.html">🛒 Carrito <span id="navCarritoContador" class="carrito-contador" style="display: none; background: #ff3b3b; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px;">0</span></a></li>
+      <li><a href="historialPedidos.html" style="color:#ff3b3b;">📦 Mis Pedidos</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== PANEL DE ADMINISTRADOR (SOLO VISIBLE PARA ADMIN) ===== -->
+  <div id="adminPanelHistorial" class="contenedor-principal" style="display: none; margin-top: 20px; margin-bottom: 30px;">
+    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 20px 30px; border-radius: 15px; border: 3px solid #ff3b3b; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+      <h3 style="color: white; margin: 0 0 20px 0; font-family: 'Bangers', cursive; font-size: 26px; display: flex; align-items: center; gap: 15px;">
+        <i class="fas fa-user-shield"></i> PANEL DE ADMINISTRACIÓN - TODOS LOS PEDIDOS
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+        <button id="btnActualizarTablaHistorial" style="padding: 12px 20px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-sync-alt"></i> Actualizar Tabla
+        </button>
+        <button id="btnExportarTodosPedidos" style="padding: 12px 20px; background: #9C27B0; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-download"></i> Exportar Pedidos
+        </button>
+        <button id="btnCambiarVistaHistorial" style="padding: 12px 20px; background: #2196F3; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-eye"></i> Ver Mis Pedidos
+        </button>
+      </div>
+      <p style="color: #ddd; font-family: 'Poppins', sans-serif; font-size: 14px; margin: 0; text-align: center;">
+        <i class="fas fa-info-circle"></i> Vista administrativa de todos los pedidos realizados por todos los clientes
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== TABLA DE TODOS LOS PEDIDOS PARA ADMINISTRADOR ===== -->
+  <div id="tablaTodosPedidos" class="contenedor-principal" style="display: none; margin-top: 20px;">
+    <div style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #ff3b3b;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px;">
+        <h2 style="color: #1a1a2e; font-family: 'Bangers', cursive; font-size: 32px; margin: 0; display: flex; align-items: center; gap: 15px;">
+          <i class="fas fa-clipboard-list"></i> TODOS LOS PEDIDOS DEL SISTEMA
+        </h2>
+        <div style="display: flex; gap: 10px;">
+          <div style="position: relative;">
+            <input type="text" id="buscarTodosPedidos" placeholder="Buscar pedidos..." style="padding: 12px 15px 12px 40px; border: 2px solid #ddd; border-radius: 8px; width: 250px; font-family: 'Poppins', sans-serif; font-size: 14px;">
+            <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+          </div>
+          <select id="filtroClientePedidos" style="padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; cursor: pointer;">
+            <option value="todos">Todos los clientes</option>
+            <!-- Los clientes se cargarán dinámicamente -->
+          </select>
+          <select id="filtroTipoPedidos" style="padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; cursor: pointer;">
+            <option value="todos">Todos los tipos</option>
+            <option value="normal">Pedidos normales</option>
+            <option value="personalizado">Personalizados</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="estadisticasTodosPedidos" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+        <!-- Las estadísticas se cargarán con JavaScript -->
+      </div>
+      
+      <div style="overflow-x: auto;">
+        <table id="tablaTodosPedidosAdmin" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background: #1a1a2e; color: white;">
+              <th style="padding: 15px; text-align: left; font-family: 'Poppins', sans-serif; font-weight: 600;">ID</th>
+              <th style="padding: 15px; text-align: left; font-family: 'Poppins', sans-serif; font-weight: 600;">Cliente</th>
+              <th style="padding: 15px; text-align: left; font-family: 'Poppins', sans-serif; font-weight: 600;">Tipo</th>
+              <th style="padding: 15px; text-align: left; font-family: 'Poppins', sans-serif; font-weight: 600;">Productos</th>
+              <th style="padding: 15px; text-align: left; font-family: 'Poppins', sans-serif; font-weight: 600;">Precio</th>
+              <th style="padding: 15px; text-align: left; font-family: 'Poppins', sans-serif; font-weight: 600;">Fecha</th>
+              <th style="padding: 15px; text-align: left; font-family: 'Poppins', sans-serif; font-weight: 600;">Estado</th>
+              <th style="padding: 15px; text-align: left; font-family: 'Poppins', sans-serif; font-weight: 600;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaTodosPedidosBody">
+            <!-- Los pedidos se cargarán aquí con JavaScript -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div id="sinTodosPedidosAdmin" style="text-align: center; padding: 60px 20px; color: #666; display: none;">
+        <i class="fas fa-clipboard" style="font-size: 60px; margin-bottom: 20px; color: #ddd;"></i>
+        <h3 style="font-family: 'Poppins', sans-serif; margin-bottom: 10px;">No hay pedidos en el sistema</h3>
+        <p>No se han realizado pedidos aún.</p>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee; flex-wrap: wrap; gap: 15px;">
+        <div style="color: #666; font-family: 'Poppins', sans-serif; font-size: 14px;">
+          Total: <span id="totalTodosPedidos">0</span> pedidos
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button id="btnAnteriorTodos" style="padding: 10px 20px; border: 2px solid #ddd; background: white; border-radius: 5px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-chevron-left"></i> Anterior
+          </button>
+          <span id="paginaInfoTodos" style="padding: 10px 20px; font-family: 'Poppins', sans-serif;">Página 1 de 1</span>
+          <button id="btnSiguienteTodos" style="padding: 10px 20px; border: 2px solid #ddd; background: white; border-radius: 5px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            Siguiente <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VISTA PARA CLIENTES (SOLO SUS PEDIDOS) ===== -->
+  <div id="vistaClienteHistorial">
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <main style="padding: 40px 20px; min-height: 70vh;">
+      <div class="contenedor-principal">
+        <h1 class="titulo-principal">
+          <i class="fas fa-history"></i> Mis Pedidos
+        </h1>
+        <p class="subtitulo-principal">
+          Revisa el historial de todos tus pedidos y su estado actual
+        </p>
+        
+        <!-- Estadísticas -->
+        <div class="estadisticas-pedidos">
+          <div class="estadistica-item">
+            <div class="estadistica-icon">
+              <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div class="estadistica-info">
+              <h3 id="totalPedidos">0</h3>
+              <p>Total de pedidos</p>
+            </div>
+          </div>
+          <div class="estadistica-item">
+            <div class="estadistica-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="estadistica-info">
+              <h3 id="pedidosCompletados">0</h3>
+              <p>Completados</p>
+            </div>
+          </div>
+          <div class="estadistica-item">
+            <div class="estadistica-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="estadistica-info">
+              <h3 id="pedidosPendientes">0</h3>
+              <p>Pendientes</p>
+            </div>
+          </div>
+          <div class="estadistica-item">
+            <div class="estadistica-icon">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="estadistica-info">
+              <h3 id="totalGastado">$0</h3>
+              <p>Total gastado</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Filtros -->
+        <div class="filtros-pedidos">
+          <button class="filtro-btn active" data-filtro="todos">
+            <i class="fas fa-list"></i> Todos los pedidos
+          </button>
+          <button class="filtro-btn" data-filtro="completado">
+            <i class="fas fa-check-circle"></i> Completados
+          </button>
+          <button class="filtro-btn" data-filtro="pendiente_pago">
+            <i class="fas fa-clock"></i> Pendientes de pago
+          </button>
+          <button class="filtro-btn" data-filtro="enviado">
+            <i class="fas fa-shipping-fast"></i> Enviados
+          </button>
+          <button class="filtro-btn" data-filtro="personalizados">
+            <i class="fas fa-paint-brush"></i> Personalizados
+          </button>
+        </div>
+        
+        <!-- Lista de pedidos -->
+        <div id="listaPedidos" class="lista-pedidos">
+          <!-- Los pedidos se cargarán con JavaScript -->
+          <div class="pedido-vacio" id="pedidoVacio">
+            <i class="fas fa-box-open fa-3x"></i>
+            <h3>No tienes pedidos aún</h3>
+            <p>Realiza tu primera compra para ver tu historial aquí</p>
+            <a href="Comics.html" class="btn-explorar">
+              <i class="fas fa-rocket"></i> Explorar Cómics
+            </a>
+          </div>
+        </div>
+        
+        <!-- Paginación -->
+        <div class="paginacion-pedidos" id="paginacion" style="display: none;">
+          <button id="pagAnterior" class="pag-btn" disabled>
+            <i class="fas fa-chevron-left"></i> Anterior
+          </button>
+          <span id="pagInfo">Página 1 de 1</span>
+          <button id="pagSiguiente" class="pag-btn" disabled>
+            Siguiente <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        
+        <!-- Información adicional -->
+        <div class="info-adicional">
+          <div class="info-box">
+            <h4><i class="fas fa-question-circle"></i> ¿Necesitas ayuda con un pedido?</h4>
+            <p>Si tienes problemas con algún pedido, contacta con nuestro servicio de atención al cliente:</p>
+            <div class="contacto-info">
+              <p><i class="fas fa-phone"></i> +34 900 123 456</p>
+              <p><i class="fas fa-envelope"></i> soporte@galaxycomics.com</p>
+              <p><i class="fas fa-clock"></i> Lunes a Viernes: 9:00 - 18:00</p>
+            </div>
+          </div>
+          <div class="info-box">
+            <h4><i class="fas fa-info-circle"></i> Estados de los pedidos</h4>
+            <ul class="estados-lista">
+              <li><span class="estado-badge pendiente_pago">⏳</span> Pendiente de pago</li>
+              <li><span class="estado-badge procesando">🔄</span> En procesamiento</li>
+              <li><span class="estado-badge completado">✅</span> Completado</li>
+              <li><span class="estado-badge enviado">🚚</span> Enviado</li>
+              <li><span class="estado-badge entregado">📦</span> Entregado</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== MODAL DETALLE PEDIDO ===== -->
+  <div id="modalDetallePedido" class="modal-detalle-pedido">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3><i class="fas fa-file-invoice"></i> Detalles del Pedido</h3>
+        <button id="cerrarModalDetalle">&times;</button>
+      </div>
+      <div class="modal-body" id="modalDetalleBody">
+        <!-- Los detalles se cargarán dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL DETALLE PEDIDO ADMIN (PARA TODOS LOS PEDIDOS) ===== -->
+  <div id="modalDetalleTodosPedidos" class="modal-detalle-pedido">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3><i class="fas fa-file-invoice"></i> Detalles del Pedido - Administrador</h3>
+        <button id="cerrarModalDetalleTodos">&times;</button>
+      </div>
+      <div class="modal-body" id="modalDetalleTodosBody">
+        <!-- Los detalles se cargarán dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PERFIL FLOTANTE ===== -->
+  <div id="perfilBox" class="perfil-box">
+    <div class="perfil-contenido">
+      <h2>👤 Perfil</h2>
+      <p><strong>Usuario:</strong> <span id="perfilUsuario"></span></p>
+      <p><strong>Nombre:</strong> <span id="perfilNombre"></span></p>
+      <p><strong>Fecha de nacimiento:</strong> <span id="perfilFecha"></span></p>
+      <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+      <p><strong>Pedidos realizados:</strong> <span id="perfilPedidos">0</span></p>
+      <p><strong>Productos en carrito:</strong> <span id="perfilCarrito">0</span></p>
+      <button id="cerrarSesion">Cerrar Sesión</button>
+    </div>
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="script.js"></script>
+  <script src="funcionesUsuario.js"></script>
+  <script src="historialPedidos.js"></script>
+  
+  <script>
+    // Variables globales
+    let esAdmin = false;
+    let pedidosGlobales = JSON.parse(localStorage.getItem("pedidosGlobales")) || [];
+    let paginaActual = 1;
+    let paginaActualTodos = 1;
+    const pedidosPorPagina = 10;
+    let modalActual = null;
+
+    // Verificar si el usuario es administrador
+    function verificarAdmin() {
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      esAdmin = usuarioActual && usuarioActual.usuario === "admin" && usuarioActual.password === "admin123";
+      
+      if (esAdmin) {
+        // Mostrar panel de administración
+        document.getElementById("adminPanelHistorial").style.display = "block";
+        document.getElementById("tablaTodosPedidos").style.display = "block";
+        document.getElementById("vistaClienteHistorial").style.display = "none";
+        
+        // Agregar badge de ADMIN al nombre de usuario
+        const nombreUsuarioHeader = document.getElementById("nombreUsuarioHeader");
+        if (nombreUsuarioHeader) {
+          const textoOriginal = nombreUsuarioHeader.textContent;
+          nombreUsuarioHeader.innerHTML = textoOriginal + ' <span style="background: #ff3b3b; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px;">ADMIN</span>';
+        }
+        
+        // Cargar tabla de todos los pedidos
+        cargarTablaTodosPedidos();
+      } else {
+        // Mostrar vista normal para cliente
+        document.getElementById("adminPanelHistorial").style.display = "none";
+        document.getElementById("tablaTodosPedidos").style.display = "none";
+        document.getElementById("vistaClienteHistorial").style.display = "block";
+        
+        // Cargar pedidos del cliente
+        cargarPedidosCliente();
+      }
+    }
+
+    // Cargar tabla con todos los pedidos del sistema
+    function cargarTablaTodosPedidos() {
+      // Obtener pedidos de la base de datos global
+      pedidosGlobales = JSON.parse(localStorage.getItem("pedidosGlobales")) || [];
+      
+      // Obtener usuarios para nombres
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      
+      // Obtener valores de filtros
+      const busqueda = document.getElementById('buscarTodosPedidos')?.value.toLowerCase() || '';
+      const clienteFiltro = document.getElementById('filtroClientePedidos')?.value || 'todos';
+      const tipoFiltro = document.getElementById('filtroTipoPedidos')?.value || 'todos';
+      
+      // Filtrar pedidos
+      let pedidosFiltrados = pedidosGlobales.filter(pedido => {
+        // Filtrar por búsqueda
+        const coincideBusqueda = 
+          pedido.id.toString().includes(busqueda) ||
+          pedido.usuario.toLowerCase().includes(busqueda) ||
+          (pedido.nombreUsuario && pedido.nombreUsuario.toLowerCase().includes(busqueda)) ||
+          (pedido.personaje && pedido.personaje.toLowerCase().includes(busqueda));
+        
+        // Filtrar por cliente
+        const coincideCliente = clienteFiltro === 'todos' || pedido.usuario === clienteFiltro;
+        
+        // Filtrar por tipo
+        let coincideTipo = true;
+        if (tipoFiltro === 'personalizado') {
+          coincideTipo = pedido.personaje !== undefined;
+        } else if (tipoFiltro === 'normal') {
+          coincideTipo = pedido.personaje === undefined && pedido.items !== undefined;
+        }
+        
+        return coincideBusqueda && coincideCliente && coincideTipo;
+      });
+      
+      // Ordenar por fecha más reciente
+      pedidosFiltrados.sort((a, b) => new Date(b.fechaPedido) - new Date(a.fechaPedido));
+      
+      // Actualizar lista de clientes en filtro
+      actualizarFiltroClientes(usuarios);
+      
+      // Calcular estadísticas
+      actualizarEstadisticasTodos(pedidosFiltrados);
+      
+      // Calcular paginación
+      const totalPaginas = Math.ceil(pedidosFiltrados.length / pedidosPorPagina);
+      const inicio = (paginaActualTodos - 1) * pedidosPorPagina;
+      const fin = inicio + pedidosPorPagina;
+      const pedidosPagina = pedidosFiltrados.slice(inicio, fin);
+      
+      // Actualizar información de paginación
+      document.getElementById('totalTodosPedidos').textContent = pedidosFiltrados.length;
+      document.getElementById('paginaInfoTodos').textContent = `Página ${paginaActualTodos} de ${totalPaginas}`;
+      
+      // Habilitar/deshabilitar botones de paginación
+      document.getElementById('btnAnteriorTodos').disabled = paginaActualTodos <= 1;
+      document.getElementById('btnSiguienteTodos').disabled = paginaActualTodos >= totalPaginas;
+      
+      // Actualizar tabla
+      const tablaBody = document.getElementById('tablaTodosPedidosBody');
+      if (!tablaBody) return;
+      
+      tablaBody.innerHTML = '';
+      
+      if (pedidosPagina.length === 0) {
+        document.getElementById('sinTodosPedidosAdmin').style.display = 'block';
+        return;
+      }
+      
+      document.getElementById('sinTodosPedidosAdmin').style.display = 'none';
+      
+      pedidosPagina.forEach(pedido => {
+        const fila = document.createElement('tr');
+        fila.style.borderBottom = '1px solid #eee';
+        fila.style.cursor = 'pointer';
+        fila.addEventListener('click', () => mostrarDetallesTodosPedidos(pedido.id));
+        
+        // Determinar tipo de pedido
+        const esPersonalizado = pedido.personaje !== undefined;
+        const tipoTexto = esPersonalizado ? 'Personalizado' : 'Normal';
+        
+        // Determinar productos
+        let productosTexto = '';
+        if (esPersonalizado) {
+          productosTexto = pedido.personaje || 'Personalizado';
+        } else if (pedido.items && pedido.items.length > 0) {
+          productosTexto = pedido.items.length > 1 ? 
+            `${pedido.items[0].titulo} + ${pedido.items.length - 1} más` : 
+            pedido.items[0].titulo;
+        } else {
+          productosTexto = 'Sin productos';
+        }
+        
+        // Obtener color según estado
+        const estadoColor = {
+          'en_carrito': '#ff9800',
+          'pendiente': '#2196F3',
+          'pendiente_pago': '#2196F3',
+          'procesando': '#9C27B0',
+          'enviado': '#00bcd4',
+          'completado': '#4CAF50',
+          'entregado': '#4CAF50',
+          'cancelado': '#ff3b3b'
+        };
+        
+        const estadoTexto = {
+          'en_carrito': 'En Carrito',
+          'pendiente': 'Pendiente',
+          'pendiente_pago': 'Pendiente Pago',
+          'procesando': 'Procesando',
+          'enviado': 'Enviado',
+          'completado': 'Completado',
+          'entregado': 'Entregado',
+          'cancelado': 'Cancelado'
+        };
+        
+        // Buscar nombre del cliente
+        const usuarioInfo = usuarios.find(u => u.usuario === pedido.usuario);
+        const nombreCliente = usuarioInfo ? (usuarioInfo.nombre || pedido.usuario) : pedido.usuario;
+        
+        fila.innerHTML = `
+          <td style="padding: 15px; font-family: 'Poppins', sans-serif; color: #333; font-weight: 600;">#${pedido.id}</td>
+          <td style="padding: 15px; font-family: 'Poppins', sans-serif; color: #333;">
+            <div style="font-weight: 600;">${nombreCliente}</div>
+            <div style="font-size: 12px; color: #666;">${pedido.usuario}</div>
+          </td>
+          <td style="padding: 15px; font-family: 'Poppins', sans-serif; color: #333;">
+            <span style="background: ${esPersonalizado ? '#9C27B0' : '#2196F3'}; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+              ${tipoTexto}
+            </span>
+          </td>
+          <td style="padding: 15px; font-family: 'Poppins', sans-serif; color: #333;">${productosTexto}</td>
+          <td style="padding: 15px; font-family: 'Poppins', sans-serif; color: #333; font-weight: 600;">$${pedido.precio || pedido.total || 0}</td>
+          <td style="padding: 15px; font-family: 'Poppins', sans-serif; color: #333;">${new Date(pedido.fechaPedido).toLocaleDateString()}</td>
+          <td style="padding: 15px; font-family: 'Poppins', sans-serif;">
+            <span style="background: ${estadoColor[pedido.estado] || '#666'}; color: white; padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: 600;">
+              ${estadoTexto[pedido.estado] || pedido.estado}
+            </span>
+          </td>
+          <td style="padding: 15px; font-family: 'Poppins', sans-serif;">
+            <button onclick="event.stopPropagation(); cambiarEstadoTodosPedidos(${pedido.id})" style="padding: 8px 15px; background: #2196F3; color: white; border: none; border-radius: 5px; font-size: 12px; cursor: pointer; margin-right: 5px;">
+              <i class="fas fa-edit"></i>
+            </button>
+          </td>
+        `;
+        
+        tablaBody.appendChild(fila);
+      });
+    }
+
+    // Actualizar filtro de clientes
+    function actualizarFiltroClientes(usuarios) {
+      const filtroCliente = document.getElementById('filtroClientePedidos');
+      if (!filtroCliente) return;
+      
+      // Guardar valor actual
+      const valorActual = filtroCliente.value;
+      
+      // Limpiar opciones excepto la primera
+      filtroCliente.innerHTML = '<option value="todos">Todos los clientes</option>';
+      
+      // Agregar clientes únicos
+      const clientesUnicos = [...new Set(pedidosGlobales.map(p => p.usuario))];
+      
+      clientesUnicos.forEach(clienteUsuario => {
+        const usuarioInfo = usuarios.find(u => u.usuario === clienteUsuario);
+        const nombreCliente = usuarioInfo ? (usuarioInfo.nombre || clienteUsuario) : clienteUsuario;
+        
+        const option = document.createElement('option');
+        option.value = clienteUsuario;
+        option.textContent = `${nombreCliente} (${clienteUsuario})`;
+        filtroCliente.appendChild(option);
+      });
+      
+      // Restaurar valor anterior si existe
+      if (valorActual && clientesUnicos.includes(valorActual)) {
+        filtroCliente.value = valorActual;
+      }
+    }
+
+    // Actualizar estadísticas de todos los pedidos
+    function actualizarEstadisticasTodos(pedidos) {
+      const estadisticasContainer = document.getElementById('estadisticasTodosPedidos');
+      if (!estadisticasContainer) return;
+      
+      const total = pedidos.length;
+      const personalizados = pedidos.filter(p => p.personaje !== undefined).length;
+      const normales = total - personalizados;
+      const completados = pedidos.filter(p => p.estado === 'completado' || p.estado === 'entregado').length;
+      const ingresos = pedidos
+        .filter(p => p.estado === 'completado' || p.estado === 'entregado')
+        .reduce((sum, p) => sum + (p.precio || p.total || 0), 0);
+      const clientesUnicos = [...new Set(pedidos.map(p => p.usuario))].length;
+      
+      estadisticasContainer.innerHTML = `
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; border: 2px solid #e9ecef;">
+          <h4 style="margin: 0 0 10px 0; color: #666; font-family: 'Poppins', sans-serif; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-clipboard-list"></i> TOTAL DE PEDIDOS
+          </h4>
+          <p style="margin: 0; color: #1a1a2e; font-family: 'Bangers', cursive; font-size: 32px;">${total}</p>
+        </div>
+        
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; border: 2px solid #e9ecef;">
+          <h4 style="margin: 0 0 10px 0; color: #666; font-family: 'Poppins', sans-serif; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-users"></i> CLIENTES ÚNICOS
+          </h4>
+          <p style="margin: 0; color: #2196F3; font-family: 'Bangers', cursive; font-size: 32px;">${clientesUnicos}</p>
+        </div>
+        
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; border: 2px solid #e9ecef;">
+          <h4 style="margin: 0 0 10px 0; color: #666; font-family: 'Poppins', sans-serif; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-paint-brush"></i> PERSONALIZADOS
+          </h4>
+          <p style="margin: 0; color: #9C27B0; font-family: 'Bangers', cursive; font-size: 32px;">${personalizados}</p>
+        </div>
+        
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; border: 2px solid #e9ecef;">
+          <h4 style="margin: 0 0 10px 0; color: #666; font-family: 'Poppins', sans-serif; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-check-circle"></i> COMPLETADOS
+          </h4>
+          <p style="margin: 0; color: #4CAF50; font-family: 'Bangers', cursive; font-size: 32px;">${completados}</p>
+        </div>
+        
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; border: 2px solid #e9ecef;">
+          <h4 style="margin: 0 0 10px 0; color: #666; font-family: 'Poppins', sans-serif; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-money-bill-wave"></i> INGRESOS TOTALES
+          </h4>
+          <p style="margin: 0; color: #00a86b; font-family: 'Bangers', cursive; font-size: 32px;">$${ingresos}</p>
+        </div>
+      `;
+    }
+
+    // Mostrar detalles de cualquier pedido (admin)
+    function mostrarDetallesTodosPedidos(pedidoId) {
+      const pedido = pedidosGlobales.find(p => p.id === pedidoId);
+      if (!pedido) {
+        mostrarNotificacion("Pedido no encontrado", "error");
+        return;
+      }
+      
+      // Obtener información del cliente
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      const usuarioInfo = usuarios.find(u => u.usuario === pedido.usuario);
+      
+      // Determinar si es personalizado
+      const esPersonalizado = pedido.personaje !== undefined;
+      
+      // Obtener nombres de tipos
+      const tipoNombre = {
+        'portada': 'Portada Personalizada',
+        'historieta': 'Historieta Corta',
+        'novela': 'Novela Gráfica'
+      };
+      
+      const formatoNombre = {
+        'digital': 'Digital (PDF)',
+        'fisico': 'Físico Estándar',
+        'premium': 'Físico Premium'
+      };
+      
+      const estiloNombre = {
+        'clasico': 'Clásico',
+        'moderno': 'Moderno',
+        'manga': 'Manga/Anime',
+        'realista': 'Realista',
+        'cartoon': 'Cartoon/Animado'
+      };
+      
+      const estadoColor = {
+        'en_carrito': '#ff9800',
+        'pendiente': '#2196F3',
+        'pendiente_pago': '#2196F3',
+        'procesando': '#9C27B0',
+        'enviado': '#00bcd4',
+        'completado': '#4CAF50',
+        'entregado': '#4CAF50',
+        'cancelado': '#ff3b3b'
+      };
+      
+      const estadoTexto = {
+        'en_carrito': 'En Carrito',
+        'pendiente': 'Pendiente',
+        'pendiente_pago': 'Pendiente Pago',
+        'procesando': 'Procesando',
+        'enviado': 'Enviado',
+        'completado': 'Completado',
+        'entregado': 'Entregado',
+        'cancelado': 'Cancelado'
+      };
+      
+      let detallesHTML = '';
+      
+      if (esPersonalizado) {
+        // Pedido personalizado
+        detallesHTML = `
+          <div class="detalle-pedido">
+            <div class="detalle-header">
+              <div class="detalle-titulo">
+                <h4>Pedido Personalizado #${pedido.id}</h4>
+                <div class="detalle-fecha">${new Date(pedido.fechaPedido).toLocaleDateString()}</div>
+              </div>
+              <div class="detalle-estado" style="background: ${estadoColor[pedido.estado] || '#666'}; color: white;">
+                ${estadoTexto[pedido.estado] || pedido.estado}
+              </div>
+            </div>
+            
+            <div class="detalle-info-grid">
+              <div class="info-item">
+                <h5><i class="fas fa-user"></i> Cliente</h5>
+                <p><strong>Usuario:</strong> ${pedido.usuario}</p>
+                <p><strong>Nombre:</strong> ${usuarioInfo?.nombre || 'No especificado'}</p>
+                <p><strong>Email:</strong> ${usuarioInfo?.correo || 'No especificado'}</p>
+              </div>
+              
+              <div class="info-item">
+                <h5><i class="fas fa-cube"></i> Detalles del Pedido</h5>
+                <p><strong>Tipo:</strong> ${tipoNombre[pedido.tipoComic] || 'Personalizado'}</p>
+                <p><strong>Personaje:</strong> ${pedido.personaje}</p>
+                <p><strong>Estilo:</strong> ${estiloNombre[pedido.estilo] || pedido.estilo}</p>
+                <p><strong>Formato:</strong> ${formatoNombre[pedido.formato] || pedido.formato}</p>
+              </div>
+              
+              <div class="info-item">
+                <h5><i class="fas fa-money-bill-wave"></i> Información de Pago</h5>
+                <p><strong>Precio:</strong> $${pedido.precio || 0}</p>
+                <p><strong>Cantidad:</strong> ${pedido.cantidad || 1}</p>
+                <p><strong>Fecha entrega:</strong> ${new Date(pedido.fechaEntrega).toLocaleDateString()}</p>
+                ${pedido.numeroSeguimiento ? `
+                  <p><strong>Seguimiento:</strong> ${pedido.numeroSeguimiento}</p>
+                ` : ''}
+              </div>
+            </div>
+            
+            <div class="detalle-personalizados">
+              <h5><i class="fas fa-edit"></i> Descripción de la Idea</h5>
+              <div class="personalizados-lista">
+                <div class="personalizado-item">
+                  <div class="personalizado-info">
+                    <p style="line-height: 1.6; color: #333;">${pedido.descripcion || 'No hay descripción disponible.'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        // Pedido normal
+        const itemsHTML = pedido.items && pedido.items.length > 0 ? 
+          pedido.items.map(item => `
+            <div class="producto-item">
+              <div class="producto-info">
+                <h6>${item.titulo || 'Producto'}</h6>
+                <div class="producto-detalle">
+                  <span>Cantidad: ${item.cantidad || 1}</span>
+                  <span>Precio unitario: $${item.precio || 0}</span>
+                </div>
+              </div>
+              <div class="producto-precio">$${(item.precio || 0) * (item.cantidad || 1)}</div>
+            </div>
+          `).join('') : '<p>No hay productos en este pedido</p>';
+        
+        detallesHTML = `
+          <div class="detalle-pedido">
+            <div class="detalle-header">
+              <div class="detalle-titulo">
+                <h4>Pedido #${pedido.id}</h4>
+                <div class="detalle-fecha">${new Date(pedido.fechaPedido).toLocaleDateString()}</div>
+              </div>
+              <div class="detalle-estado" style="background: ${estadoColor[pedido.estado] || '#666'}; color: white;">
+                ${estadoTexto[pedido.estado] || pedido.estado}
+              </div>
+            </div>
+            
+            <div class="detalle-info-grid">
+              <div class="info-item">
+                <h5><i class="fas fa-user"></i> Cliente</h5>
+                <p><strong>Usuario:</strong> ${pedido.usuario}</p>
+                <p><strong>Nombre:</strong> ${usuarioInfo?.nombre || 'No especificado'}</p>
+                <p><strong>Email:</strong> ${usuarioInfo?.correo || 'No especificado'}</p>
+              </div>
+              
+              <div class="info-item">
+                <h5><i class="fas fa-money-bill-wave"></i> Información de Pago</h5>
+                <p><strong>Total:</strong> $${pedido.total || pedido.precio || 0}</p>
+                <p><strong>Método de pago:</strong> ${pedido.metodoPago || 'No especificado'}</p>
+                ${pedido.numeroSeguimiento ? `
+                  <p><strong>Seguimiento:</strong> ${pedido.numeroSeguimiento}</p>
+                ` : ''}
+                ${pedido.numeroTransaccion ? `
+                  <p><strong>Transacción:</strong> ${pedido.numeroTransaccion}</p>
+                ` : ''}
+              </div>
+              
+              <div class="info-item">
+                <h5><i class="fas fa-info-circle"></i> Información Adicional</h5>
+                <p><strong>Productos:</strong> ${pedido.items ? pedido.items.length : 0}</p>
+                <p><strong>Tipo:</strong> Pedido normal</p>
+              </div>
+            </div>
+            
+            <div class="detalle-productos">
+              <h5><i class="fas fa-box"></i> Productos del Pedido</h5>
+              <div class="productos-lista">
+                ${itemsHTML}
+              </div>
+            </div>
+            
+            <div class="detalle-resumen">
+              <h5><i class="fas fa-calculator"></i> Resumen del Pedido</h5>
+              <div class="resumen-grid">
+                <div class="resumen-item">
+                  <span>Subtotal:</span>
+                  <span>$${pedido.total || pedido.precio || 0}</span>
+                </div>
+                <div class="resumen-item total">
+                  <span>TOTAL:</span>
+                  <span>$${pedido.total || pedido.precio || 0}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      // Mostrar modal
+      document.getElementById('modalDetalleTodosBody').innerHTML = detallesHTML;
+      document.getElementById('modalDetalleTodosPedidos').style.display = 'flex';
+    }
+
+    // Cambiar estado de cualquier pedido (admin)
+    function cambiarEstadoTodosPedidos(pedidoId) {
+      const pedido = pedidosGlobales.find(p => p.id === pedidoId);
+      if (!pedido) {
+        mostrarNotificacion("Pedido no encontrado", "error");
+        return;
+      }
+      
+      const estados = [
+        { value: 'en_carrito', text: 'En Carrito', color: '#ff9800' },
+        { value: 'pendiente_pago', text: 'Pendiente de Pago', color: '#2196F3' },
+        { value: 'procesando', text: 'Procesando', color: '#9C27B0' },
+        { value: 'enviado', text: 'Enviado', color: '#00bcd4' },
+        { value: 'entregado', text: 'Entregado', color: '#4CAF50' },
+        { value: 'cancelado', text: 'Cancelado', color: '#ff3b3b' }
+      ];
+      
+      let opciones = '';
+      estados.forEach(estado => {
+        const seleccionado = pedido.estado === estado.value ? 'selected' : '';
+        opciones += `<option value="${estado.value}" ${seleccionado}>${estado.text}</option>`;
+      });
+      
+      const mensaje = `
+        <div style="text-align: center; padding: 30px;">
+          <div style="background: #2196F3; color: white; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px;">
+            <i class="fas fa-edit"></i>
+          </div>
+          <h3 style="color: #1a1a2e; margin-bottom: 20px; font-family: 'Poppins', sans-serif;">Cambiar Estado del Pedido</h3>
+          <p style="color: #666; margin-bottom: 20px;">Pedido #${pedido.id} - Cliente: ${pedido.usuario}</p>
+          
+          <div style="margin-bottom: 30px;">
+            <label style="display: block; margin-bottom: 10px; color: #333; font-family: 'Poppins', sans-serif; text-align: left; font-weight: 600;">Nuevo estado:</label>
+            <select id="nuevoEstadoTodosPedidos" style="padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; width: 100%; font-family: 'Poppins', sans-serif; font-size: 14px; cursor: pointer;">
+              ${opciones}
+            </select>
+          </div>
+          
+          <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <button onclick="confirmarCambioEstadoTodos(${pedidoId})" style="padding: 12px 30px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-check"></i> Confirmar Cambio
+            </button>
+            <button onclick="cerrarModalEstadoTodos()" style="padding: 12px 30px; background: #666; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      `;
+      
+      // Crear modal de cambio de estado
+      const modal = document.createElement('div');
+      modal.id = 'modalCambioEstadoTodos';
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+        padding: 20px;
+      `;
+      
+      const contenido = document.createElement('div');
+      contenido.id = 'contenidoModalEstadoTodos';
+      contenido.style.cssText = `
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        max-width: 500px;
+        width: 100%;
+        animation: slideUp 0.3s ease;
+        border: 3px solid #2196F3;
+      `;
+      
+      contenido.innerHTML = mensaje;
+      modal.appendChild(contenido);
+      document.body.appendChild(modal);
+    }
+
+    // Confirmar cambio de estado para todos los pedidos
+    function confirmarCambioEstadoTodos(pedidoId) {
+      const nuevoEstado = document.getElementById('nuevoEstadoTodosPedidos').value;
+      
+      // Actualizar en la base de datos global
+      const pedidoIndex = pedidosGlobales.findIndex(p => p.id === pedidoId);
+      if (pedidoIndex !== -1) {
+        pedidosGlobales[pedidoIndex].estado = nuevoEstado;
+        localStorage.setItem("pedidosGlobales", JSON.stringify(pedidosGlobales));
+      }
+      
+      // También actualizar en los pedidos del usuario si existe
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      usuarios.forEach(usuario => {
+        if (usuario.pedidos && Array.isArray(usuario.pedidos)) {
+          const pedidoUsuarioIndex = usuario.pedidos.findIndex(p => p.id === pedidoId);
+          if (pedidoUsuarioIndex !== -1) {
+            usuario.pedidos[pedidoUsuarioIndex].estado = nuevoEstado;
+          }
+        }
+      });
+      localStorage.setItem("usuarios", JSON.stringify(usuarios));
+      
+      // Cerrar modal
+      const modal = document.getElementById('modalCambioEstadoTodos');
+      if (modal) {
+        document.body.removeChild(modal);
+      }
+      
+      // Cerrar modal de detalles si está abierto
+      const modalDetalles = document.getElementById('modalDetalleTodosPedidos');
+      if (modalDetalles) {
+        modalDetalles.style.display = 'none';
+      }
+      
+      // Recargar tabla
+      cargarTablaTodosPedidos();
+      
+      mostrarNotificacion(`Estado del pedido #${pedidoId} actualizado a: ${nuevoEstado}`, "success");
+    }
+
+    // Cerrar modal de estado para todos los pedidos
+    function cerrarModalEstadoTodos() {
+      const modal = document.getElementById('modalCambioEstadoTodos');
+      if (modal) {
+        document.body.removeChild(modal);
+      }
+    }
+
+    // Cargar pedidos del cliente (vista normal)
+    function cargarPedidosCliente() {
+      const usuarioActual = obtenerUsuarioActual();
+      if (!usuarioActual) return;
+      
+      // Obtener pedidos del usuario
+      const pedidosUsuario = usuarioActual.pedidos || [];
+      
+      // Actualizar estadísticas
+      actualizarEstadisticasCliente(pedidosUsuario);
+      
+      // Mostrar mensaje si no hay pedidos
+      const pedidoVacio = document.getElementById('pedidoVacio');
+      if (pedidoVacio) {
+        pedidoVacio.style.display = pedidosUsuario.length === 0 ? 'block' : 'none';
+      }
+      
+      // Mostrar paginación si hay pedidos
+      const paginacion = document.getElementById('paginacion');
+      if (paginacion) {
+        paginacion.style.display = pedidosUsuario.length > 0 ? 'flex' : 'none';
+      }
+      
+      // Aquí iría el código para mostrar los pedidos del cliente
+      // (similar al que ya tienes en tu archivo historialPedidos.js)
+    }
+
+    // Actualizar estadísticas del cliente
+    function actualizarEstadisticasCliente(pedidos) {
+      const total = pedidos.length;
+      const completados = pedidos.filter(p => p.estado === 'completado' || p.estado === 'entregado').length;
+      const pendientes = pedidos.filter(p => p.estado === 'pendiente' || p.estado === 'pendiente_pago' || p.estado === 'procesando').length;
+      const totalGastado = pedidos
+        .filter(p => p.estado === 'completado' || p.estado === 'entregado')
+        .reduce((sum, p) => sum + (p.precio || p.total || 0), 0);
+      
+      document.getElementById('totalPedidos').textContent = total;
+      document.getElementById('pedidosCompletados').textContent = completados;
+      document.getElementById('pedidosPendientes').textContent = pendientes;
+      document.getElementById('totalGastado').textContent = `$${totalGastado}`;
+    }
+
+    // Exportar todos los pedidos
+    function exportarTodosPedidos() {
+      const datos = JSON.stringify(pedidosGlobales, null, 2);
+      const blob = new Blob([datos], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `todos-pedidos-backup-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      URL.revokeObjectURL(url);
+      
+      mostrarNotificacion("Todos los pedidos exportados correctamente", "success");
+    }
+
+    // Función para mostrar notificaciones
+    function mostrarNotificacion(mensaje, tipo = "info") {
+      const notificacion = document.createElement('div');
+      const iconos = {
+        success: "fa-check-circle",
+        error: "fa-exclamation-circle",
+        warning: "fa-exclamation-triangle",
+        info: "fa-info-circle"
+      };
+      
+      notificacion.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${tipo === "success" ? "#4CAF50" : 
+                     tipo === "error" ? "#ff3b3b" : 
+                     tipo === "warning" ? "#ff9800" : "#2196F3"};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        z-index: 10000;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        animation: slideIn 0.5s ease;
+        max-width: 400px;
+      `;
+      
+      notificacion.innerHTML = `
+        <i class="fas ${iconos[tipo] || iconos.info}" style="font-size: 24px;"></i>
+        <span>${mensaje}</span>
+      `;
+      
+      document.body.appendChild(notificacion);
+      
+      setTimeout(() => {
+        notificacion.style.animation = 'slideOut 0.5s ease';
+        setTimeout(() => notificacion.remove(), 500);
+      }, 3000);
+    }
+
+    // Función para obtener usuario actual
+    function obtenerUsuarioActual() {
+      const usuarioStr = localStorage.getItem("usuarioActual");
+      return usuarioStr ? JSON.parse(usuarioStr) : null;
+    }
+
+    // Inicializar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      // Proteger la página - solo usuarios logueados
+      if (!requerirLogin("Debes iniciar sesión para ver tu historial de pedidos.")) {
+        window.location.href = "login.html";
+        return;
+      }
+      
+      // Verificar sesión
+      if (typeof verificarSesion === 'function') {
+        verificarSesion();
+      }
+      
+      // Verificar si es administrador
+      verificarAdmin();
+      
+      // Configurar eventos para administrador
+      if (esAdmin) {
+        // Botón actualizar tabla
+        document.getElementById('btnActualizarTablaHistorial').addEventListener('click', function() {
+          cargarTablaTodosPedidos();
+          mostrarNotificacion("Tabla actualizada correctamente", "success");
+        });
+        
+        // Botón exportar todos los pedidos
+        document.getElementById('btnExportarTodosPedidos').addEventListener('click', function() {
+          exportarTodosPedidos();
+        });
+        
+        // Botón cambiar vista
+        document.getElementById('btnCambiarVistaHistorial').addEventListener('click', function() {
+          document.getElementById("tablaTodosPedidos").style.display = "none";
+          document.getElementById("vistaClienteHistorial").style.display = "block";
+          this.innerHTML = '<i class="fas fa-eye"></i> Ver Todos los Pedidos';
+          this.onclick = function() {
+            document.getElementById("tablaTodosPedidos").style.display = "block";
+            document.getElementById("vistaClienteHistorial").style.display = "none";
+            cargarTablaTodosPedidos();
+            this.innerHTML = '<i class="fas fa-eye"></i> Ver Mis Pedidos';
+            this.onclick = function() {
+              document.getElementById("tablaTodosPedidos").style.display = "none";
+              document.getElementById("vistaClienteHistorial").style.display = "block";
+              cargarPedidosCliente();
+              this.innerHTML = '<i class="fas fa-eye"></i> Ver Todos los Pedidos';
+            };
+          };
+        });
+        
+        // Buscar pedidos
+        const buscarInput = document.getElementById('buscarTodosPedidos');
+        if (buscarInput) {
+          buscarInput.addEventListener('input', function() {
+            paginaActualTodos = 1;
+            cargarTablaTodosPedidos();
+          });
+        }
+        
+        // Filtrar por cliente
+        const filtroCliente = document.getElementById('filtroClientePedidos');
+        if (filtroCliente) {
+          filtroCliente.addEventListener('change', function() {
+            paginaActualTodos = 1;
+            cargarTablaTodosPedidos();
+          });
+        }
+        
+        // Filtrar por tipo
+        const filtroTipo = document.getElementById('filtroTipoPedidos');
+        if (filtroTipo) {
+          filtroTipo.addEventListener('change', function() {
+            paginaActualTodos = 1;
+            cargarTablaTodosPedidos();
+          });
+        }
+        
+        // Paginación
+        document.getElementById('btnAnteriorTodos').addEventListener('click', function() {
+          if (paginaActualTodos > 1) {
+            paginaActualTodos--;
+            cargarTablaTodosPedidos();
+          }
+        });
+        
+        document.getElementById('btnSiguienteTodos').addEventListener('click', function() {
+          paginaActualTodos++;
+          cargarTablaTodosPedidos();
+        });
+        
+        // Cerrar modal de detalles
+        document.getElementById('cerrarModalDetalleTodos').addEventListener('click', function() {
+          document.getElementById('modalDetalleTodosPedidos').style.display = 'none';
+        });
+        
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modalDetalleTodosPedidos').addEventListener('click', function(e) {
+          if (e.target === this) {
+            this.style.display = 'none';
+          }
+        });
+      } else {
+        // Cargar pedidos del cliente
+        cargarPedidosCliente();
+      }
+      
+      // Configurar eventos comunes
+      document.getElementById('cerrarModalDetalle').addEventListener('click', function() {
+        document.getElementById('modalDetallePedido').style.display = 'none';
+      });
+      
+      document.getElementById('modalDetallePedido').addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.style.display = 'none';
+        }
+      });
+      
+      console.log("HistorialPedidos.html inicializado correctamente");
+    });
+    
+    function requerirLogin(mensaje = "") {
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      if (!usuarioActual) {
+        if (mensaje) alert(mensaje);
+        localStorage.setItem("redirectAfterLogin", "historialPedidos.html");
+        return false;
+      }
+      return true;
+    }
+  </script>
+
+<!-- ===== FOOTER CÓMIC ===== -->
+<footer>
+  <div class="footer-comic">
+    <div class="footer-borde-rojo"></div>
+    <div class="footer-contenido">
+      <img src="img/logo.png" alt="Footer Image" class="footer-img-comic">
+      <p class="footer-texto-comic">
+        Roldan Ortega Andrea Lizbeth, 5-I, Materia: Construye Aplicaciones Web
+      </p>
+      <div class="footer-detalles">
+        <span class="puntos-rojos">•••</span>
+        <span class="icono-corazon">❤️</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

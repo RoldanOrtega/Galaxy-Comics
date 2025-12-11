@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - Galaxy Comics</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Estilos específicos para login */
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Animaciones para notificaciones */
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== ENCABEZADO ===== -->
+  <header style="background: none; position: relative; overflow: hidden;">
+    <img src="img/banner-fondo.png" alt="Fondo tipo cómic"
+         style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+
+    <img src="img/logo.png" alt="Logo Galaxy Comics" class="logo">
+    <h1>GALAXY COMICS</h1>
+    <a href="index.html" style="color: white; text-decoration: none; font-family: 'Bangers'; font-size: 18px; background: rgba(255, 59, 59, 0.8); padding: 8px 15px; border-radius: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+      ← Volver al Inicio
+    </a>
+  </header>
+
+  <!-- ===== CONTENEDOR DE LOGIN/REGISTRO ===== -->
+  <main class="login-container">
+    <div class="login-box" id="loginBox">
+      <h2><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</h2>
+      <form id="loginForm">
+        <label for="loginUsuario">
+          <i class="fas fa-user"></i> Usuario o Correo:
+        </label>
+        <input type="text" id="loginUsuario" required placeholder="Usuario o correo electrónico">
+
+        <label for="loginPassword">
+          <i class="fas fa-lock"></i> Contraseña:
+        </label>
+        <input type="password" id="loginPassword" required placeholder="Tu contraseña">
+        
+        <div style="text-align: center; margin: 10px 0;">
+          <label style="font-size: 14px; color: #666;">
+            <input type="checkbox" id="rememberMe"> Recordarme
+          </label>
+        </div>
+
+        <button type="submit">
+          <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        </button>
+        
+        <p style="text-align: center; margin-top: 20px; font-family: 'Poppins', sans-serif; font-size: 14px;">
+          ¿No tienes cuenta? <a href="#" id="mostrarRegistro" style="color: #ff3b3b; font-weight: bold;">Regístrate aquí</a>
+        </p>
+        <p style="text-align: center; margin-top: 10px; font-family: 'Poppins', sans-serif; font-size: 12px; color: #666;">
+          <i class="fas fa-shield-alt"></i> Tus datos están protegidos
+        </p>
+        
+        <!-- Información de prueba -->
+        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #ff3b3b;">
+          <p style="margin: 0; font-size: 12px; color: #666; font-family: 'Poppins', sans-serif;">
+            <strong><i class="fas fa-info-circle"></i> Usuarios de prueba:</strong><br>
+            👑 Admin: <strong>admin</strong> / <strong>admin123</strong><br>
+            👤 Usuario: <strong>fancomics</strong> / <strong>fan123</strong>
+          </p>
+        </div>
+      </form>
+    </div>
+
+    <div class="login-box" id="registroBox" style="display: none;">
+      <h2><i class="fas fa-user-plus"></i> Crear Cuenta</h2>
+      <form id="registroForm">
+        <label for="regUsuario">
+          <i class="fas fa-user-circle"></i> Usuario:
+        </label>
+        <input type="text" id="regUsuario" required placeholder="Elige un nombre de usuario">
+
+        <label for="regNombre">
+          <i class="fas fa-id-card"></i> Nombre Completo:
+        </label>
+        <input type="text" id="regNombre" required placeholder="Tu nombre completo">
+
+        <label for="regFechaNacimiento">
+          <i class="fas fa-birthday-cake"></i> Fecha de nacimiento:
+        </label>
+        <input type="date" id="regFechaNacimiento" required>
+
+        <label for="regCorreo">
+          <i class="fas fa-envelope"></i> Correo electrónico:
+        </label>
+        <input type="email" id="regCorreo" required placeholder="ejemplo@email.com">
+
+        <label for="regPassword">
+          <i class="fas fa-key"></i> Contraseña:
+        </label>
+        <input type="password" id="regPassword" required placeholder="Mínimo 6 caracteres" minlength="6">
+
+        <label for="regConfirmPassword">
+          <i class="fas fa-key"></i> Confirmar Contraseña:
+        </label>
+        <input type="password" id="regConfirmPassword" required placeholder="Repite tu contraseña" minlength="6">
+
+        <button type="submit">
+          <i class="fas fa-user-plus"></i> Crear Cuenta
+        </button>
+        
+        <p style="text-align: center; margin-top: 20px; font-family: 'Poppins', sans-serif; font-size: 14px;">
+          ¿Ya tienes cuenta? <a href="#" id="mostrarLogin" style="color: #ff3b3b; font-weight: bold;">Inicia sesión aquí</a>
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <!-- ===== NOTIFICACIÓN DE BIENVENIDA ===== -->
+  <div id="welcomeNotification" style="display: none;"></div>
+
+  <script>
+    // ===== INICIALIZACIÓN DE BASE DE DATOS =====
+    function inicializarBaseDeDatos() {
+      console.log("🔧 Inicializando base de datos...");
+      
+      // Verificar y crear base de datos de usuarios si no existe
+      if (!localStorage.getItem("usuarios")) {
+        const usuariosIniciales = [
+          {
+            usuario: "admin",
+            nombre: "Administrador Galaxy Comics",
+            fechaNacimiento: "1990-01-01",
+            correo: "admin@galaxycomics.com",
+            password: "admin123",
+            fechaRegistro: new Date().toISOString(),
+            pedidos: [],
+            carrito: [],
+            esAdmin: true,
+            avatar: "img/avatar1.png",
+            telefono: "+34 123 456 789",
+            direccion: "Calle Cómic 123, Ciudad Geek",
+            bio: "Administrador principal de Galaxy Comics. Amante de los cómics desde niño."
+          },
+          {
+            usuario: "fancomics",
+            nombre: "Fan de Cómics",
+            fechaNacimiento: "1995-05-15",
+            correo: "fan@email.com",
+            password: "fan123",
+            fechaRegistro: new Date().toISOString(),
+            pedidos: [],
+            carrito: [],
+            esAdmin: false,
+            avatar: "img/avatar2.png",
+            telefono: "",
+            direccion: "",
+            bio: "Fanático de los cómics de superhéroes y ciencia ficción."
+          }
+        ];
+        localStorage.setItem("usuarios", JSON.stringify(usuariosIniciales));
+        console.log("✅ Base de datos de usuarios inicializada con 2 usuarios");
+        console.log("👑 Administrador: usuario='admin', contraseña='admin123'");
+      } else {
+        console.log("📁 Base de datos de usuarios ya existe");
+      }
+
+      // Inicializar otras bases de datos si no existen
+      if (!localStorage.getItem("productosDB")) {
+        const productosDB = {
+          comics: [
+            { id: 1, titulo: "Superman: Hombre del mañana", precio: 15.99, stock: 10 },
+            { id: 2, titulo: "Batman: Sombras de Gotham", precio: 14.99, stock: 8 },
+            { id: 3, titulo: "Spider-Man: Multiverso", precio: 15.50, stock: 12 }
+          ],
+          coleccionables: [
+            { id: 101, titulo: "Figura Spider-Man Clásico", precio: 89.99, stock: 15 },
+            { id: 102, titulo: "Casco Iron Man Mark 42", precio: 249.99, stock: 3 }
+          ]
+        };
+        localStorage.setItem("productosDB", JSON.stringify(productosDB));
+        console.log("✅ Base de datos de productos inicializada");
+      }
+
+      if (!localStorage.getItem("pedidosGlobales")) {
+        localStorage.setItem("pedidosGlobales", JSON.stringify([]));
+        console.log("✅ Base de datos de pedidos inicializada");
+      }
+
+      if (!localStorage.getItem("notificaciones")) {
+        localStorage.setItem("notificaciones", JSON.stringify([]));
+        console.log("✅ Base de datos de notificaciones inicializada");
+      }
+
+      if (!localStorage.getItem("sistemaInicializado")) {
+        localStorage.setItem("sistemaInicializado", "true");
+        console.log("✅ Sistema marcado como inicializado");
+      }
+    }
+
+    // ===== FUNCIONES DE INTERFAZ =====
+    function mostrarNotificacion(mensaje, tipo = "info") {
+      const notificacion = document.createElement('div');
+      const iconos = {
+        success: "fa-check-circle",
+        error: "fa-exclamation-circle",
+        warning: "fa-exclamation-triangle",
+        info: "fa-info-circle"
+      };
+      
+      notificacion.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${tipo === "success" ? "#4CAF50" : 
+                     tipo === "error" ? "#ff3b3b" : 
+                     tipo === "warning" ? "#ff9800" : "#2196F3"};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        z-index: 10000;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        animation: slideIn 0.5s ease;
+        max-width: 400px;
+      `;
+      
+      notificacion.innerHTML = `
+        <i class="fas ${iconos[tipo] || iconos.info}" style="font-size: 24px;"></i>
+        <span>${mensaje}</span>
+      `;
+      
+      document.body.appendChild(notificacion);
+      
+      setTimeout(() => {
+        notificacion.style.animation = 'slideOut 0.5s ease';
+        setTimeout(() => notificacion.remove(), 500);
+      }, 4000);
+    }
+
+    // ===== FUNCIONES DE VALIDACIÓN =====
+    function validarUsuario(usuario) {
+      if (!usuario || usuario.length < 3) {
+        return "El usuario debe tener al menos 3 caracteres.";
+      }
+      if (!/^[a-zA-Z0-9_]+$/.test(usuario)) {
+        return "El usuario solo puede contener letras, números y guiones bajos.";
+      }
+      return null;
+    }
+
+    function validarCorreo(correo) {
+      if (!correo) {
+        return "El correo electrónico es obligatorio.";
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+        return "Por favor ingresa un correo electrónico válido.";
+      }
+      return null;
+    }
+
+    function validarContraseña(contraseña) {
+      if (!contraseña || contraseña.length < 6) {
+        return "La contraseña debe tener al menos 6 caracteres.";
+      }
+      return null;
+    }
+
+    function validarFechaNacimiento(fecha) {
+      if (!fecha) {
+        return "La fecha de nacimiento es obligatoria.";
+      }
+      
+      const fechaNac = new Date(fecha);
+      const hoy = new Date();
+      let edad = hoy.getFullYear() - fechaNac.getFullYear();
+      const mes = hoy.getMonth() - fechaNac.getMonth();
+      
+      if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+        edad--;
+      }
+      
+      if (edad < 13) {
+        return "Debes tener al menos 13 años para registrarte.";
+      }
+      
+      return null;
+    }
+
+    // ===== MANEJADORES DE EVENTOS =====
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("🚀 Página de login cargada");
+      
+      // Inicializar base de datos
+      inicializarBaseDeDatos();
+      
+      // Configurar eventos de los botones de alternancia
+      document.getElementById('mostrarRegistro').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('loginBox').style.display = 'none';
+        document.getElementById('registroBox').style.display = 'block';
+      });
+
+      document.getElementById('mostrarLogin').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('registroBox').style.display = 'none';
+        document.getElementById('loginBox').style.display = 'block';
+      });
+
+      // Configurar formulario de login
+      document.getElementById("loginForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        procesarLogin();
+      });
+
+      // Configurar formulario de registro
+      document.getElementById("registroForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        procesarRegistro();
+      });
+
+      // Configurar fecha por defecto en registro (hace 18 años)
+      const fechaDefecto = new Date();
+      fechaDefecto.setFullYear(fechaDefecto.getFullYear() - 18);
+      document.getElementById('regFechaNacimiento').value = fechaDefecto.toISOString().split('T')[0];
+      document.getElementById('regFechaNacimiento').max = new Date().toISOString().split('T')[0];
+
+      // Auto-rellenar usuario si hay uno recordado
+      const rememberedUser = localStorage.getItem("rememberedUser");
+      if (rememberedUser) {
+        document.getElementById("loginUsuario").value = rememberedUser;
+        document.getElementById("rememberMe").checked = true;
+      }
+
+      // Mostrar información en consola
+      console.log("=== GALAXY COMICS LOGIN ===");
+      console.log("👑 Administrador disponible:");
+      console.log("   Usuario: admin");
+      console.log("   Contraseña: admin123");
+      console.log("   Correo: admin@galaxycomics.com");
+      console.log("==========================");
+    });
+
+    // ===== PROCESAR LOGIN =====
+    function procesarLogin() {
+      const usuarioInput = document.getElementById("loginUsuario").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const rememberMe = document.getElementById("rememberMe").checked;
+
+      // Validaciones básicas
+      if (!usuarioInput) {
+        mostrarNotificacion("Por favor ingresa tu usuario o correo", "error");
+        return;
+      }
+
+      if (!password) {
+        mostrarNotificacion("Por favor ingresa tu contraseña", "error");
+        return;
+      }
+
+      // Obtener usuarios registrados
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      
+      // Buscar usuario por nombre de usuario o correo
+      const usuarioEncontrado = usuarios.find(u => {
+        // Verificar si coincide con usuario
+        if (u.usuario === usuarioInput && u.password === password) {
+          return true;
+        }
+        // Verificar si coincide con correo
+        if (u.correo === usuarioInput && u.password === password) {
+          return true;
+        }
+        return false;
+      });
+
+      if (usuarioEncontrado) {
+        // Guardar sesión actual
+        localStorage.setItem("usuarioActual", JSON.stringify(usuarioEncontrado));
+        
+        // Guardar en sesión recordada si está marcado
+        if (rememberMe) {
+          localStorage.setItem("rememberedUser", usuarioEncontrado.usuario);
+        } else {
+          localStorage.removeItem("rememberedUser");
+        }
+        
+        // Mostrar notificación de bienvenida
+        if (usuarioEncontrado.esAdmin) {
+          mostrarNotificacion(`👑 ¡Bienvenido Administrador ${usuarioEncontrado.nombre}!`, "success");
+        } else {
+          mostrarNotificacion(`¡Bienvenido de nuevo, ${usuarioEncontrado.nombre}!`, "success");
+        }
+        
+        // Redirigir después de 1.5 segundos
+        setTimeout(() => {
+          const redirectTo = localStorage.getItem("redirectAfterLogin") || "index.html";
+          localStorage.removeItem("redirectAfterLogin");
+          window.location.href = redirectTo;
+        }, 1500);
+      } else {
+        mostrarNotificacion("Usuario o contraseña incorrectos", "error");
+        // Agitar el formulario para dar feedback visual
+        document.getElementById("loginForm").style.animation = "shake 0.5s";
+        setTimeout(() => {
+          document.getElementById("loginForm").style.animation = "";
+        }, 500);
+      }
+    }
+
+    // ===== PROCESAR REGISTRO =====
+    function procesarRegistro() {
+      const usuario = document.getElementById("regUsuario").value.trim();
+      const nombre = document.getElementById("regNombre").value.trim();
+      const fechaNacimiento = document.getElementById("regFechaNacimiento").value;
+      const correo = document.getElementById("regCorreo").value.trim();
+      const password = document.getElementById("regPassword").value;
+      const confirmPassword = document.getElementById("regConfirmPassword").value;
+
+      // Validaciones paso a paso
+      let error = null;
+      
+      error = validarUsuario(usuario);
+      if (error) {
+        mostrarNotificacion(error, "error");
+        return;
+      }
+
+      if (!nombre) {
+        mostrarNotificacion("Por favor ingresa tu nombre completo.", "error");
+        return;
+      }
+
+      error = validarFechaNacimiento(fechaNacimiento);
+      if (error) {
+        mostrarNotificacion(error, "error");
+        return;
+      }
+
+      error = validarCorreo(correo);
+      if (error) {
+        mostrarNotificacion(error, "error");
+        return;
+      }
+
+      error = validarContraseña(password);
+      if (error) {
+        mostrarNotificacion(error, "error");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        mostrarNotificacion("Las contraseñas no coinciden.", "error");
+        return;
+      }
+
+      // Verificar si el usuario ya existe
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      
+      const usuarioExistente = usuarios.find(u => u.usuario === usuario);
+      if (usuarioExistente) {
+        mostrarNotificacion("Este nombre de usuario ya está registrado.", "error");
+        return;
+      }
+
+      const correoExistente = usuarios.find(u => u.correo === correo);
+      if (correoExistente) {
+        mostrarNotificacion("Este correo electrónico ya está registrado.", "error");
+        return;
+      }
+
+      // Crear nuevo usuario
+      const nuevoUsuario = {
+        usuario: usuario,
+        nombre: nombre,
+        fechaNacimiento: fechaNacimiento,
+        correo: correo,
+        password: password,
+        fechaRegistro: new Date().toISOString(),
+        pedidos: [],
+        carrito: [],
+        esAdmin: false,
+        avatar: `img/avatar${Math.floor(Math.random() * 5) + 1}.png`,
+        telefono: "",
+        direccion: "",
+        bio: ""
+      };
+
+      // Agregar a la lista de usuarios
+      usuarios.push(nuevoUsuario);
+      localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+      // Iniciar sesión automáticamente
+      localStorage.setItem("usuarioActual", JSON.stringify(nuevoUsuario));
+
+      // Mostrar notificación de éxito
+      mostrarNotificacion(`¡Cuenta creada exitosamente! Bienvenido/a a Galaxy Comics, ${nombre}.`, "success");
+      
+      // Redirigir después de 2 segundos
+      setTimeout(() => {
+        const redirectTo = localStorage.getItem("redirectAfterLogin") || "index.html";
+        localStorage.removeItem("redirectAfterLogin");
+        window.location.href = redirectTo;
+      }, 2000);
+    }
+
+    // Agregar animación de shake
+    const estiloAnimaciones = document.createElement('style');
+    estiloAnimaciones.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+      }
+      
+      .login-box {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 400px;
+        margin: 20px auto;
+        transition: all 0.3s ease;
+      }
+      
+      .login-box h2 {
+        color: #ff3b3b;
+        text-align: center;
+        margin-bottom: 30px;
+        font-family: 'Bangers', cursive;
+        font-size: 28px;
+      }
+      
+      .login-box label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+        font-family: 'Poppins', sans-serif;
+      }
+      
+      .login-box input {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 16px;
+        transition: border-color 0.3s;
+        box-sizing: border-box;
+      }
+      
+      .login-box input:focus {
+        outline: none;
+        border-color: #ff3b3b;
+        box-shadow: 0 0 0 2px rgba(255, 59, 59, 0.2);
+      }
+      
+      .login-box button {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #ff3b3b, #ff6b6b);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+      }
+      
+      .login-box button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 20px rgba(255, 59, 59, 0.4);
+      }
+      
+      .login-box button:active {
+        transform: translateY(0);
+      }
+      
+      .login-box a {
+        color: #ff3b3b;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+      
+      .login-box a:hover {
+        color: #ff6b6b;
+        text-decoration: underline;
+      }
+      
+      .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 200px);
+        padding: 20px;
+      }
+    `;
+    document.head.appendChild(estiloAnimaciones);
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,2588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coleccionables - Galaxy Comics</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Clase para controlar mejor la visibilidad */
+    .visible-smooth {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    
+    .hidden-smooth {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease 0.5s;
+    }
+    
+    /* Estilos para el modo tabla */
+    .modo-tabla-container {
+      overflow-x: auto;
+      margin: 20px 0;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      background: white;
+    }
+    
+    .tabla-coleccionables {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+    
+    .tabla-coleccionables th {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .tabla-coleccionables td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      font-family: 'Comic Neue', cursive;
+      vertical-align: middle;
+    }
+    
+    .tabla-coleccionables tr:hover {
+      background-color: #f9f9f9;
+    }
+    
+    .tabla-coleccionables tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    
+    .tabla-coleccionables tr:nth-child(even):hover {
+      background-color: #f0f0f0;
+    }
+    
+    .tabla-imagen {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #eee;
+    }
+    
+    .tabla-acciones {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+    
+    .btn-tabla {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+    }
+    
+    .btn-tabla-editar {
+      background: #2196F3;
+      color: white;
+    }
+    
+    .btn-tabla-eliminar {
+      background: #ff3b3b;
+      color: white;
+    }
+    
+    .btn-tabla-ver {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .btn-tabla:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+    
+    .badge-tabla {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      display: inline-block;
+      margin: 2px;
+    }
+    
+    .badge-destacado-tabla {
+      background: #ff9800;
+      color: white;
+    }
+    
+    .badge-limitada-tabla {
+      background: #ffd700;
+      color: #000;
+    }
+    
+    .badge-stock-tabla {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .badge-stock-bajo {
+      background: #ff9800;
+      color: white;
+    }
+    
+    .badge-stock-critico {
+      background: #ff3b3b;
+      color: white;
+    }
+    
+    .stock-bajo {
+      color: #ff9800;
+      font-weight: bold;
+    }
+    
+    .stock-critico {
+      color: #ff3b3b;
+      font-weight: bold;
+    }
+    
+    .precio-tabla {
+      font-family: 'Bangers', cursive;
+      font-size: 20px;
+      color: #ff3b3b;
+    }
+    
+    .categoria-tabla {
+      padding: 4px 10px;
+      background: #e3f2fd;
+      border-radius: 12px;
+      font-size: 12px;
+      color: #1976d2;
+      display: inline-block;
+    }
+
+    /* Nuevos estilos para la tabla modal */
+    #tablaColeccionablesAdmin tbody tr:hover {
+      background-color: #f5f5f5;
+      transform: translateY(-2px);
+      transition: all 0.3s ease;
+    }
+
+    .btn-accion-tabla-coleccionable:hover {
+      transform: scale(1.1);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    #btnVerTabla {
+      animation: pulse-purple 2s infinite;
+    }
+    
+    @keyframes pulse-purple {
+      0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(156, 39, 176, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== ENCABEZADO ===== -->
+<header style="background: none; position: relative; overflow: hidden;">
+  <img src="img/banner-fondo.png" alt="Fondo tipo cómic"
+       style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+  <img src="img/logo.png" alt="Logo Galaxy Comics" class="logo">
+  <h1>GALAXY COMICS</h1>
+  
+  <!-- CONTENEDOR PARA USUARIO LOGUEADO -->
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <span id="nombreUsuarioHeader" style="display: none; font-family: 'Poppins', sans-serif; font-weight: bold; color: white; font-size: 16px; background: rgba(255, 59, 59, 0.8); padding: 8px 15px; border-radius: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+      <!-- Aquí aparecerá el nombre del usuario -->
+    </span>
+    
+    <a id="usuarioLink" href="#">
+      <img id="iconoUsuario" src="img/btn-login.png" alt="Iniciar sesión" class="btn-login">
+    </a>
+    
+    <!-- CONTADOR DE CARRITO - CORREGIDO: eliminado display:none duplicado -->
+    <a href="carrito.html" style="position: relative; text-decoration: none;">
+      <i class="fas fa-shopping-cart" style="font-size: 24px; color: white;"></i>
+      <span id="carritoContador" class="carrito-contador" style="position: absolute; top: -8px; right: -8px; background: #ff3b3b; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; display: none;">
+        0
+      </span>
+    </a>
+  </div>
+</header>
+
+  <!-- ===== BARRA DE NAVEGACIÓN ===== -->
+  <nav>
+    <img src="img/nav-bar.png" alt="Barra de navegación" class="nav-bg">
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="Comics.html">Cómics</a></li>
+      <li><a href="Coleccion.html" class="active-nav">Coleccionables</a></li>
+      <li><a href="Autores.html">Autores</a></li>
+      <li><a href="Pedidos.html">Pedidos Personalizados</a></li>
+      <li><a href="carrito.html">🛒 Carrito <span id="navCarritoContador" class="carrito-contador" style="background: #ff3b3b; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px; display: none;">0</span></a></li>
+      <li><a href="historialPedidos.html">📦 Mis Pedidos</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== HERO SECTION COLECCIONABLES ===== -->
+  <section class="hero-autores">
+    <div class="hero-autores-content">
+      <h1 class="hero-autores-title">🏆 COLECCIONABLES EXCLUSIVOS</h1>
+      <p class="hero-autores-subtitle">
+        Descubre las piezas más exclusivas para coleccionistas. Figuras de edición limitada, réplicas icónicas 
+        y artículos premium que todo fan de cómics desearía tener en su colección.
+      </p>
+      <div class="hero-autores-stats">
+        <div class="stat-item">
+          <span class="stat-number" id="totalColeccionables">0</span>
+          <span class="stat-label">Productos en stock</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="totalCategorias">0</span>
+          <span class="stat-label">Categorías</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="totalLimitadas">0</span>
+          <span class="stat-label">Ediciones limitadas</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PANEL DE ADMINISTRACIÓN (SOLO VISIBLE PARA ADMIN) ===== -->
+  <div id="adminPanel" class="contenedor-principal hidden-smooth">
+    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 20px 30px; border-radius: 15px; border: 3px solid #ff3b3b; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+      <h3 style="color: white; margin: 0 0 20px 0; font-family: 'Bangers', cursive; font-size: 26px; display: flex; align-items: center; gap: 15px;">
+        <i class="fas fa-user-shield"></i> PANEL DE ADMINISTRACIÓN - COLECCIONABLES
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+        <button id="btnAgregarColeccionable" style="padding: 12px 20px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-plus-circle"></i> Agregar Coleccionable
+        </button>
+        <button id="btnModoEdicion" style="padding: 12px 20px; background: #2196F3; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-edit"></i> Modo Edición
+        </button>
+        <!-- BOTÓN NUEVO: VER EN MODO TABLA -->
+        <button id="btnVerTabla" style="padding: 12px 20px; background: #9C27B0; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-table"></i> Ver Tabla de Coleccionables
+        </button>
+        <button id="btnExportarDatos" style="padding: 12px 20px; background: #FF9800; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-download"></i> Exportar Datos
+        </button>
+      </div>
+      <p style="color: #ddd; font-family: 'Poppins', sans-serif; font-size: 14px; margin: 0; text-align: center;">
+        <i class="fas fa-info-circle"></i> Puedes agregar, editar o eliminar coleccionables de la base de datos
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== VISTA NORMAL ===== -->
+  <div id="vistaNormal">
+    <!-- ===== FILTROS DE COLECCIONABLES ===== -->
+    <div class="autores-filtros">
+      <div class="filtros-container">
+        <button class="filtro-autor active" data-filtro="todos">
+          <i class="fas fa-boxes"></i> Todos
+        </button>
+        <button class="filtro-autor" data-filtro="figuras">
+          <i class="fas fa-user-astronaut"></i> Figuras
+        </button>
+        <button class="filtro-autor" data-filtro="replicas">
+          <i class="fas fa-shield-alt"></i> Réplicas
+        </button>
+        <button class="filtro-autor" data-filtro="arte">
+          <i class="fas fa-palette"></i> Arte & Posters
+        </button>
+        <button class="filtro-autor" data-filtro="ropa">
+          <i class="fas fa-tshirt"></i> Ropa & Accesorios
+        </button>
+        <button class="filtro-autor" data-filtro="limitada">
+          <i class="fas fa-crown"></i> Edición Limitada
+        </button>
+      </div>
+    </div>
+
+    <div class="contenedor-principal">
+      <!-- SECCIÓN DESTACADOS -->
+      <div class="seccion-nuevos" id="destacados">
+        <h2 class="titulo-seccion">
+          <i class="fas fa-star"></i> DESTACADOS DE LA COLECCIÓN
+        </h2>
+        <div class="grid-comics" id="gridDestacados">
+          <!-- Los productos destacados se cargarán aquí -->
+        </div>
+      </div>
+      
+      <!-- TODOS LOS COLECCIONABLES -->
+      <h2 class="titulo-seccion">
+        <i class="fas fa-gem"></i> TODOS LOS COLECCIONABLES
+      </h2>
+      
+      <div class="grid-comics" id="gridColeccionables">
+        <!-- Los coleccionables se cargarán aquí -->
+      </div>
+      
+      <!-- PAGINACIÓN -->
+      <div class="paginacion-mejorada" id="paginacion">
+        <button class="pag-item" id="pagPrev">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="pag-item active">1</button>
+        <button class="pag-item">2</button>
+        <button class="pag-item">3</button>
+        <button class="pag-item">4</button>
+        <button class="pag-item">5</button>
+        <button class="pag-item" id="pagNext">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL DE TABLA DE COLECCIONABLES (NUEVO - SIMILAR AL DE CÓMICS) ===== -->
+  <div id="modalTablaColeccionables" class="modal-autor" style="display: none;">
+    <div class="modal-autor-contenido" style="max-width: 95%; max-height: 90vh;">
+      <button class="cerrar-modal" id="cerrarModalTablaColeccionables">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-autor-info" style="padding: 30px; overflow: hidden;">
+        <h2 class="modal-autor-nombre">
+          <i class="fas fa-table"></i> TABLA DE COLECCIONABLES - MODO ADMINISTRACIÓN
+        </h2>
+        <p style="color: #666; font-family: 'Poppins', sans-serif; margin-bottom: 20px;">
+          Gestiona todos los coleccionables en formato tabla. Puedes editar, eliminar y ver detalles rápidamente.
+        </p>
+        
+        <!-- CONTROLES DE TABLA -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="position: relative;">
+              <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+              <input type="text" id="buscarTablaColeccionables" placeholder="Buscar coleccionables..." style="padding: 10px 10px 10px 40px; border: 2px solid #ddd; border-radius: 8px; width: 300px; font-family: 'Poppins', sans-serif;">
+            </div>
+            <select id="filtrarCategoriaTablaColeccionables" style="padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Poppins', sans-serif; cursor: pointer;">
+              <option value="">Todas las categorías</option>
+              <option value="figuras">Figuras</option>
+              <option value="replicas">Réplicas</option>
+              <option value="arte">Arte & Posters</option>
+              <option value="ropa">Ropa & Accesorios</option>
+            </select>
+            <select id="filtrarEstadoTablaColeccionables" style="padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Poppins', sans-serif; cursor: pointer;">
+              <option value="">Todos los estados</option>
+              <option value="destacado">Destacado</option>
+              <option value="limitada">Edición Limitada</option>
+              <option value="stock_bajo">Stock Bajo</option>
+              <option value="agotado">Agotado</option>
+            </select>
+          </div>
+          
+          <div style="display: flex; gap: 10px;">
+            <button id="btnActualizarTablaColeccionables" style="padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+              <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
+            <button id="btnAgregarDesdeTablaColeccionables" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+              <i class="fas fa-plus-circle"></i> Agregar Coleccionable
+            </button>
+          </div>
+        </div>
+        
+        <!-- TABLA DE COLECCIONABLES -->
+        <div style="overflow-x: auto; max-height: 60vh; border: 1px solid #ddd; border-radius: 8px;">
+          <table id="tablaColeccionablesAdmin" style="width: 100%; border-collapse: collapse; font-family: 'Poppins', sans-serif;">
+            <thead style="background: #1a1a2e; color: white; position: sticky; top: 0; z-index: 10;">
+              <tr>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">ID</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Título</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Categoría</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Precio</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Stock</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Destacado</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Ed. Limitada</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Rating</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaColeccionablesBody">
+              <!-- Los datos se cargarán aquí dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- RESUMEN -->
+        <div style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <strong>Total de coleccionables:</strong> <span id="tablaTotalColeccionables">0</span>
+          </div>
+          <div>
+            <strong>Stock total:</strong> <span id="tablaTotalStockColeccionables">0</span>
+          </div>
+          <div>
+            <strong>Valor total:</strong> $<span id="tablaValorTotalColeccionables">0.00</span>
+          </div>
+          <div>
+            <strong>Ediciones limitadas:</strong> <span id="tablaLimitadasColeccionables">0</span>
+          </div>
+          <div>
+            <strong>Destacados:</strong> <span id="tablaDestacadosColeccionables">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL DE DETALLES DEL COLECCIONABLE ===== -->
+  <div id="modalColeccionable" class="modal-autor hidden-smooth">
+    <div class="modal-autor-contenido">
+      <button class="cerrar-modal">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-autor-grid">
+        <div class="modal-autor-imagen-container">
+          <img id="modalColeccionableImagen" src="" alt="Coleccionable" class="modal-autor-imagen">
+          <div class="modal-autor-badges" id="modalColeccionableBadges"></div>
+        </div>
+        <div class="modal-autor-info">
+          <h2 id="modalColeccionableTitulo" class="modal-autor-nombre"></h2>
+          <div id="modalColeccionableInfoBasica" class="modal-autor-especialidad"></div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-scroll"></i> Descripción</h3>
+            <p id="modalColeccionableDescripcion" class="modal-autor-biografia"></p>
+          </div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-info-circle"></i> Especificaciones</h3>
+            <div id="modalColeccionableEspecificaciones" class="modal-autor-logros"></div>
+          </div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-tags"></i> Características</h3>
+            <div id="modalColeccionableCaracteristicas" class="modal-autor-obras"></div>
+          </div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-shopping-cart"></i> Comprar</h3>
+            <div style="display: flex; align-items: center; gap: 20px; margin-top: 15px;">
+              <div style="font-size: 32px; font-family: 'Bangers'; color: #ff3b3b;" id="modalColeccionablePrecio"></div>
+              <button id="btnComprarModalColeccionable" style="padding: 12px 25px; background: #ff3b3b; color: white; border: none; border-radius: 8px; font-family: 'Poppins'; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;">
+                <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+              </button>
+            </div>
+            <p style="color: #666; font-size: 14px; margin-top: 10px; font-family: 'Poppins';">
+              <i class="fas fa-shipping-fast"></i> Envío gratis en pedidos superiores a $100
+              <br>
+              <i class="fas fa-shield-alt"></i> Garantía de 1 año en todos los productos
+            </p>
+          </div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-star"></i> Reseñas</h3>
+            <div id="modalColeccionableResenas" class="modal-autor-personajes"></div>
+          </div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-box"></i> Información de envío</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 10px;">
+              <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #2196F3;">
+                <h4 style="margin: 0 0 5px 0; color: #2196F3; font-size: 14px;">
+                  <i class="fas fa-truck"></i> Tiempo de entrega
+                </h4>
+                <p style="margin: 0; color: #666; font-size: 13px;">5-7 días hábiles</p>
+              </div>
+              <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                <h4 style="margin: 0 0 5px 0; color: #4CAF50; font-size: 14px;">
+                  <i class="fas fa-undo"></i> Política de devoluciones
+                </h4>
+                <p style="margin: 0; color: #666; font-size: 13px;">30 días desde la compra</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- CONTROLES DE ADMINISTRADOR EN MODAL (solo visible para admin) -->
+          <div id="modalColeccionableAdminControls" style="display: none; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
+            <h3 style="color: #1a1a2e; font-family: 'Poppins', sans-serif; font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+              <i class="fas fa-user-shield"></i> Acciones de Administrador
+            </h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button id="btnEditarColeccionable" style="padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+                <i class="fas fa-edit"></i> Editar Coleccionable
+              </button>
+              <button id="btnEliminarColeccionable" style="padding: 10px 20px; background: #ff3b3b; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+                <i class="fas fa-trash"></i> Eliminar Coleccionable
+              </button>
+              <button id="btnDuplicarColeccionable" style="padding: 10px 20px; background: #9C27B0; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+                <i class="fas fa-copy"></i> Duplicar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL PARA AGREGAR/EDITAR COLECCIONABLE (NUEVO - SOLO ADMIN) ===== -->
+  <div id="modalAdminColeccionable" class="modal-autor hidden-smooth">
+    <div class="modal-autor-contenido">
+      <button class="cerrar-modal" id="cerrarModalAdminColeccionable">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-autor-info" style="padding: 40px;">
+        <h2 class="modal-autor-nombre" id="modalAdminColeccionableTitulo">Agregar Nuevo Coleccionable</h2>
+        <p style="color: #666; font-family: 'Poppins', sans-serif; margin-bottom: 30px;">Completa todos los campos para agregar un nuevo coleccionable a la base de datos.</p>
+        
+        <form id="formColeccionableAdmin" style="margin-top: 20px;">
+          <input type="hidden" id="coleccionableId" value="">
+          
+          <div class="form-group">
+            <label for="coleccionableTitulo"><i class="fas fa-heading"></i> Título *</label>
+            <input type="text" id="coleccionableTitulo" class="form-input" required placeholder="Ej: Figura Spider-Man Clásico Premium">
+          </div>
+          
+          <div class="form-group">
+            <label for="coleccionableCategoria"><i class="fas fa-tag"></i> Categoría *</label>
+            <select id="coleccionableCategoria" class="form-select" required>
+              <option value="">Selecciona una categoría</option>
+              <option value="figuras">Figuras</option>
+              <option value="replicas">Réplicas</option>
+              <option value="arte">Arte & Posters</option>
+              <option value="ropa">Ropa & Accesorios</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="coleccionablePrecio"><i class="fas fa-dollar-sign"></i> Precio *</label>
+            <input type="number" id="coleccionablePrecio" class="form-input" min="0" step="0.01" required placeholder="Ej: 89.99">
+          </div>
+          
+          <div class="form-group">
+            <label for="coleccionableImagen"><i class="fas fa-image"></i> URL de Imagen</label>
+            <input type="text" id="coleccionableImagen" class="form-input" placeholder="https://ejemplo.com/imagen.jpg">
+            <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">Deja en blanco para usar imagen por defecto</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="coleccionableDescripcion"><i class="fas fa-scroll"></i> Descripción *</label>
+            <textarea id="coleccionableDescripcion" class="form-textarea" rows="4" required placeholder="Descripción detallada del producto..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="coleccionableStock"><i class="fas fa-box"></i> Stock *</label>
+            <input type="number" id="coleccionableStock" class="form-input" min="0" required placeholder="Cantidad disponible">
+          </div>
+          
+          <div class="form-group">
+            <label for="coleccionableMaterial"><i class="fas fa-cube"></i> Material</label>
+            <input type="text" id="coleccionableMaterial" class="form-input" placeholder="Ej: PVC y metal">
+          </div>
+          
+          <div class="form-group">
+            <label for="coleccionableEscala"><i class="fas fa-ruler-combined"></i> Escala</label>
+            <input type="text" id="coleccionableEscala" class="form-input" placeholder="Ej: 1:6">
+          </div>
+          
+          <div class="form-group">
+            <label for="coleccionableFabricante"><i class="fas fa-industry"></i> Fabricante</label>
+            <input type="text" id="coleccionableFabricante" class="form-input" placeholder="Ej: Hot Toys">
+          </div>
+          
+          <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+              <label for="coleccionableDestacado"><i class="fas fa-star"></i> Destacado</label>
+              <select id="coleccionableDestacado" class="form-select">
+                <option value="false">No</option>
+                <option value="true">Sí</option>
+              </select>
+            </div>
+            <div>
+              <label for="coleccionableEdicionLimitada"><i class="fas fa-crown"></i> Edición Limitada</label>
+              <select id="coleccionableEdicionLimitada" class="form-select">
+                <option value="false">No</option>
+                <option value="true">Sí</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="coleccionableCaracteristicas"><i class="fas fa-check-circle"></i> Características (una por línea)</label>
+            <textarea id="coleccionableCaracteristicas" class="form-textarea" rows="3" placeholder="• Articulación completa&#10;• Detalle pintado a mano&#10;• Base de exhibición"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="coleccionableResenas"><i class="fas fa-star"></i> Reseñas (una por línea)</label>
+            <textarea id="coleccionableResenas" class="form-textarea" rows="3" placeholder="★★★★★ - Excelente producto&#10;★★★★☆ - Muy buena calidad"></textarea>
+          </div>
+          
+          <div style="display: flex; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
+            <button type="submit" id="btnGuardarColeccionable" style="flex: 1; padding: 15px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+              <i class="fas fa-save"></i> Guardar Coleccionable
+            </button>
+            <button type="button" id="btnCancelarColeccionable" style="flex: 1; padding: 15px; background: #666; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- ===== PERFIL FLOTANTE ===== -->
+<div id="perfilBox" class="perfil-box hidden-smooth">
+  <div class="perfil-contenido">
+    <h2>👤 Perfil</h2>
+    <p><strong>Usuario:</strong> <span id="perfilUsuario"></span></p>
+    <p><strong>Nombre:</strong> <span id="perfilNombre"></span></p>
+    <p><strong>Fecha de nacimiento:</strong> <span id="perfilFecha"></span></p>
+    <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+    <p><strong>Pedidos realizados:</strong> <span id="perfilPedidos">0</span></p>
+    <p><strong>Productos en carrito:</strong> <span id="perfilCarrito">0</span></p>
+    <button id="cerrarSesion">Cerrar Sesión</button>
+  </div>
+</div>
+
+<!-- ===== PANEL DE DEPURACIÓN ===== -->
+<div id="debugPanel" style="position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.85); color: white; padding: 15px; border-radius: 8px; font-size: 12px; z-index: 9999; display: none; max-width: 300px; border: 2px solid #ff3b3b;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    <strong>🔧 DEPURACIÓN</strong>
+    <button id="cerrarDebug" style="background: #ff3b3b; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 10px;">X</button>
+  </div>
+  <div style="margin-bottom: 8px;">
+    <strong>Usuario:</strong> <span id="debugUsuario">No logueado</span>
+  </div>
+  <div style="margin-bottom: 8px;">
+    <strong>Es Admin:</strong> <span id="debugEsAdmin" style="color: #ff3b3b;">No</span>
+  </div>
+  <div style="margin-bottom: 8px;">
+    <strong>Modo Edición:</strong> <span id="debugModoEdicion" style="color: #2196F3;">No</span>
+  </div>
+  <div style="margin-bottom: 8px;">
+    <strong>Productos:</strong> <span id="debugProductos">0</span>
+  </div>
+  <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #444;">
+    <button id="debugForzarAdmin" style="width: 100%; padding: 5px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 10px;">Forzar Modo Admin</button>
+  </div>
+</div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="script.js"></script>
+  <script src="funcionesUsuario.js"></script>
+  
+  <script>
+    // ===== BASE DE DATOS DE COLECCIONABLES =====
+    let coleccionablesDB = {};
+    
+    // Variables globales
+    let esAdmin = false;
+    let modoEdicion = false;
+    let productoActualModal = null;
+    let paginaActual = 1;
+    const itemsPorPagina = 9;
+    let filtroActual = 'todos';
+    let coleccionablesArray = [];
+    let coleccionablesFiltrados = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("🚀 Inicializando página de coleccionables...");
+      
+      // Inicializar la página
+      inicializarPagina();
+      verificarSesion();
+      actualizarContadorCarrito();
+      
+      // Verificar si es administrador
+      verificarAdmin();
+      
+      // Configurar eventos
+      configurarEventos();
+      
+      // Configurar panel de depuración
+      configurarDebugPanel();
+      
+      // Mostrar info de depuración
+      setTimeout(mostrarDebugInfo, 500);
+    });
+
+    // Inicializar la página
+    function inicializarPagina() {
+      console.log("📦 Cargando coleccionables desde almacenamiento...");
+      
+      // Cargar coleccionables desde localStorage
+      cargarColeccionablesDesdeStorage();
+      
+      // Configurar filtros
+      configurarFiltros();
+      
+      // Configurar paginación
+      configurarPaginacion();
+      
+      // Configurar modales
+      configurarModalColeccionable();
+      configurarModalAdmin();
+      configurarModalTablaColeccionables();
+      
+      // Cargar coleccionables
+      cargarColeccionables();
+      
+      console.log("✅ Página inicializada correctamente");
+    }
+
+    // Cargar coleccionables desde localStorage
+    function cargarColeccionablesDesdeStorage() {
+      const coleccionablesGuardados = localStorage.getItem('coleccionablesDB');
+      
+      if (coleccionablesGuardados) {
+        try {
+          coleccionablesDB = JSON.parse(coleccionablesGuardados);
+          console.log("📊 Coleccionables cargados desde localStorage:", Object.keys(coleccionablesDB).length);
+        } catch (error) {
+          console.error("❌ Error al parsear coleccionables:", error);
+          coleccionablesDB = {};
+        }
+      } else {
+        console.log("📝 Creando base de datos inicial de coleccionables...");
+        // Datos iniciales
+        coleccionablesDB = {
+          101: {
+            id: 101,
+            titulo: "Figura Spider-Man Clásico Premium",
+            categoria: "figuras",
+            precio: 89.99,
+            imagen: "img/figura1.png",
+            descripcion: "Figura articulada de Spider-Man con traje clásico en escala 1:6. Fabricada en PVC de alta calidad con articulaciones de metal.",
+            destacado: true,
+            edicionLimitada: false,
+            stock: 15,
+            material: "PVC y metal",
+            escala: "1:6",
+            altura: "30 cm",
+            articulaciones: 32,
+            accesorios: ["5 pares de manos", "Lanzatelarañas", "Base de exhibición"],
+            fabricante: "Hot Toys",
+            fechaLanzamiento: "2022-10-15",
+            rating: 4.9,
+            caracteristicas: [
+              "Articulación completa de 32 puntos",
+              "Detalle pintado a mano",
+              "Tela realista en el traje",
+              "Base con nombre personalizado"
+            ],
+            reseñas: [
+              "★★★★★ - La mejor figura de Spider-Man que he visto",
+              "★★★★★ - Detalles impresionantes, vale cada centavo",
+              "★★★★★ - Calidad Hot Toys en su máxima expresión"
+            ]
+          },
+          102: {
+            id: 102,
+            titulo: "Casco Iron Man Mark 42",
+            categoria: "replicas",
+            precio: 249.99,
+            imagen: "img/replica1.png",
+            descripcion: "Réplica a tamaño real del casco Iron Man Mark 42 con luces LED, sonidos y movimiento automático.",
+            destacado: true,
+            edicionLimitada: true,
+            stock: 3,
+            material: "Fibra de carbono y acero",
+            escala: "1:1",
+            altura: "35 cm",
+            peso: "2.5 kg",
+            electrico: true,
+            fabricante: "Sideshow Collectibles",
+            fechaLanzamiento: "2023-03-20",
+            rating: 4.8,
+            caracteristicas: [
+              "Luces LED RGB programables",
+              "Sistema de apertura automática",
+              "Visor HUD con proyección",
+              "Conexión Bluetooth",
+              "Batería recargable"
+            ],
+            reseñas: [
+              "★★★★★ - Un sueño hecho realidad para todo fan de Iron Man",
+              "★★★★☆ - Imponente en mi colección, todos lo notan",
+              "★★★★★ - La calidad justifica completamente el precio"
+            ]
+          },
+          103: {
+            id: 103,
+            titulo: "Batman Edición Aniversario 85",
+            categoria: "figuras",
+            precio: 129.99,
+            imagen: "img/figura2.png",
+            descripcion: "Figura conmemorativa del 85 aniversario de Batman. Diseño basado en 'Batman: Year One'.",
+            destacado: true,
+            edicionLimitada: true,
+            stock: 8,
+            material: "Resina policromada",
+            escala: "1:4",
+            altura: "45 cm",
+            articulaciones: 15,
+            accesorios: ["Batarang", "Gancho bat", "Base Gotham City"],
+            fabricante: "Prime 1 Studio",
+            fechaLanzamiento: "2024-01-30",
+            rating: 4.7,
+            caracteristicas: [
+              "Edición limitada mundial 2000 unidades",
+              "Pintura a mano por artistas certificados",
+              "Base iluminada con LEDs",
+              "Certificado de autenticidad numerado"
+            ],
+            reseñas: [
+              "★★★★★ - Una obra de arte, no solo una figura",
+              "★★★★★ - El detalle en la capa es impresionante",
+              "★★★★☆ - Perfecta para cualquier coleccionista de Batman"
+            ]
+          }
+        };
+        
+        // Guardar datos iniciales en localStorage
+        guardarColeccionablesEnStorage();
+      }
+      
+      // Convertir a array para facilitar el manejo
+      coleccionablesArray = Object.values(coleccionablesDB);
+      coleccionablesFiltrados = [...coleccionablesArray];
+      
+      // Actualizar estadísticas
+      actualizarEstadisticas();
+      
+      console.log("📈 Estadísticas actualizadas:", {
+        total: coleccionablesArray.length,
+        categorias: [...new Set(coleccionablesArray.map(item => item.categoria))].length,
+        limitadas: coleccionablesArray.filter(item => item.edicionLimitada).length
+      });
+    }
+
+    // Guardar coleccionables en localStorage
+    function guardarColeccionablesEnStorage() {
+      localStorage.setItem('coleccionablesDB', JSON.stringify(coleccionablesDB));
+      console.log("💾 Coleccionables guardados en localStorage");
+    }
+
+    // Actualizar estadísticas
+    function actualizarEstadisticas() {
+      const totalColeccionables = coleccionablesArray.length;
+      const categoriasUnicas = [...new Set(coleccionablesArray.map(item => item.categoria))];
+      const totalLimitadas = coleccionablesArray.filter(item => item.edicionLimitada).length;
+      
+      document.getElementById('totalColeccionables').textContent = totalColeccionables;
+      document.getElementById('totalCategorias').textContent = categoriasUnicas.length;
+      document.getElementById('totalLimitadas').textContent = totalLimitadas;
+      
+      // Actualizar panel de depuración
+      document.getElementById('debugProductos').textContent = totalColeccionables;
+    }
+
+    // ===== SISTEMA DE ADMINISTRACIÓN MEJORADO =====
+    
+    // Verificar si el usuario es administrador - VERSIÓN CORREGIDA
+    function verificarAdmin() {
+      console.log("🔍 Verificando permisos de administrador...");
+      
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      
+      if (!usuarioActual) {
+        console.log("👤 No hay usuario logueado");
+        esAdmin = false;
+        return;
+      }
+      
+      console.log("📋 Datos del usuario:", {
+        usuario: usuarioActual.usuario,
+        esAdminProp: usuarioActual.esAdmin,
+        tienePassword: !!usuarioActual.password
+      });
+      
+      // Método 1: Verificar propiedad esAdmin explícita
+      if (usuarioActual.esAdmin === true) {
+        esAdmin = true;
+        console.log("✅ Usuario es admin (propiedad esAdmin: true)");
+      }
+      // Método 2: Verificar usuario admin con contraseña admin123
+      else if (usuarioActual.usuario === "admin" && usuarioActual.password === "admin123") {
+        esAdmin = true;
+        usuarioActual.esAdmin = true;
+        localStorage.setItem("usuarioActual", JSON.stringify(usuarioActual));
+        console.log("✅ Usuario es admin (usuario: admin, password: admin123)");
+      }
+      // Método 3: Solo verificar nombre de usuario
+      else if (usuarioActual.usuario === "admin") {
+        esAdmin = true;
+        if (!usuarioActual.esAdmin) {
+          usuarioActual.esAdmin = true;
+          localStorage.setItem("usuarioActual", JSON.stringify(usuarioActual));
+        }
+        console.log("✅ Usuario es admin (nombre de usuario: admin)");
+      }
+      // Método 4: Verificar en la base de datos de usuarios
+      else {
+        const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+        const usuarioEnDB = usuarios.find(u => u.usuario === usuarioActual.usuario);
+        if (usuarioEnDB && usuarioEnDB.esAdmin === true) {
+          esAdmin = true;
+          usuarioActual.esAdmin = true;
+          localStorage.setItem("usuarioActual", JSON.stringify(usuarioActual));
+          console.log("✅ Usuario es admin (verificado en base de datos)");
+        } else {
+          esAdmin = false;
+          console.log("❌ Usuario NO es administrador");
+        }
+      }
+      
+      // Forzar admin para testing (solo en desarrollo)
+      const debugForceAdmin = localStorage.getItem("debugForceAdmin");
+      if (debugForceAdmin === "true") {
+        esAdmin = true;
+        console.log("🚀 Modo admin forzado por debug");
+      }
+      
+      if (esAdmin) {
+        // Mostrar panel de administración con animación controlada
+        const adminPanel = document.getElementById("adminPanel");
+        adminPanel.classList.remove('hidden-smooth');
+        adminPanel.classList.add('visible-smooth');
+        
+        // Agregar badge de ADMIN al nombre de usuario
+        const nombreUsuarioHeader = document.getElementById("nombreUsuarioHeader");
+        if (nombreUsuarioHeader && nombreUsuarioHeader.textContent) {
+          nombreUsuarioHeader.innerHTML = nombreUsuarioHeader.textContent + 
+            ' <span style="background: #ff3b3b; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px; animation: pulse 2s infinite;">👑 ADMIN</span>';
+        }
+        
+        // Mostrar notificación
+        setTimeout(() => {
+          mostrarNotificacion("👑 Modo administrador activado", "success");
+        }, 1000);
+        
+        console.log("🎉 Panel de administración ACTIVADO");
+      } else {
+        console.log("👤 Panel de administración OCULTO (usuario normal)");
+      }
+      
+      // Actualizar panel de depuración
+      actualizarDebugInfo();
+    }
+
+    // Configurar eventos generales
+    function configurarEventos() {
+      console.log("⚙️ Configurando eventos...");
+      
+      // Botón agregar coleccionable (admin)
+      document.getElementById('btnAgregarColeccionable').addEventListener('click', function() {
+        console.log("➕ Botón agregar coleccionable clickeado");
+        abrirModalAgregarColeccionable();
+      });
+      
+      // Botón modo edición (admin)
+      document.getElementById('btnModoEdicion').addEventListener('click', function() {
+        modoEdicion = !modoEdicion;
+        console.log("✏️ Modo edición:", modoEdicion ? "ACTIVADO" : "DESACTIVADO");
+        
+        this.innerHTML = modoEdicion ? 
+          '<i class="fas fa-times"></i> Salir de Modo Edición' : 
+          '<i class="fas fa-edit"></i> Modo Edición';
+        this.style.background = modoEdicion ? '#ff9800' : '#2196F3';
+        
+        // Mostrar notificación
+        mostrarNotificacion(
+          modoEdicion ? "✏️ Modo edición ACTIVADO" : "✏️ Modo edición DESACTIVADO",
+          modoEdicion ? "warning" : "info"
+        );
+        
+        // Recargar coleccionables para mostrar/ocultar controles
+        cargarColeccionables();
+      });
+      
+      // Botón ver tabla de coleccionables (admin) - MODIFICADO PARA ABRIR MODAL
+      document.getElementById('btnVerTabla').addEventListener('click', function() {
+        console.log("📋 Botón ver tabla de coleccionables clickeado");
+        if (!esAdmin) {
+          mostrarNotificacion("Se requieren permisos de administrador", "error");
+          return;
+        }
+        mostrarTablaColeccionables();
+      });
+      
+      // Botón exportar datos (admin)
+      document.getElementById('btnExportarDatos').addEventListener('click', function() {
+        console.log("💾 Exportando datos...");
+        exportarDatosColeccionables();
+      });
+      
+      console.log("✅ Eventos configurados correctamente");
+    }
+
+    // Configurar modal de tabla de coleccionables
+    function configurarModalTablaColeccionables() {
+      const modal = document.getElementById('modalTablaColeccionables');
+      const cerrarBtn = document.getElementById('cerrarModalTablaColeccionables');
+      const buscarInput = document.getElementById('buscarTablaColeccionables');
+      const categoriaSelect = document.getElementById('filtrarCategoriaTablaColeccionables');
+      const estadoSelect = document.getElementById('filtrarEstadoTablaColeccionables');
+      const actualizarBtn = document.getElementById('btnActualizarTablaColeccionables');
+      const agregarBtn = document.getElementById('btnAgregarDesdeTablaColeccionables');
+      
+      // Cerrar modal
+      cerrarBtn.addEventListener('click', cerrarModalTablaColeccionables);
+      
+      // Cerrar al hacer clic fuera del contenido
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          cerrarModalTablaColeccionables();
+        }
+      });
+      
+      // Cerrar con ESC
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+          cerrarModalTablaColeccionables();
+        }
+      });
+      
+      // Buscar en tiempo real
+      buscarInput.addEventListener('input', function() {
+        cargarDatosTablaColeccionables();
+      });
+      
+      // Filtrar por categoría
+      categoriaSelect.addEventListener('change', function() {
+        cargarDatosTablaColeccionables();
+      });
+      
+      // Filtrar por estado
+      estadoSelect.addEventListener('change', function() {
+        cargarDatosTablaColeccionables();
+      });
+      
+      // Actualizar tabla
+      actualizarBtn.addEventListener('click', function() {
+        cargarDatosTablaColeccionables();
+        mostrarNotificacion("Tabla de coleccionables actualizada", "success");
+      });
+      
+      // Agregar coleccionable desde tabla
+      agregarBtn.addEventListener('click', function() {
+        cerrarModalTablaColeccionables();
+        setTimeout(() => {
+          abrirModalAgregarColeccionable();
+        }, 300);
+      });
+    }
+
+    // Mostrar tabla de coleccionables
+    function mostrarTablaColeccionables() {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      document.getElementById('modalTablaColeccionables').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      
+      // Cargar datos en la tabla
+      cargarDatosTablaColeccionables();
+    }
+
+    // Cargar datos en la tabla de coleccionables
+    function cargarDatosTablaColeccionables() {
+      if (!esAdmin) return;
+      
+      const tbody = document.getElementById('tablaColeccionablesBody');
+      const buscarTexto = document.getElementById('buscarTablaColeccionables').value.toLowerCase();
+      const categoriaFiltro = document.getElementById('filtrarCategoriaTablaColeccionables').value;
+      const estadoFiltro = document.getElementById('filtrarEstadoTablaColeccionables').value;
+      
+      tbody.innerHTML = '';
+      
+      let totalStock = 0;
+      let totalValor = 0;
+      let totalLimitadas = 0;
+      let totalDestacados = 0;
+      let contadorColeccionables = 0;
+      
+      Object.keys(coleccionablesDB).forEach(id => {
+        const coleccionable = coleccionablesDB[id];
+        
+        // Aplicar filtros
+        if (buscarTexto && !coleccionable.titulo.toLowerCase().includes(buscarTexto) && 
+            !coleccionable.descripcion.toLowerCase().includes(buscarTexto)) {
+          return;
+        }
+        
+        if (categoriaFiltro && coleccionable.categoria !== categoriaFiltro) {
+          return;
+        }
+        
+        if (estadoFiltro) {
+          if (estadoFiltro === 'destacado' && !coleccionable.destacado) return;
+          if (estadoFiltro === 'limitada' && !coleccionable.edicionLimitada) return;
+          if (estadoFiltro === 'stock_bajo' && (coleccionable.stock >= 5 || coleccionable.stock === 0)) return;
+          if (estadoFiltro === 'agotado' && coleccionable.stock !== 0) return;
+        }
+        
+        // Calcular estadísticas
+        const stock = coleccionable.stock || 0;
+        totalStock += stock;
+        totalValor += coleccionable.precio * stock;
+        
+        if (coleccionable.edicionLimitada) totalLimitadas++;
+        if (coleccionable.destacado) totalDestacados++;
+        
+        contadorColeccionables++;
+        
+        // Crear fila de tabla
+        const fila = document.createElement('tr');
+        fila.style.borderBottom = '1px solid #eee';
+        fila.style.cursor = 'pointer';
+        
+        // Determinar color de stock
+        let stockColor = '#4CAF50';
+        let stockIcon = '';
+        if (stock === 0) {
+          stockColor = '#ff3b3b';
+          stockIcon = '<i class="fas fa-times-circle" style="color: #ff3b3b; margin-left: 5px;"></i>';
+        } else if (stock < 5) {
+          stockColor = '#FF9800';
+          stockIcon = '<i class="fas fa-exclamation-triangle" style="color: #FF9800; margin-left: 5px;"></i>';
+        }
+        
+        fila.innerHTML = `
+          <td style="padding: 12px; color: #666; font-weight: bold;">#${id}</td>
+          <td style="padding: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <img src="${coleccionable.imagen || 'img/coleccionable-default.jpg'}" alt="${coleccionable.titulo}" 
+                   style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 2px solid #eee;">
+              <div>
+                <strong>${coleccionable.titulo}</strong><br>
+                <small style="color: #666; font-size: 12px;">${coleccionable.descripcion.substring(0, 50)}...</small>
+              </div>
+            </div>
+          </td>
+          <td style="padding: 12px;">
+            <span style="background: #e0e0e0; padding: 3px 8px; border-radius: 4px; font-size: 12px;">
+              ${getNombreCategoria(coleccionable.categoria)}
+            </span>
+          </td>
+          <td style="padding: 12px; font-weight: bold; color: #ff3b3b;">$${coleccionable.precio.toFixed(2)}</td>
+          <td style="padding: 12px; font-weight: bold; color: ${stockColor}">
+            ${stock} ${stockIcon}
+          </td>
+          <td style="padding: 12px; text-align: center;">
+            ${coleccionable.destacado ? 
+              '<i class="fas fa-check-circle" style="color: #4CAF50;"></i>' : 
+              '<i class="fas fa-times-circle" style="color: #ccc;"></i>'}
+          </td>
+          <td style="padding: 12px; text-align: center;">
+            ${coleccionable.edicionLimitada ? 
+              '<i class="fas fa-check-circle" style="color: #ffd700;"></i>' : 
+              '<i class="fas fa-times-circle" style="color: #ccc;"></i>'}
+          </td>
+          <td style="padding: 12px;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span style="color: #FF9800;">
+                <i class="fas fa-star"></i> ${coleccionable.rating || 'N/A'}
+              </span>
+            </div>
+          </td>
+          <td style="padding: 12px;">
+            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+              <button class="btn-accion-tabla-coleccionable btn-ver-tabla-coleccionable" data-id="${id}" 
+                      style="width: 30px; height: 30px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn-accion-tabla-coleccionable btn-editar-tabla-coleccionable" data-id="${id}" 
+                      style="width: 30px; height: 30px; background: #FF9800; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-accion-tabla-coleccionable btn-stock-tabla-coleccionable" data-id="${id}" 
+                      style="width: 30px; height: 30px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-boxes"></i>
+              </button>
+              <button class="btn-accion-tabla-coleccionable btn-eliminar-tabla-coleccionable" data-id="${id}" 
+                      style="width: 30px; height: 30px; background: #ff3b3b; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        
+        tbody.appendChild(fila);
+        
+        // Configurar eventos de la fila
+        fila.addEventListener('click', function(e) {
+          if (!e.target.closest('.btn-accion-tabla-coleccionable')) {
+            productoActualModal = coleccionable;
+            mostrarDetallesColeccionable(coleccionable);
+            cerrarModalTablaColeccionables();
+          }
+        });
+      });
+      
+      // Configurar botones de acción en la tabla
+      configurarBotonesTablaColeccionables();
+      
+      // Actualizar estadísticas en el pie de la tabla
+      document.getElementById('tablaTotalColeccionables').textContent = contadorColeccionables;
+      document.getElementById('tablaTotalStockColeccionables').textContent = totalStock;
+      document.getElementById('tablaValorTotalColeccionables').textContent = totalValor.toFixed(2);
+      document.getElementById('tablaLimitadasColeccionables').textContent = totalLimitadas;
+      document.getElementById('tablaDestacadosColeccionables').textContent = totalDestacados;
+      
+      // Mostrar mensaje si no hay resultados
+      if (contadorColeccionables === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 40px; color: #666;">
+              <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; color: #ddd;"></i>
+              <h3 style="font-family: 'Poppins', sans-serif;">No se encontraron coleccionables</h3>
+              <p>No hay coleccionables que coincidan con los filtros seleccionados.</p>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Configurar botones de acción en la tabla de coleccionables
+    function configurarBotonesTablaColeccionables() {
+      // Botón ver
+      document.querySelectorAll('.btn-ver-tabla-coleccionable').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const coleccionableId = this.getAttribute('data-id');
+          const coleccionable = coleccionablesDB[coleccionableId];
+          if (coleccionable) {
+            cerrarModalTablaColeccionables();
+            setTimeout(() => {
+              productoActualModal = coleccionable;
+              mostrarDetallesColeccionable(coleccionable);
+            }, 300);
+          }
+        });
+      });
+      
+      // Botón editar
+      document.querySelectorAll('.btn-editar-tabla-coleccionable').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const coleccionableId = this.getAttribute('data-id');
+          cerrarModalTablaColeccionables();
+          setTimeout(() => {
+            abrirModalEditarColeccionable(coleccionableId);
+          }, 300);
+        });
+      });
+      
+      // Botón stock
+      document.querySelectorAll('.btn-stock-tabla-coleccionable').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const coleccionableId = this.getAttribute('data-id');
+          cerrarModalTablaColeccionables();
+          setTimeout(() => {
+            mostrarModalAjustarStockColeccionable(coleccionableId);
+          }, 300);
+        });
+      });
+      
+      // Botón eliminar
+      document.querySelectorAll('.btn-eliminar-tabla-coleccionable').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const coleccionableId = this.getAttribute('data-id');
+          if (confirm('¿Estás seguro de que deseas eliminar este coleccionable? Esta acción no se puede deshacer.')) {
+            eliminarColeccionableDesdeTabla(coleccionableId);
+            cargarDatosTablaColeccionables();
+          }
+        });
+      });
+    }
+
+    // Cerrar modal de tabla de coleccionables
+    function cerrarModalTablaColeccionables() {
+      document.getElementById('modalTablaColeccionables').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // Modal para ajustar stock de coleccionables
+    function mostrarModalAjustarStockColeccionable(coleccionableId) {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      const coleccionable = coleccionablesDB[coleccionableId];
+      if (!coleccionable) {
+        mostrarNotificacion("Coleccionable no encontrado", "error");
+        return;
+      }
+      
+      // Crear modal dinámico similar al de cómics
+      const modal = document.createElement('div');
+      modal.className = 'modal-autor';
+      modal.innerHTML = `
+        <div class="modal-autor-contenido" style="max-width: 500px;">
+          <button class="cerrar-modal" id="cerrarModalStockColeccionable">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="modal-autor-info" style="padding: 40px;">
+            <h2 class="modal-autor-nombre">Ajustar Stock</h2>
+            <p style="color: #666; font-family: 'Poppins', sans-serif; margin-bottom: 30px;">
+              Ajustar stock para: <strong>${coleccionable.titulo}</strong>
+            </p>
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+              <div style="font-size: 48px; font-family: 'Bangers'; color: ${coleccionable.stock === 0 ? '#ff3b3b' : coleccionable.stock < 5 ? '#FF9800' : '#4CAF50'};" 
+                   id="modalStockActualColeccionable">${coleccionable.stock || 0}</div>
+              <div style="color: #666; font-size: 14px;">Stock actual</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="nuevoStockColeccionable"><i class="fas fa-boxes"></i> Nuevo valor de stock *</label>
+              <input type="number" id="nuevoStockColeccionable" class="form-input" required min="0" 
+                     value="${coleccionable.stock || 0}" placeholder="Ingresa la nueva cantidad">
+            </div>
+            
+            <div class="form-group">
+              <label for="razonStockColeccionable"><i class="fas fa-sticky-note"></i> Razón del ajuste</label>
+              <select id="razonStockColeccionable" class="form-select">
+                <option value="reabastecimiento">Reabastecimiento</option>
+                <option value="venta">Venta realizada</option>
+                <option value="devolucion">Devolución</option>
+                <option value="perdida">Pérdida/Daño</option>
+                <option value="conteo">Conteo físico</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
+              <button type="button" id="btnAplicarStockColeccionable" style="flex: 1; padding: 15px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+                <i class="fas fa-check"></i> Aplicar Cambio
+              </button>
+              <button type="button" id="btnCancelarStockColeccionable" style="flex: 1; padding: 15px; background: #666; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+                <i class="fas fa-times"></i> Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      modal.style.display = 'flex';
+      
+      // Configurar eventos
+      const cerrarBtn = document.getElementById('cerrarModalStockColeccionable');
+      const cancelarBtn = document.getElementById('btnCancelarStockColeccionable');
+      const aplicarBtn = document.getElementById('btnAplicarStockColeccionable');
+      
+      const cerrarModal = function() {
+        document.body.removeChild(modal);
+        document.body.style.overflow = 'auto';
+      };
+      
+      cerrarBtn.addEventListener('click', cerrarModal);
+      cancelarBtn.addEventListener('click', cerrarModal);
+      
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          cerrarModal();
+        }
+      });
+      
+      // Aplicar cambio de stock
+      aplicarBtn.addEventListener('click', function() {
+        const nuevoStock = parseInt(document.getElementById('nuevoStockColeccionable').value);
+        const razon = document.getElementById('razonStockColeccionable').value;
+        
+        if (isNaN(nuevoStock) || nuevoStock < 0) {
+          mostrarNotificacion("Ingresa un valor de stock válido", "error");
+          return;
+        }
+        
+        const stockAnterior = coleccionable.stock || 0;
+        coleccionable.stock = nuevoStock;
+        
+        // Guardar cambios
+        guardarColeccionablesEnStorage();
+        
+        // Cerrar modal
+        cerrarModal();
+        
+        // Actualizar tabla si está abierta
+        if (document.getElementById('modalTablaColeccionables').style.display === 'flex') {
+          cargarDatosTablaColeccionables();
+        }
+        
+        // Actualizar estadísticas
+        actualizarEstadisticas();
+        
+        mostrarNotificacion(`Stock actualizado de ${stockAnterior} a ${nuevoStock} unidades`, "success");
+      });
+      
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Cargar coleccionables en la página (vista normal)
+    function cargarColeccionables() {
+      console.log("🔄 Cargando coleccionables en la página...");
+      
+      const gridColeccionables = document.getElementById('gridColeccionables');
+      const inicio = (paginaActual - 1) * itemsPorPagina;
+      const fin = inicio + itemsPorPagina;
+      const itemsPagina = coleccionablesFiltrados.slice(inicio, fin);
+      
+      gridColeccionables.innerHTML = '';
+      
+      if (itemsPagina.length === 0) {
+        gridColeccionables.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #666;">
+            <i class="fas fa-box-open" style="font-size: 60px; margin-bottom: 20px; color: #ddd;"></i>
+            <h3 style="font-family: 'Poppins', sans-serif;">No hay coleccionables disponibles</h3>
+            <p>Prueba con otro filtro o contacta al administrador.</p>
+            ${esAdmin ? '<button id="btnAgregarPrimerColeccionable" style="margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;"><i class="fas fa-plus"></i> Agregar Primer Coleccionable</button>' : ''}
+          </div>
+        `;
+        
+        // Configurar botón para agregar primer coleccionable
+        if (esAdmin) {
+          document.getElementById('btnAgregarPrimerColeccionable')?.addEventListener('click', abrirModalAgregarColeccionable);
+        }
+        
+        return;
+      }
+      
+      // Crear tarjetas para cada coleccionable
+      itemsPagina.forEach(item => {
+        const itemHTML = crearColeccionableHTML(item);
+        gridColeccionables.innerHTML += itemHTML;
+      });
+      
+      // Configurar eventos para las tarjetas
+      configurarEventosColeccionables('#gridColeccionables');
+      actualizarPaginacion();
+      
+      // Cargar destacados
+      cargarDestacados();
+      
+      console.log(`✅ ${itemsPagina.length} coleccionables cargados`);
+    }
+
+    // Cargar productos destacados
+    function cargarDestacados() {
+      const gridDestacados = document.getElementById('gridDestacados');
+      const destacados = coleccionablesArray.filter(item => item.destacado).slice(0, 3);
+      
+      gridDestacados.innerHTML = '';
+      
+      if (destacados.length === 0) {
+        gridDestacados.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #666;">
+            <p><i class="fas fa-star"></i> No hay productos destacados</p>
+          </div>
+        `;
+        return;
+      }
+      
+      destacados.forEach(item => {
+        const itemHTML = crearColeccionableHTML(item);
+        gridDestacados.innerHTML += itemHTML;
+      });
+      
+      configurarEventosColeccionables('#gridDestacados');
+    }
+
+    function crearColeccionableHTML(item) {
+      const claseEdicionLimitada = item.edicionLimitada ? 'nuevo' : '';
+      const nombreCategoria = getNombreCategoria(item.categoria);
+      const estaAgotado = item.stock === 0;
+      
+      // Agregar controles de admin si está en modo edición
+      const controlesAdmin = modoEdicion && esAdmin ? `
+        <div class="coleccionable-admin-controls" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10;">
+          <button class="btn-editar-coleccionable" data-id="${item.id}" style="width: 30px; height: 30px; background: #2196F3; color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: all 0.3s ease;">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn-eliminar-coleccionable" data-id="${item.id}" style="width: 30px; height: 30px; background: #ff3b3b; color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: all 0.3s ease;">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      ` : '';
+      
+      return `
+        <div class="comic-item ${claseEdicionLimitada}" data-id="${item.id}" data-categoria="${item.categoria}" style="cursor: pointer; position: relative;">
+          ${controlesAdmin}
+          ${item.edicionLimitada ? '<div class="badge-limitada"><i class="fas fa-crown"></i> Limitada</div>' : ''}
+          ${item.destacado ? '<div class="badge-destacado"><i class="fas fa-star"></i> Destacado</div>' : ''}
+          ${item.stock < 3 && item.stock > 0 ? '<div class="badge-stock"><i class="fas fa-exclamation-circle"></i> Últimas unidades</div>' : ''}
+          ${estaAgotado ? '<div class="badge-agotado"><i class="fas fa-times-circle"></i> Agotado</div>' : ''}
+          <img src="${item.imagen || 'img/coleccionable-default.jpg'}" alt="${item.titulo}" class="comic-imagen" onerror="this.src='img/coleccionable-default.jpg'">
+          <div class="comic-info">
+            <h3 class="comic-titulo">${item.titulo}</h3>
+            <span class="comic-categoria">${nombreCategoria}</span>
+            ${item.edicionLimitada ? '<span class="comic-categoria" style="background:#ffd700;color:#000;margin-left:5px;"><i class="fas fa-crown"></i> Edición Limitada</span>' : ''}
+            ${item.destacado ? '<span class="comic-categoria" style="background:#ff9800;color:white;margin-left:5px;"><i class="fas fa-star"></i> Destacado</span>' : ''}
+            <p class="comic-descripcion">${item.descripcion.substring(0, 100)}...</p>
+            <div class="comic-footer">
+              <div class="comic-precio">$${item.precio.toFixed(2)}</div>
+              <div class="comic-botones">
+                <button class="btn-ver" data-id="${item.id}">
+                  <i class="fas fa-eye"></i> Ver
+                </button>
+                <button class="btn-comprar" data-id="${item.id}" ${estaAgotado ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                  <i class="fas fa-shopping-cart"></i> ${estaAgotado ? 'Agotado' : 'Comprar'}
+                </button>
+              </div>
+            </div>
+            ${!estaAgotado ? `
+              <div style="font-size:12px;color:#666;margin-top:5px;display:flex;align-items:center;gap:5px;">
+                <i class="fas fa-box"></i> 
+                <span>Stock: 
+                  <strong style="color:${item.stock < 5 ? '#ff3b3b' : '#4CAF50'}">
+                    ${item.stock} ${item.stock === 1 ? 'unidad' : 'unidades'}
+                  </strong>
+                </span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function getNombreCategoria(categoria) {
+      const nombres = {
+        'figuras': 'Figuras de Acción',
+        'replicas': 'Réplicas',
+        'arte': 'Arte & Posters',
+        'ropa': 'Ropa & Accesorios'
+      };
+      return nombres[categoria] || categoria;
+    }
+
+    // Configurar filtros
+    function configurarFiltros() {
+      document.querySelectorAll('.filtro-autor').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.filtro-autor').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          filtroActual = this.getAttribute('data-filtro');
+          aplicarFiltro(filtroActual);
+          paginaActual = 1;
+          cargarColeccionables();
+        });
+      });
+    }
+
+    function aplicarFiltro(filtro) {
+      console.log("🎯 Aplicando filtro:", filtro);
+      
+      switch(filtro) {
+        case 'todos':
+          coleccionablesFiltrados = [...coleccionablesArray];
+          break;
+        case 'figuras':
+          coleccionablesFiltrados = coleccionablesArray.filter(item => item.categoria === 'figuras');
+          break;
+        case 'replicas':
+          coleccionablesFiltrados = coleccionablesArray.filter(item => item.categoria === 'replicas');
+          break;
+        case 'arte':
+          coleccionablesFiltrados = coleccionablesArray.filter(item => item.categoria === 'arte');
+          break;
+        case 'ropa':
+          coleccionablesFiltrados = coleccionablesArray.filter(item => item.categoria === 'ropa');
+          break;
+        case 'limitada':
+          coleccionablesFiltrados = coleccionablesArray.filter(item => item.edicionLimitada);
+          break;
+        default:
+          coleccionablesFiltrados = [...coleccionablesArray];
+      }
+      
+      console.log("📊 Productos después del filtro:", coleccionablesFiltrados.length);
+    }
+
+    function configurarPaginacion() {
+      document.getElementById('pagPrev').addEventListener('click', function() {
+        if (paginaActual > 1) {
+          paginaActual--;
+          cargarColeccionables();
+          scrollToTop();
+        }
+      });
+
+      document.getElementById('pagNext').addEventListener('click', function() {
+        const totalPaginas = Math.ceil(coleccionablesFiltrados.length / itemsPorPagina);
+        if (paginaActual < totalPaginas) {
+          paginaActual++;
+          cargarColeccionables();
+          scrollToTop();
+        }
+      });
+
+      document.querySelectorAll('.paginacion-mejorada .pag-item:not(#pagPrev):not(#pagNext)').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (!this.classList.contains('disabled') && !isNaN(this.textContent)) {
+            paginaActual = parseInt(this.textContent);
+            cargarColeccionables();
+            scrollToTop();
+          }
+        });
+      });
+    }
+
+    function actualizarPaginacion() {
+      const totalItems = coleccionablesFiltrados.length;
+      const totalPaginas = Math.ceil(totalItems / itemsPorPagina);
+      
+      const pagPrev = document.getElementById('pagPrev');
+      const pagNext = document.getElementById('pagNext');
+      
+      pagPrev.classList.toggle('disabled', paginaActual === 1);
+      pagNext.classList.toggle('disabled', paginaActual === totalPaginas);
+      
+      document.querySelectorAll('.paginacion-mejorada .pag-item').forEach(btn => {
+        if (!isNaN(btn.textContent)) {
+          const numPagina = parseInt(btn.textContent);
+          btn.classList.toggle('active', numPagina === paginaActual);
+          btn.classList.toggle('disabled', numPagina > totalPaginas);
+        }
+      });
+    }
+
+    function configurarEventosColeccionables(selector) {
+      // Botones "Ver" - Abren modal
+      document.querySelectorAll(`${selector} .btn-ver`).forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const itemId = parseInt(this.getAttribute('data-id'));
+          const item = coleccionablesDB[itemId];
+          
+          if (item) {
+            productoActualModal = item;
+            mostrarDetallesColeccionable(item);
+          }
+        });
+      });
+
+      // Botones "Comprar" - Agregan al carrito DIRECTAMENTE
+      document.querySelectorAll(`${selector} .btn-comprar`).forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const itemId = parseInt(this.getAttribute('data-id'));
+          const item = coleccionablesDB[itemId];
+          
+          if (item) {
+            agregarColeccionableAlCarrito(item);
+          }
+        });
+      });
+
+      // Hacer clic en toda la tarjeta abre modal
+      document.querySelectorAll(`${selector} .comic-item`).forEach(card => {
+        card.addEventListener('click', function(e) {
+          // No abrir detalles si se hace clic en controles de admin
+          if (!e.target.closest('.coleccionable-admin-controls') && 
+              !e.target.classList.contains('btn-editar-coleccionable') && 
+              !e.target.classList.contains('btn-eliminar-coleccionable')) {
+            const itemId = parseInt(this.getAttribute('data-id'));
+            const item = coleccionablesDB[itemId];
+            
+            if (item) {
+              productoActualModal = item;
+              mostrarDetallesColeccionable(item);
+            }
+          }
+        });
+      });
+      
+      // Botones de edición (solo en modo edición)
+      document.querySelectorAll(`${selector} .btn-editar-coleccionable`).forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const itemId = parseInt(this.getAttribute('data-id'));
+          abrirModalEditarColeccionable(itemId);
+        });
+      });
+      
+      // Botones de eliminación (solo en modo edición)
+      document.querySelectorAll(`${selector} .btn-eliminar-coleccionable`).forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const itemId = parseInt(this.getAttribute('data-id'));
+          eliminarColeccionable(itemId);
+        });
+      });
+    }
+
+    // Configurar modal de detalles del coleccionable
+    function configurarModalColeccionable() {
+      const modal = document.getElementById('modalColeccionable');
+      const cerrarBtn = modal.querySelector('.cerrar-modal');
+      const btnComprarModal = document.getElementById('btnComprarModalColeccionable');
+      
+      // Cerrar modal
+      cerrarBtn.addEventListener('click', function() {
+        modal.classList.remove('active');
+        modal.classList.remove('visible-smooth');
+        modal.classList.add('hidden-smooth');
+        document.body.style.overflow = 'auto';
+        productoActualModal = null;
+      });
+      
+      // Cerrar al hacer clic fuera del contenido
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+          modal.classList.remove('visible-smooth');
+          modal.classList.add('hidden-smooth');
+          document.body.style.overflow = 'auto';
+          productoActualModal = null;
+        }
+      });
+      
+      // Cerrar con ESC
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          modal.classList.remove('active');
+          modal.classList.remove('visible-smooth');
+          modal.classList.add('hidden-smooth');
+          document.body.style.overflow = 'auto';
+          productoActualModal = null;
+        }
+      });
+      
+      // Configurar botón comprar en modal
+      btnComprarModal.addEventListener('click', function() {
+        if (productoActualModal) {
+          agregarColeccionableAlCarrito(productoActualModal);
+        }
+      });
+      
+      // Configurar botones de administrador en modal
+      document.getElementById('btnEditarColeccionable').addEventListener('click', function() {
+        if (productoActualModal) {
+          abrirModalEditarColeccionable(productoActualModal.id);
+        }
+      });
+      
+      document.getElementById('btnEliminarColeccionable').addEventListener('click', function() {
+        if (productoActualModal) {
+          eliminarColeccionable(productoActualModal.id);
+        }
+      });
+      
+      document.getElementById('btnDuplicarColeccionable').addEventListener('click', function() {
+        if (productoActualModal) {
+          duplicarColeccionable(productoActualModal.id);
+        }
+      });
+    }
+
+    // Configurar modal de administración
+    function configurarModalAdmin() {
+      const modal = document.getElementById('modalAdminColeccionable');
+      const cerrarBtn = document.getElementById('cerrarModalAdminColeccionable');
+      const cancelarBtn = document.getElementById('btnCancelarColeccionable');
+      const form = document.getElementById('formColeccionableAdmin');
+      
+      cerrarBtn.addEventListener('click', cerrarModalAdmin);
+      cancelarBtn.addEventListener('click', cerrarModalAdmin);
+      
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          cerrarModalAdmin();
+        }
+      });
+      
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        guardarColeccionable();
+      });
+    }
+
+    // Mostrar detalles del coleccionable en modal
+    function mostrarDetallesColeccionable(item) {
+      console.log("🔍 Mostrando detalles del coleccionable:", item.titulo);
+      
+      const modal = document.getElementById('modalColeccionable');
+      
+      // Actualizar contenido del modal
+      document.getElementById('modalColeccionableImagen').src = item.imagen || 'img/coleccionable-default.jpg';
+      document.getElementById('modalColeccionableImagen').alt = item.titulo;
+      document.getElementById('modalColeccionableTitulo').textContent = item.titulo;
+      
+      // Información básica
+      const categoriaNombre = getNombreCategoria(item.categoria);
+      const estadoStock = item.stock > 0 ? 
+        `<span style="color:#4CAF50;"><i class="fas fa-check-circle"></i> En stock (${item.stock} unidades)</span>` : 
+        '<span style="color:#ff3b3b;"><i class="fas fa-times-circle"></i> Agotado temporalmente</span>';
+      
+      document.getElementById('modalColeccionableInfoBasica').innerHTML = `
+        <i class="fas fa-tag"></i> ${categoriaNombre} • 
+        <i class="fas fa-star"></i> ${item.rating || 4.5}/5.0 • 
+        ${estadoStock}
+      `;
+      
+      // Descripción completa
+      document.getElementById('modalColeccionableDescripcion').textContent = item.descripcion;
+      
+      // Especificaciones
+      const especificacionesContainer = document.getElementById('modalColeccionableEspecificaciones');
+      especificacionesContainer.innerHTML = `
+        ${item.material ? `<div class="logro-detalle"><i class="fas fa-cube"></i> <strong>Material:</strong> ${item.material}</div>` : ''}
+        ${item.escala ? `<div class="logro-detalle"><i class="fas fa-ruler-combined"></i> <strong>Escala:</strong> ${item.escala}</div>` : ''}
+        ${item.altura ? `<div class="logro-detalle"><i class="fas fa-arrows-alt-v"></i> <strong>Altura:</strong> ${item.altura}</div>` : ''}
+        ${item.peso ? `<div class="logro-detalle"><i class="fas fa-weight"></i> <strong>Peso:</strong> ${item.peso}</div>` : ''}
+        ${item.articulaciones ? `<div class="logro-detalle"><i class="fas fa-cogs"></i> <strong>Articulaciones:</strong> ${item.articulaciones}</div>` : ''}
+        ${item.fabricante ? `<div class="logro-detalle"><i class="fas fa-industry"></i> <strong>Fabricante:</strong> ${item.fabricante}</div>` : ''}
+        ${item.fechaLanzamiento ? `<div class="logro-detalle"><i class="fas fa-calendar-alt"></i> <strong>Lanzamiento:</strong> ${new Date(item.fechaLanzamiento).toLocaleDateString('es-ES', {year: 'numeric', month: 'long', day: 'numeric'})}</div>` : ''}
+      `;
+      
+      // Características
+      const caracteristicasContainer = document.getElementById('modalColeccionableCaracteristicas');
+      caracteristicasContainer.innerHTML = '';
+      if (item.caracteristicas && item.caracteristicas.length > 0) {
+        item.caracteristicas.forEach(caracteristica => {
+          caracteristicasContainer.innerHTML += `<div class="obra-detalle"><i class="fas fa-check-circle"></i> ${caracteristica}</div>`;
+        });
+      } else {
+        caracteristicasContainer.innerHTML = '<p style="color: #666; font-style: italic;">No hay características registradas</p>';
+      }
+      
+      // Precio y botón comprar
+      document.getElementById('modalColeccionablePrecio').textContent = `$${item.precio.toFixed(2)}`;
+      
+      // Habilitar/deshabilitar botón según stock
+      const btnComprar = document.getElementById('btnComprarModalColeccionable');
+      if (item.stock === 0) {
+        btnComprar.disabled = true;
+        btnComprar.innerHTML = '<i class="fas fa-times-circle"></i> Producto Agotado';
+        btnComprar.style.background = '#ccc';
+        btnComprar.style.cursor = 'not-allowed';
+      } else {
+        btnComprar.disabled = false;
+        btnComprar.innerHTML = '<i class="fas fa-shopping-cart"></i> Agregar al Carrito';
+        btnComprar.style.background = '#ff3b3b';
+        btnComprar.style.cursor = 'pointer';
+      }
+      
+      // Reseñas
+      const reseñasContainer = document.getElementById('modalColeccionableResenas');
+      reseñasContainer.innerHTML = '';
+      if (item.reseñas && item.reseñas.length > 0) {
+        item.reseñas.forEach(reseña => {
+          reseñasContainer.innerHTML += `<span class="personaje-tag-detalle" style="background: #4CAF50; margin: 5px;">${reseña}</span>`;
+        });
+      } else {
+        reseñasContainer.innerHTML = '<p style="color: #666; font-style: italic;">No hay reseñas aún</p>';
+      }
+      
+      // Badges
+      const badgesContainer = document.getElementById('modalColeccionableBadges');
+      badgesContainer.innerHTML = '';
+      if (item.destacado) {
+        badgesContainer.innerHTML += `<span class="autor-badge" style="background: #ff9800;">DESTACADO</span>`;
+      }
+      if (item.edicionLimitada) {
+        badgesContainer.innerHTML += `<span class="autor-badge" style="background: #ffd700; color: #000;">EDICIÓN LIMITADA</span>`;
+      }
+      if (item.stock < 5 && item.stock > 0) {
+        badgesContainer.innerHTML += `<span class="autor-badge" style="background: #ff3b3b;">ÚLTIMAS UNIDADES</span>`;
+      }
+      if (item.stock === 0) {
+        badgesContainer.innerHTML += `<span class="autor-badge" style="background: #666;">AGOTADO</span>`;
+      }
+      
+      // Mostrar/ocultar controles de administrador
+      const adminControls = document.getElementById('modalColeccionableAdminControls');
+      if (esAdmin) {
+        adminControls.style.display = 'block';
+      } else {
+        adminControls.style.display = 'none';
+      }
+      
+      // Mostrar modal con transición suave
+      modal.classList.remove('hidden-smooth');
+      modal.classList.add('active', 'visible-smooth');
+      document.body.style.overflow = 'hidden';
+      
+      console.log("✅ Modal de detalles abierto");
+    }
+
+    // Abrir modal para agregar coleccionable
+    function abrirModalAgregarColeccionable() {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      console.log("➕ Abriendo modal para agregar coleccionable");
+      
+      // Limpiar formulario
+      document.getElementById('formColeccionableAdmin').reset();
+      document.getElementById('coleccionableId').value = "";
+      document.getElementById('modalAdminColeccionableTitulo').textContent = "Agregar Nuevo Coleccionable";
+      
+      // Establecer valores por defecto
+      document.getElementById('coleccionableStock').value = 10;
+      document.getElementById('coleccionablePrecio').value = 99.99;
+      document.getElementById('coleccionableDestacado').value = "false";
+      document.getElementById('coleccionableEdicionLimitada').value = "false";
+      
+      // Mostrar modal con transición suave
+      const modal = document.getElementById('modalAdminColeccionable');
+      modal.classList.remove('hidden-smooth');
+      modal.classList.add('active', 'visible-smooth');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Abrir modal para editar coleccionable
+    function abrirModalEditarColeccionable(coleccionableId) {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      const coleccionable = coleccionablesDB[coleccionableId];
+      if (!coleccionable) {
+        mostrarNotificacion("Coleccionable no encontrado", "error");
+        return;
+      }
+      
+      console.log("✏️ Editando coleccionable:", coleccionable.titulo);
+      
+      // Rellenar formulario
+      document.getElementById('coleccionableId').value = coleccionable.id;
+      document.getElementById('coleccionableTitulo').value = coleccionable.titulo;
+      document.getElementById('coleccionableCategoria').value = coleccionable.categoria;
+      document.getElementById('coleccionablePrecio').value = coleccionable.precio;
+      document.getElementById('coleccionableImagen').value = coleccionable.imagen || '';
+      document.getElementById('coleccionableDescripcion').value = coleccionable.descripcion;
+      document.getElementById('coleccionableStock').value = coleccionable.stock;
+      document.getElementById('coleccionableMaterial').value = coleccionable.material || '';
+      document.getElementById('coleccionableEscala').value = coleccionable.escala || '';
+      document.getElementById('coleccionableFabricante').value = coleccionable.fabricante || '';
+      document.getElementById('coleccionableDestacado').value = coleccionable.destacado ? 'true' : 'false';
+      document.getElementById('coleccionableEdicionLimitada').value = coleccionable.edicionLimitada ? 'true' : 'false';
+      document.getElementById('coleccionableCaracteristicas').value = coleccionable.caracteristicas ? coleccionable.caracteristicas.join('\n') : '';
+      document.getElementById('coleccionableResenas').value = coleccionable.reseñas ? coleccionable.reseñas.join('\n') : '';
+      
+      document.getElementById('modalAdminColeccionableTitulo').textContent = `Editar Coleccionable: ${coleccionable.titulo}`;
+      
+      // Cerrar modal de detalles si está abierto
+      const modalDetalles = document.getElementById('modalColeccionable');
+      if (modalDetalles.classList.contains('active')) {
+        modalDetalles.classList.remove('active', 'visible-smooth');
+        modalDetalles.classList.add('hidden-smooth');
+      }
+      
+      // Mostrar modal de edición con transición suave
+      const modalAdmin = document.getElementById('modalAdminColeccionable');
+      modalAdmin.classList.remove('hidden-smooth');
+      modalAdmin.classList.add('active', 'visible-smooth');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Cerrar modal de administración
+    function cerrarModalAdmin() {
+      const modal = document.getElementById('modalAdminColeccionable');
+      modal.classList.remove('active', 'visible-smooth');
+      modal.classList.add('hidden-smooth');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Guardar coleccionable (agregar o editar)
+    function guardarColeccionable() {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      const coleccionableId = document.getElementById('coleccionableId').value;
+      const coleccionable = {
+        titulo: document.getElementById('coleccionableTitulo').value.trim(),
+        categoria: document.getElementById('coleccionableCategoria').value,
+        precio: parseFloat(document.getElementById('coleccionablePrecio').value),
+        imagen: document.getElementById('coleccionableImagen').value.trim(),
+        descripcion: document.getElementById('coleccionableDescripcion').value.trim(),
+        stock: parseInt(document.getElementById('coleccionableStock').value),
+        material: document.getElementById('coleccionableMaterial').value.trim(),
+        escala: document.getElementById('coleccionableEscala').value.trim(),
+        fabricante: document.getElementById('coleccionableFabricante').value.trim(),
+        destacado: document.getElementById('coleccionableDestacado').value === 'true',
+        edicionLimitada: document.getElementById('coleccionableEdicionLimitada').value === 'true',
+        caracteristicas: document.getElementById('coleccionableCaracteristicas').value.split('\n').map(c => c.trim()).filter(c => c),
+        reseñas: document.getElementById('coleccionableResenas').value.split('\n').map(r => r.trim()).filter(r => r)
+      };
+      
+      // Validar campos requeridos
+      if (!coleccionable.titulo || !coleccionable.categoria || isNaN(coleccionable.precio) || !coleccionable.descripcion || isNaN(coleccionable.stock)) {
+        mostrarNotificacion("Por favor completa todos los campos requeridos (*)", "error");
+        return;
+      }
+      
+      console.log("💾 Guardando coleccionable:", coleccionable.titulo);
+      
+      if (coleccionableId) {
+        // Editar coleccionable existente
+        coleccionablesDB[coleccionableId] = { ...coleccionablesDB[coleccionableId], ...coleccionable, id: parseInt(coleccionableId) };
+        mostrarNotificacion(`Coleccionable "${coleccionable.titulo}" actualizado correctamente`, "success");
+      } else {
+        // Agregar nuevo coleccionable
+        const nuevoId = Math.max(...Object.keys(coleccionablesDB).map(Number)) + 1;
+        coleccionable.id = nuevoId;
+        coleccionablesDB[nuevoId] = coleccionable;
+        mostrarNotificacion(`Coleccionable "${coleccionable.titulo}" agregado correctamente`, "success");
+      }
+      
+      // Guardar en localStorage
+      guardarColeccionablesEnStorage();
+      
+      // Actualizar arrays
+      coleccionablesArray = Object.values(coleccionablesDB);
+      coleccionablesFiltrados = [...coleccionablesArray];
+      
+      // Cerrar modal
+      cerrarModalAdmin();
+      
+      // Recargar vista
+      cargarColeccionables();
+      
+      actualizarEstadisticas();
+    }
+
+    // Eliminar coleccionable
+    function eliminarColeccionable(coleccionableId) {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      const coleccionable = coleccionablesDB[coleccionableId];
+      if (!coleccionable) {
+        mostrarNotificacion("Coleccionable no encontrado", "error");
+        return;
+      }
+      
+      if (!confirm(`¿Estás seguro de que deseas eliminar el coleccionable "${coleccionable.titulo}"? Esta acción no se puede deshacer.`)) {
+        return;
+      }
+      
+      console.log("🗑️ Eliminando coleccionable:", coleccionable.titulo);
+      
+      delete coleccionablesDB[coleccionableId];
+      
+      // Guardar en localStorage
+      guardarColeccionablesEnStorage();
+      
+      // Actualizar arrays
+      coleccionablesArray = Object.values(coleccionablesDB);
+      coleccionablesFiltrados = [...coleccionablesArray];
+      
+      // Cerrar modales
+      const modalDetalles = document.getElementById('modalColeccionable');
+      if (modalDetalles.classList.contains('active')) {
+        modalDetalles.classList.remove('active', 'visible-smooth');
+        modalDetalles.classList.add('hidden-smooth');
+      }
+      cerrarModalAdmin();
+      document.body.style.overflow = 'auto';
+      
+      // Recargar vista
+      cargarColeccionables();
+      
+      actualizarEstadisticas();
+      
+      mostrarNotificacion(`Coleccionable "${coleccionable.titulo}" eliminado correctamente`, "success");
+    }
+
+    // Duplicar coleccionable
+    function duplicarColeccionable(coleccionableId) {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      const coleccionable = coleccionablesDB[coleccionableId];
+      if (!coleccionable) {
+        mostrarNotificacion("Coleccionable no encontrado", "error");
+        return;
+      }
+      
+      console.log("📋 Duplicando coleccionable:", coleccionable.titulo);
+      
+      const nuevoId = Math.max(...Object.keys(coleccionablesDB).map(Number)) + 1;
+      const coleccionableDuplicado = { ...coleccionable, id: nuevoId, titulo: coleccionable.titulo + " (Copia)" };
+      coleccionablesDB[nuevoId] = coleccionableDuplicado;
+      
+      // Guardar en localStorage
+      guardarColeccionablesEnStorage();
+      
+      // Actualizar arrays
+      coleccionablesArray = Object.values(coleccionablesDB);
+      coleccionablesFiltrados = [...coleccionablesArray];
+      
+      // Recargar vista
+      cargarColeccionables();
+      
+      actualizarEstadisticas();
+      
+      mostrarNotificacion(`Coleccionable "${coleccionable.titulo}" duplicado correctamente`, "success");
+    }
+
+    // Exportar datos de coleccionables
+    function exportarDatosColeccionables() {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      console.log("💾 Exportando datos de coleccionables...");
+      
+      const datos = JSON.stringify(coleccionablesDB, null, 2);
+      const blob = new Blob([datos], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `coleccionables-backup-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      URL.revokeObjectURL(url);
+      
+      mostrarNotificacion("Datos exportados correctamente", "success");
+    }
+
+    // ===== SISTEMA DE CARRITO =====
+    
+    // FUNCIÓN PRINCIPAL PARA AGREGAR AL CARRITO
+    function agregarColeccionableAlCarrito(producto) {
+      console.log("🛒 Intentando agregar al carrito:", producto.titulo);
+      
+      // Verificar si el usuario está logueado
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      if (!usuarioActual) {
+        mostrarNotificacion("Debes iniciar sesión para agregar productos al carrito.", "error");
+        localStorage.setItem("redirectAfterLogin", "Coleccion.html");
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1500);
+        return false;
+      }
+      
+      // Verificar stock
+      if (producto.stock === 0) {
+        mostrarNotificacion(`❌ Lo sentimos, "${producto.titulo}" está agotado temporalmente.`, "error");
+        return false;
+      }
+      
+      // Verificar si existe la función global del sistema unificado
+      if (window.agregarAlCarrito && typeof window.agregarAlCarrito === 'function') {
+        console.log("✅ Usando función global agregarAlCarrito");
+        const resultado = window.agregarAlCarrito(producto.id, "coleccionable", 1);
+        if (resultado) {
+          mostrarNotificacion(`✅ ${producto.titulo} agregado al carrito`, "success");
+          actualizarContadorCarrito();
+          return true;
+        }
+        return false;
+      }
+      
+      // Sistema manual como respaldo
+      console.log("⚠️ Usando sistema manual de carrito");
+      
+      // Obtener usuarios de la base de datos
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      const usuarioIndex = usuarios.findIndex(u => u.usuario === usuarioActual.usuario);
+      
+      if (usuarioIndex === -1) {
+        mostrarNotificacion("Error: Usuario no encontrado en la base de datos", "error");
+        return false;
+      }
+      
+      // Inicializar carrito si no existe
+      if (!usuarios[usuarioIndex].carrito) {
+        usuarios[usuarioIndex].carrito = [];
+      }
+      
+      // Buscar si el producto ya está en el carrito
+      const itemIndex = usuarios[usuarioIndex].carrito.findIndex(
+        item => item.productoId === producto.id && item.tipo === "coleccionable"
+      );
+      
+      if (itemIndex > -1) {
+        // Actualizar cantidad si ya existe
+        usuarios[usuarioIndex].carrito[itemIndex].cantidad += 1;
+      } else {
+        // Agregar nuevo item
+        usuarios[usuarioIndex].carrito.push({
+          productoId: producto.id,
+          tipo: "coleccionable",
+          titulo: producto.titulo,
+          precio: producto.precio,
+          cantidad: 1,
+          fechaAgregado: new Date().toISOString(),
+          imagen: producto.imagen || 'img/coleccionable-default.jpg',
+          categoria: producto.categoria,
+          esLimitado: producto.edicionLimitada || false
+        });
+      }
+      
+      // Actualizar base de datos de usuarios
+      localStorage.setItem("usuarios", JSON.stringify(usuarios));
+      
+      // Actualizar usuario actual en localStorage
+      const usuarioActualizado = usuarios[usuarioIndex];
+      localStorage.setItem("usuarioActual", JSON.stringify(usuarioActualizado));
+      
+      // Mostrar notificación
+      mostrarNotificacion(`✅ ${producto.titulo} agregado al carrito`, "success");
+      
+      // Actualizar contador de carrito
+      actualizarContadorCarrito();
+      
+      return true;
+    }
+
+    // Función para actualizar contador de carrito
+    function actualizarContadorCarrito() {
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      let totalItems = 0;
+      
+      if (usuarioActual && usuarioActual.carrito) {
+        totalItems = usuarioActual.carrito.reduce((total, item) => total + item.cantidad, 0);
+      }
+      
+      // Actualizar contadores en la página
+      const carritoContador = document.getElementById('carritoContador');
+      const navCarritoContador = document.getElementById('navCarritoContador');
+      
+      if (carritoContador) {
+        carritoContador.textContent = totalItems;
+        // SOLUCIÓN: Usar un método más directo para mostrar/ocultar
+        if (totalItems > 0) {
+          carritoContador.style.display = 'flex';
+        } else {
+          carritoContador.style.display = 'none';
+        }
+      }
+      
+      if (navCarritoContador) {
+        navCarritoContador.textContent = totalItems;
+        // SOLUCIÓN: Usar un método más directo para mostrar/ocultar
+        if (totalItems > 0) {
+          navCarritoContador.style.display = 'inline-block';
+        } else {
+          navCarritoContador.style.display = 'none';
+        }
+      }
+      
+      // También actualizar en el perfil si existe
+      const perfilCarrito = document.getElementById('perfilCarrito');
+      if (perfilCarrito) {
+        perfilCarrito.textContent = totalItems;
+      }
+      
+      return totalItems;
+    }
+
+    // Función para mostrar notificaciones
+    function mostrarNotificacion(mensaje, tipo = "info") {
+      const notificacion = document.createElement('div');
+      const iconos = {
+        success: "fa-check-circle",
+        error: "fa-exclamation-circle",
+        warning: "fa-exclamation-triangle",
+        info: "fa-info-circle"
+      };
+      
+      notificacion.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${tipo === "success" ? "#4CAF50" : 
+                     tipo === "error" ? "#ff3b3b" : 
+                     tipo === "warning" ? "#ff9800" : "#2196F3"};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        z-index: 10000;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        animation: slideIn 0.5s ease;
+        max-width: 400px;
+      `;
+      
+      notificacion.innerHTML = `
+        <i class="fas ${iconos[tipo] || iconos.info}" style="font-size: 24px;"></i>
+        <span>${mensaje}</span>
+      `;
+      
+      document.body.appendChild(notificacion);
+      
+      setTimeout(() => {
+        notificacion.style.animation = 'slideOut 0.5s ease';
+        setTimeout(() => notificacion.remove(), 500);
+      }, 3000);
+    }
+
+    function scrollToTop() {
+      window.scrollTo({
+        top: document.querySelector('.contenedor-principal').offsetTop - 100,
+        behavior: 'smooth'
+      });
+    }
+
+    // ===== PANEL DE DEPURACIÓN =====
+    
+    function configurarDebugPanel() {
+      const debugPanel = document.getElementById('debugPanel');
+      const cerrarDebugBtn = document.getElementById('cerrarDebug');
+      const forzarAdminBtn = document.getElementById('debugForzarAdmin');
+      
+      // Mostrar panel de depuración si es admin o si hay un flag de debug
+      if (esAdmin || localStorage.getItem('showDebugPanel') === 'true') {
+        debugPanel.style.display = 'block';
+      }
+      
+      // Cerrar panel de depuración
+      cerrarDebugBtn.addEventListener('click', function() {
+        debugPanel.style.display = 'none';
+      });
+      
+      // Botón para forzar modo admin
+      forzarAdminBtn.addEventListener('click', function() {
+        localStorage.setItem('debugForceAdmin', 'true');
+        mostrarNotificacion('🚀 Modo admin forzado. Recargando página...', 'warning');
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      });
+    }
+    
+    function mostrarDebugInfo() {
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      
+      document.getElementById('debugUsuario').textContent = usuarioActual ? usuarioActual.usuario : 'No logueado';
+      document.getElementById('debugEsAdmin').textContent = esAdmin ? '✅ Sí' : '❌ No';
+      document.getElementById('debugEsAdmin').style.color = esAdmin ? '#4CAF50' : '#ff3b3b';
+      document.getElementById('debugModoEdicion').textContent = modoEdicion ? '✅ Activado' : '❌ Desactivado';
+      document.getElementById('debugModoEdicion').style.color = modoEdicion ? '#2196F3' : '#666';
+      document.getElementById('debugProductos').textContent = coleccionablesArray.length;
+    }
+    
+    function actualizarDebugInfo() {
+      mostrarDebugInfo();
+      
+      // Mostrar/ocultar panel según sea admin
+      const debugPanel = document.getElementById('debugPanel');
+      if (esAdmin) {
+        debugPanel.style.display = 'block';
+      }
+    }
+
+    // Agregar estilos adicionales
+    const estilosAdicionales = document.createElement('style');
+    estilosAdicionales.textContent = `
+      .visible-smooth {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+      }
+      
+      .hidden-smooth {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease, visibility 0.5s ease 0.5s;
+      }
+      
+      .badge-limitada {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: linear-gradient(135deg, #ffd700, #ffaa00);
+        color: #000;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        animation: pulse 2s infinite;
+      }
+      
+      .badge-destacado {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #ff9800, #ff5722);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+      }
+      
+      .badge-stock {
+        position: absolute;
+        top: 50px;
+        left: 15px;
+        background: #ff3b3b;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(255, 59, 59, 0.4);
+      }
+      
+      .badge-agotado {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: #666;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(102, 102, 102, 0.4);
+      }
+      
+      .comic-item .btn-comprar:disabled {
+        cursor: not-allowed !important;
+        opacity: 0.5 !important;
+      }
+      
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+      
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+      
+      .comic-item {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+      }
+      
+      .comic-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
+      }
+      
+      .coleccionable-admin-controls button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      }
+      
+      #btnAgregarColeccionable:hover, #btnModoEdicion:hover, #btnExportarDatos:hover, #btnVerTabla:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      }
+      
+      .pag-item.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      
+      .pag-item:hover:not(.disabled) {
+        background: #f0f0f0;
+        border-color: #ff3b3b;
+      }
+      
+      .filtro-autor:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 59, 59, 0.2);
+      }
+    `;
+    document.head.appendChild(estilosAdicionales);
+    
+    // Función para forzar modo admin desde consola
+    window.forzarModoAdmin = function() {
+      localStorage.setItem('debugForceAdmin', 'true');
+      localStorage.setItem('showDebugPanel', 'true');
+      location.reload();
+    };
+    
+    // Función para ver estado desde consola
+    window.verEstado = function() {
+      const usuario = JSON.parse(localStorage.getItem("usuarioActual"));
+      console.log("=== ESTADO DEL SISTEMA ===");
+      console.log("Usuario:", usuario ? usuario.usuario : "No logueado");
+      console.log("Es admin:", esAdmin);
+      console.log("Propiedad esAdmin:", usuario ? usuario.esAdmin : "N/A");
+      console.log("Total coleccionables:", coleccionablesArray.length);
+      console.log("Modo edición:", modoEdicion);
+      console.log("=========================");
+    };
+    
+    console.log("🎮 Scripts cargados correctamente");
+    console.log("💡 Consejo: Usa verEstado() en la consola para ver el estado del sistema");
+    console.log("💡 Consejo: Usa forzarModoAdmin() si necesitas activar el modo administrador");
+  </script>
+
+<!-- ===== FOOTER CÓMIC ===== -->
+<footer>
+  <div class="footer-comic">
+    <div class="footer-borde-rojo"></div>
+    <div class="footer-contenido">
+      <img src="img/logo.png" alt="Footer Image" class="footer-img-comic">
+      <p class="footer-texto-comic">
+        Roldan Ortega Andrea Lizbeth, 5-I, Materia: Construye Aplicaciones Web
+      </p>
+      <div class="footer-detalles">
+        <span class="puntos-rojos">•••</span>
+        <span class="icono-corazon">❤️</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+</body>
+</html>

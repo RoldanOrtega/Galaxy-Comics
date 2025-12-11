@@ -1,0 +1,2548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cómics Originales - Galaxy Comics</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ===== ENCABEZADO ===== -->
+<header style="background: none; position: relative; overflow: hidden;">
+  <img src="img/banner-fondo.png" alt="Fondo tipo cómic"
+       style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+  <img src="img/logo.png" alt="Logo Galaxy Comics" class="logo">
+  <h1>GALAXY COMICS</h1>
+  
+  <!-- CONTENEDOR PARA USUARIO LOGUEADO -->
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <span id="nombreUsuarioHeader" style="display: none; font-family: 'Poppins', sans-serif; font-weight: bold; color: white; font-size: 16px; background: rgba(255, 59, 59, 0.8); padding: 8px 15px; border-radius: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+      <!-- Aquí aparecerá el nombre del usuario -->
+    </span>
+    
+    <a id="usuarioLink" href="#">
+      <img id="iconoUsuario" src="img/btn-login.png" alt="Iniciar sesión" class="btn-login">
+    </a>
+    
+    <!-- CONTADOR DE CARRITO -->
+    <a href="carrito.html" style="position: relative; text-decoration: none;">
+      <i class="fas fa-shopping-cart" style="font-size: 24px; color: white;"></i>
+      <span id="carritoContador" class="carrito-contador" style="display: none; position: absolute; top: -8px; right: -8px; background: #ff3b3b; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+        0
+      </span>
+    </a>
+  </div>
+</header>
+
+<!-- ===== BARRA DE NAVEGACIÓN PRINCIPAL ===== -->
+<nav>
+  <img src="img/nav-bar.png" alt="Barra de navegación" class="nav-bg">
+  <ul>
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="Comics.html" class="active-nav">Cómics</a></li>
+    <li><a href="Coleccion.html">Coleccionables</a></li>
+    <li><a href="Autores.html">Autores</a></li>
+    <li><a href="Pedidos.html">Pedidos Personalizados</a></li>
+    <li><a href="carrito.html">🛒 Carrito <span id="navCarritoContador" class="carrito-contador" style="display: none; background: #ff3b3b; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px;">0</span></a></li>
+    <li><a href="historialPedidos.html">📦 Mis Pedidos</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HERO SECTION CÓMICS - ESTILO SIMILAR A AUTORES ===== -->
+<section class="hero-autores">
+  <div class="hero-autores-content">
+    <h1 class="hero-autores-title">📚 CÓMICS ORIGINALES</h1>
+    <p class="hero-autores-subtitle">
+      Explora nuestra colección completa de cómics originales. Desde superhéroes hasta ciencia ficción, 
+      tenemos historias para todos los gustos. ¡Encuentra tu próxima lectura favorita!
+    </p>
+    <div class="hero-autores-stats">
+      <div class="stat-item">
+        <span class="stat-number" id="totalComics">12</span>
+        <span class="stat-label">Cómics únicos</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">9</span>
+        <span class="stat-label">Categorías</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="nuevosComicsCount">4</span>
+        <span class="stat-label">Nuevos lanzamientos</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PANEL DE ADMINISTRACIÓN PARA CÓMICS (SOLO VISIBLE PARA ADMIN) ===== -->
+<div id="adminPanelComics" class="contenedor-principal" style="display: none; margin-top: 20px; margin-bottom: 30px;">
+  <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 20px 30px; border-radius: 15px; border: 3px solid #ff3b3b; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+    <h3 style="color: white; margin: 0 0 20px 0; font-family: 'Bangers', cursive; font-size: 26px; display: flex; align-items: center; gap: 15px;">
+      <i class="fas fa-user-shield"></i> PANEL DE ADMINISTRACIÓN DE CÓMICS
+    </h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+      <button id="btnAgregarComic" style="padding: 12px 20px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+        <i class="fas fa-plus-circle"></i> Agregar Cómic
+      </button>
+      <button id="btnModoEdicionComics" style="padding: 12px 20px; background: #2196F3; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+        <i class="fas fa-edit"></i> Modo Edición
+      </button>
+      <button id="btnGestionStock" style="padding: 12px 20px; background: #FF9800; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+        <i class="fas fa-boxes"></i> Gestionar Stock
+      </button>
+      <!-- NUEVO BOTÓN PARA VER TABLA DE PRODUCTOS -->
+      <button id="btnVerTablaComics" style="padding: 12px 20px; background: #9C27B0; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+        <i class="fas fa-table"></i> Ver Tabla de Cómics
+      </button>
+      <button id="btnExportarComics" style="padding: 12px 20px; background: #607d8b; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+        <i class="fas fa-download"></i> Exportar Datos
+      </button>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px;">
+      <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center;">
+        <div style="font-family: 'Bangers', cursive; font-size: 24px; color: #ff3b3b;" id="adminTotalStock">0</div>
+        <div style="font-size: 12px; color: #ddd;">Stock Total</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center;">
+        <div style="font-family: 'Bangers', cursive; font-size: 24px; color: #4CAF50;" id="adminComicsFisicos">0</div>
+        <div style="font-size: 12px; color: #ddd;">Físicos</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center;">
+        <div style="font-family: 'Bangers', cursive; font-size: 24px; color: #2196F3;" id="adminComicsDigitales">0</div>
+        <div style="font-size: 12px; color: #ddd;">Digitales</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center;">
+        <div style="font-family: 'Bangers', cursive; font-size: 24px; color: #FF9800;" id="adminValorTotal">$0</div>
+        <div style="font-size: 12px; color: #ddd;">Valor Total</div>
+      </div>
+    </div>
+    <p style="color: #ddd; font-family: 'Poppins', sans-serif; font-size: 14px; margin: 0; text-align: center;">
+      <i class="fas fa-info-circle"></i> Puedes agregar, editar o eliminar cómics, gestionar stock y exportar la base de datos
+    </p>
+  </div>
+</div>
+
+<!-- ===== MODAL DE TABLA DE PRODUCTOS (NUEVO - SOLO ADMIN) ===== -->
+<div id="modalTablaComics" class="modal-autor">
+  <div class="modal-autor-contenido" style="max-width: 95%; max-height: 90vh;">
+    <button class="cerrar-modal" id="cerrarModalTablaComics">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="modal-autor-info" style="padding: 30px; overflow: hidden;">
+      <h2 class="modal-autor-nombre">
+        <i class="fas fa-table"></i> TABLA DE CÓMICS - MODO ADMINISTRACIÓN
+      </h2>
+      <p style="color: #666; font-family: 'Poppins', sans-serif; margin-bottom: 20px;">
+        Gestiona todos los cómics en formato tabla. Puedes editar, eliminar y ver detalles rápidamente.
+      </p>
+      
+      <!-- CONTROLES DE TABLA -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <div style="position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+            <input type="text" id="buscarTablaComics" placeholder="Buscar cómics..." style="padding: 10px 10px 10px 40px; border: 2px solid #ddd; border-radius: 8px; width: 300px; font-family: 'Poppins', sans-serif;">
+          </div>
+          <select id="filtrarCategoriaTabla" style="padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Poppins', sans-serif; cursor: pointer;">
+            <option value="">Todas las categorías</option>
+            <option value="superheroes">Superhéroes</option>
+            <option value="ciencia-ficcion">Ciencia Ficción</option>
+            <option value="fantasia-epica">Fantasía Épica</option>
+            <option value="cyberpunk">Cyberpunk</option>
+            <option value="post-apocaliptico">Post-apocalíptico</option>
+            <option value="artes-marciales">Artes Marciales</option>
+            <option value="belico-militar">Bélico/Militar</option>
+            <option value="policial-noir">Policial/Noir</option>
+          </select>
+          <select id="filtrarFormatoTabla" style="padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Poppins', sans-serif; cursor: pointer;">
+            <option value="">Todos los formatos</option>
+            <option value="fisico">Físico</option>
+            <option value="digital">Digital</option>
+          </select>
+        </div>
+        
+        <div style="display: flex; gap: 10px;">
+          <button id="btnActualizarTabla" style="padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+            <i class="fas fa-sync-alt"></i> Actualizar
+          </button>
+          <button id="btnAgregarDesdeTabla" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+            <i class="fas fa-plus-circle"></i> Agregar Cómic
+          </button>
+        </div>
+      </div>
+      
+      <!-- TABLA DE CÓMICS -->
+      <div style="overflow-x: auto; max-height: 60vh; border: 1px solid #ddd; border-radius: 8px;">
+        <table id="tablaComicsAdmin" style="width: 100%; border-collapse: collapse; font-family: 'Poppins', sans-serif;">
+          <thead style="background: #1a1a2e; color: white; position: sticky; top: 0; z-index: 10;">
+            <tr>
+              <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">ID</th>
+              <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Título</th>
+              <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Categoría</th>
+              <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Precio</th>
+              <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Formato</th>
+              <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Stock</th>
+              <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Rating</th>
+              <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Nuevo</th>
+              <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Popular</th>
+              <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaComicsBody">
+            <!-- Los datos se cargarán aquí dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- RESUMEN -->
+      <div style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <strong>Total de cómics:</strong> <span id="tablaTotalComics">0</span>
+        </div>
+        <div>
+          <strong>Stock total:</strong> <span id="tablaTotalStock">0</span>
+        </div>
+        <div>
+          <strong>Valor total:</strong> $<span id="tablaValorTotal">0.00</span>
+        </div>
+        <div>
+          <strong>Físicos/Digitales:</strong> <span id="tablaFisicosDigitales">0/0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MENÚ HAMBURGUESA DE CATEGORÍAS ===== -->
+<div class="menu-categorias" id="menuCategorias">
+  <div class="menu-categorias-contenido">
+    <div class="menu-categorias-header">
+      <h3><i class="fas fa-filter"></i> Navegar por Categorías</h3>
+      <button class="cerrar-menu" id="cerrarMenu">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="categorias-grid">
+      <a href="Comics.html" class="categoria-item active">
+        <i class="fas fa-globe"></i>
+        <span>Todos los Cómics</span>
+        <span class="contador">12</span>
+      </a>
+      
+      <a href="superheroes.html" class="categoria-item">
+        <i class="fas fa-mask"></i>
+        <span>Superhéroes</span>
+        <span class="contador">3</span>
+      </a>
+      
+      <a href="ciencia-ficcion.html" class="categoria-item">
+        <i class="fas fa-rocket"></i>
+        <span>Ciencia Ficción</span>
+        <span class="contador">2</span>
+      </a>
+      
+      <a href="fantasia-epica.html" class="categoria-item">
+        <i class="fas fa-dragon"></i>
+        <span>Fantasía Épica</span>
+        <span class="contador">2</span>
+      </a>
+      
+      <a href="cyberpunk.html" class="categoria-item">
+        <i class="fas fa-robot"></i>
+        <span>Cyberpunk</span>
+        <span class="contador">2</span>
+      </a>
+      
+      <a href="post-apocaliptico.html" class="categoria-item">
+        <i class="fas fa-skull-crossbones"></i>
+        <span>Post-apocalíptico</span>
+        <span class="contador">1</span>
+      </a>
+      
+      <a href="artes-marciales.html" class="categoria-item">
+        <i class="fas fa-user-ninja"></i>
+        <span>Artes Marciales</span>
+        <span class="contador">1</span>
+      </a>
+      
+      <a href="belico-militar.html" class="categoria-item">
+        <i class="fas fa-fighter-jet"></i>
+        <span>Bélico/Militar</span>
+        <span class="contador">1</span>
+      </a>
+      
+      <a href="policial-noir.html" class="categoria-item">
+        <i class="fas fa-detective"></i>
+        <span>Policial/Noir</span>
+        <span class="contador">1</span>
+      </a>
+    </div>
+    
+    <div class="menu-categorias-footer">
+      <button class="btn-aplicar-filtro" id="aplicarFiltro">
+        <i class="fas fa-times"></i> Cerrar Menú
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONTENIDO PRINCIPAL ===== -->
+<div class="contenedor-principal">
+  
+  <!-- Botón Hamburguesa (ahora va después del hero) -->
+  <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+    <button class="hamburguesa-categorias" id="btnHamburguesa">
+      <i class="fas fa-bars"></i> Categorías
+    </button>
+  </div>
+  
+  <!-- Filtros Rápidos -->
+  <div class="filtros-superiores">
+    <button class="filtro-btn active" data-filtro="todos">
+      <i class="fas fa-th-large"></i> Todos
+    </button>
+    <button class="filtro-btn" data-filtro="nuevos">
+      <i class="fas fa-star"></i> Nuevos
+    </button>
+    <button class="filtro-btn" data-filtro="populares">
+      <i class="fas fa-fire"></i> Populares
+    </button>
+    <button class="filtro-btn" data-filtro="ofertas">
+      <i class="fas fa-tag"></i> Ofertas
+    </button>
+    <button class="filtro-btn" data-filtro="digital">
+      <i class="fas fa-download"></i> Digital
+    </button>
+    <button class="filtro-btn" data-filtro="fisico">
+      <i class="fas fa-book"></i> Físico
+    </button>
+  </div>
+  
+  <!-- SECCIÓN DE CÓMICS NUEVOS -->
+  <div class="seccion-nuevos" id="nuevosComics">
+    <h2 class="titulo-seccion">
+      <i class="fas fa-bolt"></i> NUEVOS LANZAMIENTOS
+    </h2>
+    <div class="grid-comics" id="gridNuevos">
+      <!-- Los cómics nuevos se agregarán aquí automáticamente -->
+    </div>
+  </div>
+  
+  <!-- TODOS LOS CÓMICS -->
+  <h2 class="titulo-seccion">
+    <i class="fas fa-book-open"></i> TODOS LOS CÓMICS DISPONIBLES
+  </h2>
+  
+  <div class="grid-comics" id="gridComics">
+    <!-- Los cómics se cargarán aquí automáticamente -->
+  </div>
+  
+  <!-- PAGINACIÓN -->
+  <div class="paginacion-mejorada" id="paginacion">
+    <button class="pag-item" id="pagPrev">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="pag-item active">1</button>
+    <button class="pag-item">2</button>
+    <button class="pag-item">3</button>
+    <button class="pag-item">4</button>
+    <button class="pag-item">5</button>
+    <span style="padding: 0 10px; color: #666;">...</span>
+    <button class="pag-item">12</button>
+    <button class="pag-item" id="pagNext">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ===== MODAL DE DETALLES DEL CÓMIC ===== -->
+<div id="modalComic" class="modal-autor">
+  <div class="modal-autor-contenido">
+    <button class="cerrar-modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="modal-autor-grid">
+      <div class="modal-autor-imagen-container">
+        <img id="modalComicImagen" src="" alt="Cómic" class="modal-autor-imagen">
+        <div class="modal-autor-badges" id="modalComicBadges"></div>
+      </div>
+      <div class="modal-autor-info">
+        <h2 id="modalComicTitulo" class="modal-autor-nombre"></h2>
+        <div id="modalComicInfoBasica" class="modal-autor-especialidad"></div>
+        
+        <div class="modal-autor-seccion">
+          <h3><i class="fas fa-scroll"></i> Sinopsis</h3>
+          <p id="modalComicDescripcion" class="modal-autor-biografia"></p>
+        </div>
+        
+        <div class="modal-autor-seccion">
+          <h3><i class="fas fa-info-circle"></i> Detalles</h3>
+          <div id="modalComicDetalles" class="modal-autor-logros"></div>
+        </div>
+        
+        <div class="modal-autor-seccion">
+          <h3><i class="fas fa-tags"></i> Características</h3>
+          <div id="modalComicCaracteristicas" class="modal-autor-obras"></div>
+        </div>
+        
+        <div class="modal-autor-seccion">
+          <h3><i class="fas fa-shopping-cart"></i> Comprar</h3>
+          <div style="display: flex; align-items: center; gap: 20px; margin-top: 15px;">
+            <div style="font-size: 32px; font-family: 'Bangers'; color: #ff3b3b;" id="modalComicPrecio"></div>
+            <button id="btnComprarModal" style="padding: 12px 25px; background: #ff3b3b; color: white; border: none; border-radius: 8px; font-family: 'Poppins'; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;">
+              <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+            </button>
+          </div>
+          <p style="color: #666; font-size: 14px; margin-top: 10px; font-family: 'Poppins';">
+            <i class="fas fa-shipping-fast"></i> Envío gratis en pedidos superiores a $50
+          </p>
+        </div>
+        
+        <!-- CONTROLES DE ADMINISTRADOR EN MODAL (solo visible para admin) -->
+        <div id="modalComicAdminControls" style="display: none; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
+          <h3 style="color: #1a1a2e; font-family: 'Poppins', sans-serif; font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-user-shield"></i> Acciones de Administrador
+          </h3>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button id="btnEditarComic" style="padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+              <i class="fas fa-edit"></i> Editar Cómic
+            </button>
+            <button id="btnEliminarComic" style="padding: 10px 20px; background: #ff3b3b; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+              <i class="fas fa-trash"></i> Eliminar Cómic
+            </button>
+            <button id="btnDuplicarComic" style="padding: 10px 20px; background: #9C27B0; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+              <i class="fas fa-copy"></i> Duplicar
+            </button>
+            <button id="btnAjustarStock" style="padding: 10px 20px; background: #FF9800; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+              <i class="fas fa-boxes"></i> Ajustar Stock
+            </button>
+          </div>
+        </div>
+        
+        <div class="modal-autor-seccion">
+          <h3><i class="fas fa-star"></i> Reseñas</h3>
+          <div id="modalComicResenas" class="modal-autor-personajes"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL PARA AGREGAR/EDITAR CÓMIC (NUEVO - SOLO ADMIN) ===== -->
+<div id="modalAdminComic" class="modal-autor">
+  <div class="modal-autor-contenido">
+    <button class="cerrar-modal" id="cerrarModalAdminComic">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="modal-autor-info" style="padding: 40px;">
+      <h2 class="modal-autor-nombre" id="modalAdminTituloComic">Agregar Nuevo Cómic</h2>
+      <p style="color: #666; font-family: 'Poppins', sans-serif; margin-bottom: 30px;">Completa todos los campos para agregar un nuevo cómic a la base de datos.</p>
+      
+      <form id="formComicAdmin" style="margin-top: 20px;">
+        <input type="hidden" id="comicId" value="">
+        
+        <div class="form-group">
+          <label for="comicTitulo"><i class="fas fa-book"></i> Título *</label>
+          <input type="text" id="comicTitulo" class="form-input" required placeholder="Ej: Superman: Hombre del mañana">
+        </div>
+        
+        <div class="form-group">
+          <label for="comicCategoria"><i class="fas fa-tag"></i> Categoría *</label>
+          <select id="comicCategoria" class="form-select" required>
+            <option value="">Selecciona una categoría</option>
+            <option value="superheroes">Superhéroes</option>
+            <option value="ciencia-ficcion">Ciencia Ficción</option>
+            <option value="fantasia-epica">Fantasía Épica</option>
+            <option value="cyberpunk">Cyberpunk</option>
+            <option value="post-apocaliptico">Post-apocalíptico</option>
+            <option value="artes-marciales">Artes Marciales</option>
+            <option value="belico-militar">Bélico/Militar</option>
+            <option value="policial-noir">Policial/Noir</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="comicPrecio"><i class="fas fa-dollar-sign"></i> Precio *</label>
+          <input type="number" id="comicPrecio" class="form-input" required min="0" step="0.01" placeholder="Ej: 15.99">
+        </div>
+        
+        <div class="form-group">
+          <label for="comicFormato"><i class="fas fa-file"></i> Formato *</label>
+          <select id="comicFormato" class="form-select" required>
+            <option value="">Selecciona un formato</option>
+            <option value="fisico">Físico</option>
+            <option value="digital">Digital</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="comicStock"><i class="fas fa-box"></i> Stock *</label>
+          <input type="number" id="comicStock" class="form-input" required min="0" placeholder="Ej: 10">
+        </div>
+        
+        <div class="form-group">
+          <label for="comicImagen"><i class="fas fa-image"></i> URL de Imagen</label>
+          <input type="text" id="comicImagen" class="form-input" placeholder="https://ejemplo.com/comic.png">
+          <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">Deja en blanco para usar imagen por defecto</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="comicDescripcion"><i class="fas fa-scroll"></i> Descripción *</label>
+          <textarea id="comicDescripcion" class="form-textarea" rows="4" required placeholder="Descripción completa del cómic..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="comicAutor"><i class="fas fa-user-edit"></i> Autor</label>
+          <input type="text" id="comicAutor" class="form-input" placeholder="Ej: Brian Michael Bendis">
+        </div>
+        
+        <div class="form-group">
+          <label for="comicDibujante"><i class="fas fa-paint-brush"></i> Dibujante</label>
+          <input type="text" id="comicDibujante" class="form-input" placeholder="Ej: Ivan Reis">
+        </div>
+        
+        <div class="form-group">
+          <label for="comicEditorial"><i class="fas fa-building"></i> Editorial</label>
+          <input type="text" id="comicEditorial" class="form-input" placeholder="Ej: DC Comics">
+        </div>
+        
+        <div class="form-group">
+          <label for="comicPaginas"><i class="fas fa-file-alt"></i> Páginas</label>
+          <input type="number" id="comicPaginas" class="form-input" min="1" placeholder="Ej: 48">
+        </div>
+        
+        <div class="form-group">
+          <label for="comicRating"><i class="fas fa-star"></i> Rating (0-5)</label>
+          <input type="number" id="comicRating" class="form-input" min="0" max="5" step="0.1" placeholder="Ej: 4.7">
+        </div>
+        
+        <div class="form-group">
+          <label for="comicEsNuevo">
+            <input type="checkbox" id="comicEsNuevo" style="margin-right: 8px;">
+            Marcar como nuevo lanzamiento
+          </label>
+        </div>
+        
+        <div class="form-group">
+          <label for="comicEsPopular">
+            <input type="checkbox" id="comicEsPopular" style="margin-right: 8px;">
+            Marcar como popular
+          </label>
+        </div>
+        
+        <div style="display: flex; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
+          <button type="submit" id="btnGuardarComic" style="flex: 1; padding: 15px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+            <i class="fas fa-save"></i> Guardar Cómic
+          </button>
+          <button type="button" id="btnCancelarComic" style="flex: 1; padding: 15px; background: #666; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL PARA AJUSTAR STOCK (SOLO ADMIN) ===== -->
+<div id="modalStockComic" class="modal-autor">
+  <div class="modal-autor-contenido" style="max-width: 500px;">
+    <button class="cerrar-modal" id="cerrarModalStock">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="modal-autor-info" style="padding: 40px;">
+      <h2 class="modal-autor-nombre">Ajustar Stock</h2>
+      <p style="color: #666; font-family: 'Poppins', sans-serif; margin-bottom: 30px;" id="modalStockTitulo"></p>
+      
+      <div style="text-align: center; margin-bottom: 30px;">
+        <div style="font-size: 48px; font-family: 'Bangers'; color: #ff3b3b;" id="modalStockActual">0</div>
+        <div style="color: #666; font-size: 14px;">Stock actual</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="nuevoStock"><i class="fas fa-boxes"></i> Nuevo valor de stock *</label>
+        <input type="number" id="nuevoStock" class="form-input" required min="0" placeholder="Ingresa la nueva cantidad">
+      </div>
+      
+      <div class="form-group">
+        <label for="razonStock"><i class="fas fa-sticky-note"></i> Razón del ajuste</label>
+        <select id="razonStock" class="form-select">
+          <option value="reabastecimiento">Reabastecimiento</option>
+          <option value="venta">Venta realizada</option>
+          <option value="devolucion">Devolución</option>
+          <option value="perdida">Pérdida/Daño</option>
+          <option value="conteo">Conteo físico</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      
+      <div style="display: flex; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
+        <button type="button" id="btnAplicarStock" style="flex: 1; padding: 15px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-check"></i> Aplicar Cambio
+        </button>
+        <button type="button" id="btnCancelarStock" style="flex: 1; padding: 15px; background: #666; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PERFIL FLOTANTE ===== -->
+<div id="perfilBox" class="perfil-box">
+  <div class="perfil-contenido">
+    <h2>👤 Perfil</h2>
+    <p><strong>Usuario:</strong> <span id="perfilUsuario"></span></p>
+    <p><strong>Nombre:</strong> <span id="perfilNombre"></span></p>
+    <p><strong>Fecha de nacimiento:</strong> <span id="perfilFecha"></span></p>
+    <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+    <p><strong>Pedidos realizados:</strong> <span id="perfilPedidos">0</span></p>
+    <p><strong>Productos en carrito:</strong> <span id="perfilCarrito">0</span></p>
+    <button id="cerrarSesion">Cerrar Sesión</button>
+  </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="script.js"></script>
+<script src="funcionesUsuario.js"></script>
+
+<script>
+  // BASE DE DATOS DE CÓMICS COMPLETA
+  let comicsDB = {};
+  
+  // Configuración
+  let paginaActual = 1;
+  const comicsPorPagina = 9;
+  let filtroActual = 'todos';
+  let comicsArray = [];
+  let comicsFiltrados = [];
+  
+  // Variables de administración
+  let esAdminComics = false;
+  let modoEdicionComics = false;
+  let comicActualId = null;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Cargar base de datos desde localStorage o inicializar
+    cargarBaseDeDatosComics();
+    
+    // Verificar si es administrador
+    verificarAdminComics();
+    
+    // Configurar menú hamburguesa simplificado
+    configurarMenuHamburguesa();
+    
+    // Cargar contenido
+    cargarComics();
+    configurarFiltros();
+    configurarPaginacion();
+    configurarBotonesComics('#gridComics');
+    verificarSesion();
+    configurarModal();
+    configurarModalAdmin();
+    configurarModalStock();
+    configurarModalTabla(); // Nuevo: Configurar modal de tabla
+    
+    // Cargar cómics nuevos automáticamente
+    cargarComicsNuevos();
+    
+    // Actualizar contador de carrito al cargar la página
+    actualizarContadorCarrito();
+    
+    // Configurar eventos de administración
+    configurarEventosAdmin();
+    
+    // Actualizar estadísticas de administración
+    actualizarEstadisticasAdmin();
+  });
+
+  // Cargar base de datos de cómics
+  function cargarBaseDeDatosComics() {
+    // Primero intentar cargar desde localStorage
+    const comicsGuardados = localStorage.getItem('comicsDBAdmin');
+    if (comicsGuardados) {
+      comicsDB = JSON.parse(comicsGuardados);
+    } else {
+      // Si no existe, usar datos iniciales
+      comicsDB = {
+        1: {
+          titulo: "Superman: Hombre del mañana",
+          categoria: "superheroes",
+          precio: 15.99,
+          imagen: "img/comic1.png",
+          descripcion: "Jonathan Kent enfrenta las decisiones más difíciles de su vida como el nuevo Superman.",
+          nuevo: false,
+          popular: true,
+          formato: "fisico",
+          paginas: 48,
+          autor: "Brian Michael Bendis",
+          dibujante: "Ivan Reis",
+          editorial: "DC Comics",
+          fechaPublicacion: "2020-03-15",
+          isbn: "978-1-4012-9876-5",
+          rating: 4.7,
+          stock: 10,
+          caracteristicas: [
+            "Portada por Ivan Reis",
+            "Incluye arte conceptual",
+            "Edición coleccionista",
+            "Papel de alta calidad"
+          ],
+          reseñas: [
+            "★★★★★ - Una reinvención brillante del personaje",
+            "★★★★☆ - El arte es espectacular, historia intrigante",
+            "★★★★★ - El mejor Superman en años"
+          ]
+        },
+        2: {
+          titulo: "Batman: Sombras de Gotham",
+          categoria: "ciencia-ficcion",
+          precio: 14.99,
+          imagen: "img/comic2.png",
+          descripcion: "El Caballero Oscuro se enfrenta a una red secreta que ha controlado Gotham desde las sombras.",
+          nuevo: false,
+          popular: true,
+          formato: "digital",
+          paginas: 36,
+          autor: "Scott Snyder",
+          dibujante: "Greg Capullo",
+          editorial: "DC Comics",
+          fechaPublicacion: "2021-06-22",
+          isbn: "978-1-4012-8765-3",
+          rating: 4.8,
+          stock: 8,
+          caracteristicas: [
+            "Formato PDF y CBR",
+            "Compatible con todos los lectores",
+            "Resolución 4K",
+            "Incluye portadas alternativas"
+          ],
+          reseñas: [
+            "★★★★★ - Snyder y Capullo en su mejor momento",
+            "★★★★☆ - Un thriller tecnológico impresionante",
+            "★★★★★ - La ciencia ficción se encuentra con el noir"
+          ]
+        },
+        3: {
+          titulo: "Spider-Man: Multiverso",
+          categoria: "superheroes",
+          precio: 15.50,
+          imagen: "img/comic3.png",
+          descripcion: "Peter Parker viaja entre dimensiones enfrentando versiones alternativas de sí mismo.",
+          nuevo: false,
+          popular: true,
+          formato: "fisico",
+          paginas: 52,
+          autor: "Dan Slott",
+          dibujante: "Mark Bagley",
+          editorial: "Marvel Comics",
+          fechaPublicacion: "2022-01-10",
+          isbn: "978-1-3029-1234-5",
+          rating: 4.6,
+          stock: 12,
+          caracteristicas: [
+            "Historia épica de 6 partes",
+            "Portada holográfica",
+            "Incluye póster exclusivo",
+            "Arte de Mark Bagley"
+          ],
+          reseñas: [
+            "★★★★★ - Una aventura multiversal épica",
+            "★★★★☆ - Bagley dibuja el mejor Spider-Man",
+            "★★★★★ - Referencia obligada para fans"
+          ]
+        },
+        4: {
+          titulo: "Wonder Woman: Destino divino",
+          categoria: "fantasia-epica",
+          precio: 16.99,
+          imagen: "img/comic4.png",
+          descripcion: "Diana enfrenta a dioses antiguos en una batalla épica por el destino de la humanidad.",
+          nuevo: true,
+          popular: true,
+          formato: "fisico",
+          paginas: 44,
+          autor: "Greg Rucka",
+          dibujante: "Liam Sharp",
+          editorial: "DC Comics",
+          fechaPublicacion: "2023-03-05",
+          isbn: "978-1-4012-4567-7",
+          rating: 4.9,
+          stock: 5,
+          caracteristicas: [
+            "Arte de Liam Sharp",
+            "Portada de tapa dura",
+            "Incluye bocetos conceptuales",
+            "Edición numerada"
+          ],
+          reseñas: [
+            "★★★★★ - La mejor Wonder Woman en décadas",
+            "★★★★★ - Arte divino, historia épica",
+            "★★★★★ - Una obra maestra mitológica"
+          ]
+        },
+        5: {
+          titulo: "Flash: Línea de tiempo rota",
+          categoria: "ciencia-ficcion",
+          precio: 15.25,
+          imagen: "img/comic5.png",
+          descripcion: "Barry Allen corre contra el tiempo para reparar fracturas en la continuidad espacio-temporal.",
+          nuevo: true,
+          popular: false,
+          formato: "digital",
+          paginas: 40,
+          autor: "Joshua Williamson",
+          dibujante: "Howard Porter",
+          editorial: "DC Comics",
+          fechaPublicacion: "2023-02-18",
+          isbn: "978-1-4012-7890-3",
+          rating: 4.4,
+          stock: 7,
+          caracteristicas: [
+            "Formato PDF interactivo",
+            "Animaciones especiales",
+            "Contenido extra digital",
+            "Compatible con tabletas"
+          ],
+          reseñas: [
+            "★★★★☆ - Conceptos temporales interesantes",
+            "★★★★★ - Porter dibuja la velocidad como nadie",
+            "★★★★☆ - Buena ciencia ficción"
+          ]
+        },
+        6: {
+          titulo: "Iron Man: Génesis",
+          categoria: "cyberpunk",
+          precio: 14.99,
+          imagen: "img/comic6.png",
+          descripcion: "Tony Stark en un mundo dominado por tecnología corporativa y sociedades cyborg.",
+          nuevo: true,
+          popular: true,
+          formato: "fisico",
+          paginas: 48,
+          autor: "Christopher Cantwell",
+          dibujante: "Cafu",
+          editorial: "Marvel Comics",
+          fechaPublicacion: "2023-04-12",
+          isbn: "978-1-3029-4567-1",
+          rating: 4.7,
+          stock: 3,
+          caracteristicas: [
+            "Estética cyberpunk",
+            "Portada fluorescente",
+            "Incluye arte conceptual",
+            "Papel reciclado premium"
+          ],
+          reseñas: [
+            "★★★★★ - Cyberpunk meets Marvel",
+            "★★★★☆ - Stark como nunca antes",
+            "★★★★★ - Arte futurista impresionante"
+          ]
+        },
+        7: {
+          titulo: "Hulk: Furia interna",
+          categoria: "post-apocaliptico",
+          precio: 13.99,
+          imagen: "img/comic7.png",
+          descripcion: "Bruce Banner lucha contra fuerzas oscuras que buscan controlar la ira que lo consume.",
+          nuevo: false,
+          popular: false,
+          formato: "digital",
+          paginas: 36,
+          autor: "Donny Cates",
+          dibujante: "Ryan Ottley",
+          editorial: "Marvel Comics",
+          fechaPublicacion: "2022-08-30",
+          isbn: "978-1-3029-7890-8",
+          rating: 4.3,
+          stock: 7,
+          caracteristicas: [
+            "Historia de terror psicológico",
+            "Formato CBR de alta calidad",
+            "Incluye variantes digitales",
+            "Optimizado para móviles"
+          ],
+          reseñas: [
+            "★★★★☆ - Hulk más oscuro que nunca",
+            "★★★★★ - Ottley dibuja la furia perfectamente",
+            "★★★★☆ - Post-apocalipsis visceral"
+          ]
+        },
+        8: {
+          titulo: "Thor: El trueno eterno",
+          categoria: "fantasia-epica",
+          precio: 16.50,
+          imagen: "img/comic8.png",
+          descripcion: "El Dios del Trueno se enfrenta a enemigos de los nueve reinos en una batalla cósmica.",
+          nuevo: false,
+          popular: true,
+          formato: "fisico",
+          paginas: 52,
+          autor: "Jason Aaron",
+          dibujante: "Russell Dauterman",
+          editorial: "Marvel Comics",
+          fechaPublicacion: "2022-11-15",
+          isbn: "978-1-3029-2345-9",
+          rating: 4.8,
+          stock: 8,
+          caracteristicas: [
+            "Portada de Russell Dauterman",
+            "Incluye póster mitológico",
+            "Papaje a color premium",
+            "Edición de coleccionista"
+          ],
+          reseñas: [
+            "★★★★★ - Épico en cada sentido",
+            "★★★★★ - Dauterman es un dios del arte",
+            "★★★★★ - La mejor run de Thor"
+          ]
+        }
+      };
+      guardarBaseDeDatosComics();
+    }
+    
+    // Convertir a array para facilitar el manejo
+    comicsArray = Object.values(comicsDB);
+    comicsFiltrados = [...comicsArray];
+    
+    // Actualizar contadores en la interfaz
+    actualizarContadoresCategorias();
+  }
+
+  // Guardar base de datos en localStorage
+  function guardarBaseDeDatosComics() {
+    localStorage.setItem('comicsDBAdmin', JSON.stringify(comicsDB));
+  }
+
+  // Verificar si el usuario es administrador
+  function verificarAdminComics() {
+    const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+    esAdminComics = usuarioActual && usuarioActual.usuario === "admin" && usuarioActual.password === "admin123";
+    
+    if (esAdminComics) {
+      // Mostrar panel de administración
+      document.getElementById("adminPanelComics").style.display = "block";
+      
+      // Agregar badge de ADMIN al nombre de usuario
+      const nombreUsuarioHeader = document.getElementById("nombreUsuarioHeader");
+      if (nombreUsuarioHeader) {
+        const textoOriginal = nombreUsuarioHeader.textContent;
+        nombreUsuarioHeader.innerHTML = textoOriginal + ' <span style="background: #ff3b3b; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px;">ADMIN</span>';
+      }
+    }
+  }
+
+  // Configurar eventos de administración
+  function configurarEventosAdmin() {
+    // Botón agregar cómic
+    document.getElementById('btnAgregarComic').addEventListener('click', function() {
+      abrirModalAgregarComic();
+    });
+    
+    // Botón modo edición
+    document.getElementById('btnModoEdicionComics').addEventListener('click', function() {
+      modoEdicionComics = !modoEdicionComics;
+      this.innerHTML = modoEdicionComics ? 
+        '<i class="fas fa-times"></i> Salir de Modo Edición' : 
+        '<i class="fas fa-edit"></i> Modo Edición';
+      this.style.background = modoEdicionComics ? '#ff9800' : '#2196F3';
+      cargarComics();
+    });
+    
+    // Botón gestionar stock
+    document.getElementById('btnGestionStock').addEventListener('click', function() {
+      mostrarModalGestionStockGlobal();
+    });
+    
+    // NUEVO: Botón para ver tabla de cómics
+    document.getElementById('btnVerTablaComics').addEventListener('click', function() {
+      mostrarTablaComics();
+    });
+    
+    // Botón exportar datos
+    document.getElementById('btnExportarComics').addEventListener('click', function() {
+      exportarDatosComics();
+    });
+  }
+
+  // Configurar modal de tabla
+  function configurarModalTabla() {
+    const modal = document.getElementById('modalTablaComics');
+    const cerrarBtn = document.getElementById('cerrarModalTablaComics');
+    const buscarInput = document.getElementById('buscarTablaComics');
+    const categoriaSelect = document.getElementById('filtrarCategoriaTabla');
+    const formatoSelect = document.getElementById('filtrarFormatoTabla');
+    const actualizarBtn = document.getElementById('btnActualizarTabla');
+    const agregarBtn = document.getElementById('btnAgregarDesdeTabla');
+    
+    // Cerrar modal
+    cerrarBtn.addEventListener('click', cerrarModalTabla);
+    
+    // Cerrar al hacer clic fuera del contenido
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        cerrarModalTabla();
+      }
+    });
+    
+    // Cerrar con ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        cerrarModalTabla();
+      }
+    });
+    
+    // Buscar en tiempo real
+    buscarInput.addEventListener('input', function() {
+      cargarDatosTabla();
+    });
+    
+    // Filtrar por categoría
+    categoriaSelect.addEventListener('change', function() {
+      cargarDatosTabla();
+    });
+    
+    // Filtrar por formato
+    formatoSelect.addEventListener('change', function() {
+      cargarDatosTabla();
+    });
+    
+    // Actualizar tabla
+    actualizarBtn.addEventListener('click', function() {
+      cargarDatosTabla();
+      mostrarNotificacion("Tabla actualizada", "success");
+    });
+    
+    // Agregar cómic desde tabla
+    agregarBtn.addEventListener('click', function() {
+      cerrarModalTabla();
+      setTimeout(() => {
+        abrirModalAgregarComic();
+      }, 300);
+    });
+  }
+
+  // Mostrar tabla de cómics
+  function mostrarTablaComics() {
+    if (!esAdminComics) {
+      mostrarNotificacion("Se requieren permisos de administrador", "error");
+      return;
+    }
+    
+    document.getElementById('modalTablaComics').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Cargar datos en la tabla
+    cargarDatosTabla();
+  }
+
+  // Cargar datos en la tabla
+  function cargarDatosTabla() {
+    if (!esAdminComics) return;
+    
+    const tbody = document.getElementById('tablaComicsBody');
+    const buscarTexto = document.getElementById('buscarTablaComics').value.toLowerCase();
+    const categoriaFiltro = document.getElementById('filtrarCategoriaTabla').value;
+    const formatoFiltro = document.getElementById('filtrarFormatoTabla').value;
+    
+    tbody.innerHTML = '';
+    
+    let totalStock = 0;
+    let totalValor = 0;
+    let totalFisicos = 0;
+    let totalDigitales = 0;
+    let contadorComics = 0;
+    
+    Object.keys(comicsDB).forEach(id => {
+      const comic = comicsDB[id];
+      
+      // Aplicar filtros
+      if (buscarTexto && !comic.titulo.toLowerCase().includes(buscarTexto) && 
+          !comic.descripcion.toLowerCase().includes(buscarTexto)) {
+        return;
+      }
+      
+      if (categoriaFiltro && comic.categoria !== categoriaFiltro) {
+        return;
+      }
+      
+      if (formatoFiltro && comic.formato !== formatoFiltro) {
+        return;
+      }
+      
+      // Calcular estadísticas
+      const stock = comic.stock || 0;
+      totalStock += stock;
+      totalValor += comic.precio * stock;
+      
+      if (comic.formato === 'fisico') {
+        totalFisicos++;
+      } else {
+        totalDigitales++;
+      }
+      
+      contadorComics++;
+      
+      // Crear fila de tabla
+      const fila = document.createElement('tr');
+      fila.style.borderBottom = '1px solid #eee';
+      fila.style.cursor = 'pointer';
+      fila.innerHTML = `
+        <td style="padding: 12px; color: #666; font-weight: bold;">${id}</td>
+        <td style="padding: 12px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="${comic.imagen}" alt="${comic.titulo}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+            <div>
+              <strong>${comic.titulo}</strong><br>
+              <small style="color: #666; font-size: 12px;">${comic.descripcion.substring(0, 50)}...</small>
+            </div>
+          </div>
+        </td>
+        <td style="padding: 12px;">
+          <span style="background: #e0e0e0; padding: 3px 8px; border-radius: 4px; font-size: 12px;">
+            ${getNombreCategoria(comic.categoria)}
+          </span>
+        </td>
+        <td style="padding: 12px; font-weight: bold; color: #4CAF50;">$${comic.precio.toFixed(2)}</td>
+        <td style="padding: 12px;">
+          <span style="background: ${comic.formato === 'fisico' ? '#2196F3' : '#9C27B0'}; color: white; padding: 3px 8px; border-radius: 4px; font-size: 12px;">
+            ${comic.formato === 'fisico' ? 'Físico' : 'Digital'}
+          </span>
+        </td>
+        <td style="padding: 12px;">
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <span style="font-weight: bold; color: ${stock > 5 ? '#4CAF50' : stock > 0 ? '#FF9800' : '#ff3b3b'}">
+              ${stock}
+            </span>
+            ${stock <= 5 ? '<i class="fas fa-exclamation-triangle" style="color: #FF9800;"></i>' : ''}
+            ${stock === 0 ? '<i class="fas fa-times-circle" style="color: #ff3b3b;"></i>' : ''}
+          </div>
+        </td>
+        <td style="padding: 12px;">
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <span style="color: #FF9800;">
+              <i class="fas fa-star"></i> ${comic.rating || 'N/A'}
+            </span>
+          </div>
+        </td>
+        <td style="padding: 12px; text-align: center;">
+          ${comic.nuevo ? '<i class="fas fa-check-circle" style="color: #4CAF50;"></i>' : '<i class="fas fa-times-circle" style="color: #ccc;"></i>'}
+        </td>
+        <td style="padding: 12px; text-align: center;">
+          ${comic.popular ? '<i class="fas fa-check-circle" style="color: #4CAF50;"></i>' : '<i class="fas fa-times-circle" style="color: #ccc;"></i>'}
+        </td>
+        <td style="padding: 12px;">
+          <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+            <button class="btn-accion-tabla btn-ver-tabla" data-id="${id}" style="width: 30px; height: 30px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn-accion-tabla btn-editar-tabla" data-id="${id}" style="width: 30px; height: 30px; background: #FF9800; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-accion-tabla btn-stock-tabla" data-id="${id}" style="width: 30px; height: 30px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-boxes"></i>
+            </button>
+            <button class="btn-accion-tabla btn-eliminar-tabla" data-id="${id}" style="width: 30px; height: 30px; background: #ff3b3b; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      `;
+      
+      tbody.appendChild(fila);
+      
+      // Configurar eventos de la fila
+      fila.addEventListener('click', function(e) {
+        if (!e.target.closest('.btn-accion-tabla')) {
+          mostrarDetallesComic(comic, id);
+          cerrarModalTabla();
+        }
+      });
+    });
+    
+    // Configurar botones de acción en la tabla
+    configurarBotonesTabla();
+    
+    // Actualizar estadísticas en el pie de la tabla
+    document.getElementById('tablaTotalComics').textContent = contadorComics;
+    document.getElementById('tablaTotalStock').textContent = totalStock;
+    document.getElementById('tablaValorTotal').textContent = totalValor.toFixed(2);
+    document.getElementById('tablaFisicosDigitales').textContent = `${totalFisicos}/${totalDigitales}`;
+    
+    // Mostrar mensaje si no hay resultados
+    if (contadorComics === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="10" style="text-align: center; padding: 40px; color: #666;">
+            <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; color: #ddd;"></i>
+            <h3 style="font-family: 'Poppins', sans-serif;">No se encontraron cómics</h3>
+            <p>No hay cómics que coincidan con los filtros seleccionados.</p>
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  // Configurar botones de acción en la tabla
+  function configurarBotonesTabla() {
+    // Botón ver
+    document.querySelectorAll('.btn-ver-tabla').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const comicId = this.getAttribute('data-id');
+        const comic = comicsDB[comicId];
+        if (comic) {
+          cerrarModalTabla();
+          setTimeout(() => {
+            mostrarDetallesComic(comic, comicId);
+          }, 300);
+        }
+      });
+    });
+    
+    // Botón editar
+    document.querySelectorAll('.btn-editar-tabla').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const comicId = this.getAttribute('data-id');
+        cerrarModalTabla();
+        setTimeout(() => {
+          abrirModalEditarComic(comicId);
+        }, 300);
+      });
+    });
+    
+    // Botón stock
+    document.querySelectorAll('.btn-stock-tabla').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const comicId = this.getAttribute('data-id');
+        cerrarModalTabla();
+        setTimeout(() => {
+          mostrarModalAjustarStock(comicId);
+        }, 300);
+      });
+    });
+    
+    // Botón eliminar
+    document.querySelectorAll('.btn-eliminar-tabla').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const comicId = this.getAttribute('data-id');
+        if (confirm('¿Estás seguro de que deseas eliminar este cómic? Esta acción no se puede deshacer.')) {
+          eliminarComic(comicId);
+          cargarDatosTabla();
+        }
+      });
+    });
+  }
+
+  // Cerrar modal de tabla
+  function cerrarModalTabla() {
+    document.getElementById('modalTablaComics').classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  // Actualizar estadísticas de administración
+  function actualizarEstadisticasAdmin() {
+    if (!esAdminComics) return;
+    
+    const totalStock = comicsArray.reduce((total, comic) => total + (comic.stock || 0), 0);
+    const comicsFisicos = comicsArray.filter(comic => comic.formato === 'fisico').length;
+    const comicsDigitales = comicsArray.filter(comic => comic.formato === 'digital').length;
+    const valorTotal = comicsArray.reduce((total, comic) => total + (comic.precio * (comic.stock || 0)), 0);
+    
+    document.getElementById('adminTotalStock').textContent = totalStock;
+    document.getElementById('adminComicsFisicos').textContent = comicsFisicos;
+    document.getElementById('adminComicsDigitales').textContent = comicsDigitales;
+    document.getElementById('adminValorTotal').textContent = `$${valorTotal.toFixed(2)}`;
+  }
+
+  // Configurar menú hamburguesa
+function configurarMenuHamburguesa() {
+  const btnHamburguesa = document.getElementById('btnHamburguesa');
+  const cerrarMenu = document.getElementById('cerrarMenu');
+  const menuCategorias = document.getElementById('menuCategorias');
+  const aplicarFiltro = document.getElementById('aplicarFiltro');
+  
+  // Configurar eventos de categorías
+  configurarEventosCategorias();
+  
+  // Abrir menú
+  btnHamburguesa.addEventListener('click', function() {
+    menuCategorias.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  });
+  
+  // Cerrar menú
+  cerrarMenu.addEventListener('click', function() {
+    menuCategorias.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  });
+  
+  // Cerrar al hacer clic fuera
+  menuCategorias.addEventListener('click', function(e) {
+    if (e.target === menuCategorias) {
+      menuCategorias.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  });
+  
+  // Cerrar menú con el botón "Cerrar Menú"
+  aplicarFiltro.addEventListener('click', function() {
+    menuCategorias.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  });
+  
+  // Cerrar con ESC
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && menuCategorias.style.display === 'flex') {
+      menuCategorias.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  });
+}
+
+// Función para configurar eventos de categorías del menú hamburguesa
+function configurarEventosCategorias() {
+  document.querySelectorAll('.categoria-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Quitar clase active de todos
+      document.querySelectorAll('.categoria-item').forEach(i => i.classList.remove('active'));
+      
+      // Agregar clase active al elemento clickeado
+      this.classList.add('active');
+      
+      // Cerrar el menú
+      document.getElementById('menuCategorias').style.display = 'none';
+      document.body.style.overflow = 'auto';
+      
+      // Aplicar filtro de categoría
+      aplicarFiltroCategoria();
+      paginaActual = 1;
+      cargarComics();
+      
+      // Actualizar título de la sección
+      const titulo = this.querySelector('span').textContent;
+      if (titulo !== 'Todos los Cómics') {
+        document.querySelector('.titulo-seccion').innerHTML = `
+          <i class="fas fa-book-open"></i> CÓMICS: ${titulo.toUpperCase()}
+        `;
+      } else {
+        document.querySelector('.titulo-seccion').innerHTML = `
+          <i class="fas fa-book-open"></i> TODOS LOS CÓMICS DISPONIBLES
+        `;
+      }
+    });
+  });
+}
+
+// Función para aplicar filtro de categoría desde el menú hamburguesa
+function aplicarFiltroCategoria() {
+  const categoriaActiva = document.querySelector('.categoria-item.active');
+  if (categoriaActiva) {
+    const href = categoriaActiva.getAttribute('href');
+    if (href && href !== 'Comics.html') {
+      // Extraer nombre de categoría del href
+      let categoria = href.replace('.html', '');
+      
+      // Mapear nombres de archivo a categorías de la base de datos
+      const mapeoCategorias = {
+        'superheroes': 'superheroes',
+        'ciencia-ficcion': 'ciencia-ficcion',
+        'fantasia-epica': 'fantasia-epica',
+        'cyberpunk': 'cyberpunk',
+        'post-apocaliptico': 'post-apocaliptico',
+        'artes-marciales': 'artes-marciales',
+        'belico-militar': 'belico-militar',
+        'policial-noir': 'policial-noir'
+      };
+      
+      if (mapeoCategorias[categoria]) {
+        comicsFiltrados = comicsFiltrados.filter(comic => 
+          comic.categoria === mapeoCategorias[categoria]
+        );
+      }
+    }
+  }
+}
+
+// Función para actualizar el título según el filtro
+function actualizarTituloSegunFiltro(filtro) {
+  const tituloSeccion = document.querySelector('.titulo-seccion');
+  const iconos = {
+    'todos': 'fa-book-open',
+    'nuevos': 'fa-bolt',
+    'populares': 'fa-fire',
+    'ofertas': 'fa-tag',
+    'digital': 'fa-download',
+    'fisico': 'fa-book'
+  };
+  
+  const textos = {
+    'todos': 'TODOS LOS CÓMICS DISPONIBLES',
+    'nuevos': 'NUEVOS LANZAMIENTOS',
+    'populares': 'CÓMICS POPULARES',
+    'ofertas': 'OFERTAS ESPECIALES',
+    'digital': 'CÓMICS DIGITALES',
+    'fisico': 'CÓMICS FÍSICOS'
+  };
+  
+  if (tituloSeccion) {
+    tituloSeccion.innerHTML = `
+      <i class="fas ${iconos[filtro] || 'fa-book-open'}"></i> ${textos[filtro] || 'CÓMICS DISPONIBLES'}
+    `;
+  }
+}
+
+// Función para limpiar todos los filtros
+function limpiarFiltros() {
+  // Resetear filtros de botones
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.filtro-btn[data-filtro="todos"]').classList.add('active');
+  
+  // Resetear categorías activas en menú
+  document.querySelectorAll('.categoria-item').forEach(i => i.classList.remove('active'));
+  document.querySelector('.categoria-item[href="Comics.html"]').classList.add('active');
+  
+  // Resetear variables
+  filtroActual = 'todos';
+  comicsFiltrados = [...comicsArray];
+  paginaActual = 1;
+  
+  // Recargar cómics
+  cargarComics();
+  
+  // Restaurar título original
+  document.querySelector('.titulo-seccion').innerHTML = `
+    <i class="fas fa-book-open"></i> TODOS LOS CÓMICS DISPONIBLES
+  `;
+}
+
+  // Actualizar contadores de categorías
+  function actualizarContadoresCategorias() {
+    const categorias = {
+      'superheroes': 0,
+      'ciencia-ficcion': 0,
+      'fantasia-epica': 0,
+      'cyberpunk': 0,
+      'post-apocaliptico': 0,
+      'artes-marciales': 0,
+      'belico-militar': 0,
+      'policial-noir': 0
+    };
+    
+    // Contar cómics por categoría
+    comicsArray.forEach(comic => {
+      if (categorias.hasOwnProperty(comic.categoria)) {
+        categorias[comic.categoria]++;
+      }
+    });
+    
+    // Actualizar contadores en el menú
+    document.querySelectorAll('.categoria-item .contador').forEach(contador => {
+      const categoriaItem = contador.closest('.categoria-item');
+      if (categoriaItem) {
+        const href = categoriaItem.getAttribute('href');
+        if (href) {
+          const nombreCategoria = href.replace('.html', '').replace('Comics.html', 'todos');
+          if (nombreCategoria !== 'todos') {
+            const categoriaKey = Object.keys(categorias).find(key => 
+              href.includes(key.replace('-', '')) || nombreCategoria === key
+            );
+            if (categoriaKey && categorias[categoriaKey] !== undefined) {
+              contador.textContent = categorias[categoriaKey];
+            }
+          }
+        }
+      }
+    });
+    
+    // Actualizar contadores principales
+    const totalComics = comicsArray.length;
+    const nuevosComics = comicsArray.filter(comic => comic.nuevo).length;
+    
+    document.getElementById('totalComics').textContent = totalComics;
+    document.getElementById('nuevosComicsCount').textContent = nuevosComics;
+    
+    // Actualizar contador "Todos"
+    const contadorTodos = document.querySelector('.categoria-item.active .contador');
+    if (contadorTodos) {
+      contadorTodos.textContent = totalComics;
+    }
+  }
+
+  function cargarComicsNuevos() {
+    const gridNuevos = document.getElementById('gridNuevos');
+    const comicsNuevos = comicsArray.filter(comic => comic.nuevo);
+    
+    gridNuevos.innerHTML = '';
+    
+    if (comicsNuevos.length === 0) {
+      gridNuevos.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+          <i class="fas fa-book-open" style="font-size: 48px; margin-bottom: 20px; color: #ddd;"></i>
+          <h3 style="font-family: 'Poppins', sans-serif;">No hay nuevos lanzamientos</h3>
+          <p>Pronto añadiremos más cómics.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    comicsNuevos.forEach(comic => {
+      const comicHTML = crearComicHTML(comic, true);
+      gridNuevos.innerHTML += comicHTML;
+    });
+    
+    configurarBotonesComics('#gridNuevos');
+  }
+
+function cargarComics() {
+  const gridComics = document.getElementById('gridComics');
+  const inicio = (paginaActual - 1) * comicsPorPagina;
+  const fin = inicio + comicsPorPagina;
+  const comicsPagina = comicsFiltrados.slice(inicio, fin);
+  
+  gridComics.innerHTML = '';
+  
+  if (comicsPagina.length === 0) {
+    gridComics.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #666;">
+        <i class="fas fa-search" style="font-size: 60px; margin-bottom: 20px; color: #ddd;"></i>
+        <h3 style="font-family: 'Poppins', sans-serif;">No se encontraron cómics</h3>
+        <p>No hay cómics que coincidan con los filtros seleccionados.</p>
+        <button id="btnLimpiarFiltros" style="margin-top: 20px; padding: 10px 20px; background: #ff3b3b; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: 'Poppins';">
+          <i class="fas fa-times"></i> Limpiar filtros
+        </button>
+      </div>
+    `;
+    
+    // Configurar botón para limpiar filtros
+    document.getElementById('btnLimpiarFiltros').addEventListener('click', function() {
+      limpiarFiltros();
+    });
+    
+    return;
+  }
+  
+  comicsPagina.forEach(comic => {
+    const comicHTML = crearComicHTML(comic, false);
+    gridComics.innerHTML += comicHTML;
+  });
+  
+  configurarBotonesComics('#gridComics');
+  actualizarPaginacion();
+}
+
+  function crearComicHTML(comic, esNuevo = false) {
+    const claseNuevo = comic.nuevo ? 'nuevo' : '';
+    const nombreCategoria = getNombreCategoria(comic.categoria);
+    const comicId = Object.keys(comicsDB).find(key => comicsDB[key] === comic);
+    
+    // Agregar controles de admin si está en modo edición
+    const controlesAdmin = modoEdicionComics && esAdminComics ? `
+      <div class="comic-admin-controls" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10;">
+        <button class="btn-editar-comic" data-id="${comicId}" style="width: 30px; height: 30px; background: #2196F3; color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px;">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn-eliminar-comic" data-id="${comicId}" style="width: 30px; height: 30px; background: #ff3b3b; color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px;">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    ` : '';
+    
+    return `
+      <div class="comic-item ${claseNuevo}" data-id="${comicId}" data-categoria="${comic.categoria}">
+        ${controlesAdmin}
+        <img src="${comic.imagen}" alt="${comic.titulo}" class="comic-imagen">
+        <div class="comic-info">
+          <h3 class="comic-titulo">${comic.titulo}</h3>
+          <span class="comic-categoria">${nombreCategoria}</span>
+          <p class="comic-descripcion">${comic.descripcion.substring(0, 120)}...</p>
+          <div class="comic-footer">
+            <div class="comic-precio">$${comic.precio.toFixed(2)}</div>
+            <div class="comic-botones">
+              <button class="btn-ver" data-id="${comicId}">
+                <i class="fas fa-eye"></i> Ver
+              </button>
+              <button class="btn-comprar" data-id="${comicId}">
+                <i class="fas fa-shopping-cart"></i> Comprar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function getNombreCategoria(categoria) {
+    const nombres = {
+      'superheroes': 'Superhéroes',
+      'ciencia-ficcion': 'Ciencia Ficción',
+      'fantasia-epica': 'Fantasía Épica',
+      'cyberpunk': 'Cyberpunk',
+      'post-apocaliptico': 'Post-apocalíptico',
+      'artes-marciales': 'Artes Marciales',
+      'belico-militar': 'Bélico/Militar',
+      'policial-noir': 'Policial/Noir'
+    };
+    return nombres[categoria] || categoria;
+  }
+
+function configurarFiltros() {
+  document.querySelectorAll('.filtro-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      // Quitar clase active de todos los botones de filtro
+      document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+      
+      // Agregar clase active al botón clickeado
+      this.classList.add('active');
+      
+      // Obtener y aplicar el filtro
+      filtroActual = this.getAttribute('data-filtro');
+      aplicarFiltroGeneral(filtroActual);
+      paginaActual = 1;
+      cargarComics();
+      
+      // Actualizar el título de la sección según el filtro
+      actualizarTituloSegunFiltro(filtroActual);
+    });
+  });
+}
+function aplicarFiltroGeneral(filtro) {
+  switch(filtro) {
+    case 'todos':
+      comicsFiltrados = [...comicsArray];
+      break;
+    case 'nuevos':
+      comicsFiltrados = comicsArray.filter(comic => comic.nuevo === true);
+      break;
+    case 'populares':
+      comicsFiltrados = comicsArray.filter(comic => comic.popular === true);
+      break;
+    case 'ofertas':
+      comicsFiltrados = comicsArray.filter(comic => comic.precio < 15);
+      break;
+    case 'digital':
+      comicsFiltrados = comicsArray.filter(comic => comic.formato === 'digital');
+      break;
+    case 'fisico':
+      comicsFiltrados = comicsArray.filter(comic => comic.formato === 'fisico');
+      break;
+    default:
+      comicsFiltrados = [...comicsArray];
+  }
+  
+  // También aplicar filtro de categoría si hay uno activo en el menú
+  aplicarFiltroCategoria();
+}
+
+  function configurarPaginacion() {
+    document.getElementById('pagPrev').addEventListener('click', function() {
+      if (paginaActual > 1) {
+        paginaActual--;
+        cargarComics();
+        scrollToTop();
+      }
+    });
+
+    document.getElementById('pagNext').addEventListener('click', function() {
+      const totalPaginas = Math.ceil(comicsFiltrados.length / comicsPorPagina);
+      if (paginaActual < totalPaginas) {
+        paginaActual++;
+        cargarComics();
+        scrollToTop();
+      }
+    });
+
+    document.querySelectorAll('.paginacion-mejorada .pag-item:not(#pagPrev):not(#pagNext)').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (!this.classList.contains('disabled') && !isNaN(this.textContent)) {
+          paginaActual = parseInt(this.textContent);
+          cargarComics();
+          scrollToTop();
+        }
+      });
+    });
+  }
+
+  function actualizarPaginacion() {
+    const totalComics = comicsFiltrados.length;
+    const totalPaginas = Math.ceil(totalComics / comicsPorPagina);
+    
+    const pagPrev = document.getElementById('pagPrev');
+    const pagNext = document.getElementById('pagNext');
+    
+    pagPrev.classList.toggle('disabled', paginaActual === 1);
+    pagNext.classList.toggle('disabled', paginaActual === totalPaginas);
+    
+    document.querySelectorAll('.paginacion-mejorada .pag-item').forEach(btn => {
+      if (!isNaN(btn.textContent)) {
+        const numPagina = parseInt(btn.textContent);
+        btn.classList.toggle('active', numPagina === paginaActual);
+        btn.classList.toggle('disabled', numPagina > totalPaginas);
+      }
+    });
+  }
+
+  function configurarBotonesComics(selector) {
+    // Botones "Ver" - Abren modal
+    document.querySelectorAll(`${selector} .btn-ver`).forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const comicId = this.getAttribute('data-id');
+        const comic = comicsDB[comicId];
+        
+        if (comic) {
+          mostrarDetallesComic(comic, comicId);
+        }
+      });
+    });
+
+    // Botones "Comprar" - Agregan al carrito
+    document.querySelectorAll(`${selector} .btn-comprar`).forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const comicId = this.getAttribute('data-id');
+        const comic = comicsDB[comicId];
+        
+        if (comic) {
+          agregarAlCarritoComic(comic, comicId);
+        }
+      });
+    });
+
+    // Hacer clic en toda la tarjeta abre modal
+    document.querySelectorAll(`${selector} .comic-item`).forEach(card => {
+      card.addEventListener('click', function(e) {
+        // No abrir detalles si se hace clic en controles de admin
+        if (!e.target.closest('.comic-admin-controls') && 
+            !e.target.classList.contains('btn-editar-comic') && 
+            !e.target.classList.contains('btn-eliminar-comic')) {
+          const comicId = this.getAttribute('data-id');
+          const comic = comicsDB[comicId];
+          
+          if (comic) {
+            mostrarDetallesComic(comic, comicId);
+          }
+        }
+      });
+    });
+    
+    // Botones de edición (solo en modo edición)
+    document.querySelectorAll(`${selector} .btn-editar-comic`).forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const comicId = this.getAttribute('data-id');
+        abrirModalEditarComic(comicId);
+      });
+    });
+    
+    // Botones de eliminación (solo en modo edición)
+    document.querySelectorAll(`${selector} .btn-eliminar-comic`).forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const comicId = this.getAttribute('data-id');
+        eliminarComic(comicId);
+      });
+    });
+  }
+
+  function configurarModal() {
+    const modal = document.getElementById('modalComic');
+    const cerrarBtn = document.querySelector('.cerrar-modal');
+    const btnComprarModal = document.getElementById('btnComprarModal');
+    
+    // Cerrar modal
+    cerrarBtn.addEventListener('click', function() {
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+    
+    // Cerrar al hacer clic fuera del contenido
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    });
+    
+    // Cerrar con ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    });
+    
+    // Configurar botón comprar en modal
+    btnComprarModal.addEventListener('click', function() {
+      const comicId = this.getAttribute('data-comic-id');
+      if (comicId) {
+        const comic = comicsDB[comicId];
+        agregarAlCarritoComic(comic, comicId);
+      }
+    });
+    
+    // Configurar botones de administrador en modal
+    document.getElementById('btnEditarComic').addEventListener('click', function() {
+      abrirModalEditarComic(comicActualId);
+    });
+    
+    document.getElementById('btnEliminarComic').addEventListener('click', function() {
+      eliminarComic(comicActualId);
+    });
+    
+    document.getElementById('btnDuplicarComic').addEventListener('click', function() {
+      duplicarComic(comicActualId);
+    });
+    
+    document.getElementById('btnAjustarStock').addEventListener('click', function() {
+      mostrarModalAjustarStock(comicActualId);
+    });
+  }
+
+  function configurarModalAdmin() {
+    const modal = document.getElementById('modalAdminComic');
+    const cerrarBtn = document.getElementById('cerrarModalAdminComic');
+    const cancelarBtn = document.getElementById('btnCancelarComic');
+    const form = document.getElementById('formComicAdmin');
+    
+    cerrarBtn.addEventListener('click', cerrarModalAdminComic);
+    cancelarBtn.addEventListener('click', cerrarModalAdminComic);
+    
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        cerrarModalAdminComic();
+      }
+    });
+    
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      guardarComic();
+    });
+  }
+
+  function configurarModalStock() {
+    const modal = document.getElementById('modalStockComic');
+    const cerrarBtn = document.getElementById('cerrarModalStock');
+    const cancelarBtn = document.getElementById('btnCancelarStock');
+    const aplicarBtn = document.getElementById('btnAplicarStock');
+    
+    cerrarBtn.addEventListener('click', cerrarModalStock);
+    cancelarBtn.addEventListener('click', cerrarModalStock);
+    
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        cerrarModalStock();
+      }
+    });
+    
+    aplicarBtn.addEventListener('click', aplicarCambioStock);
+  }
+
+  function mostrarDetallesComic(comic, comicId) {
+    comicActualId = comicId;
+    
+    const modal = document.getElementById('modalComic');
+    
+    // Actualizar contenido del modal
+    document.getElementById('modalComicImagen').src = comic.imagen;
+    document.getElementById('modalComicImagen').alt = comic.titulo;
+    document.getElementById('modalComicTitulo').textContent = comic.titulo;
+    
+    // Información básica
+    const formatoText = comic.formato === 'digital' ? 'Digital (PDF/CBR)' : 'Físico';
+    document.getElementById('modalComicInfoBasica').innerHTML = `
+      <i class="fas fa-book"></i> ${getNombreCategoria(comic.categoria)} • 
+      <i class="fas fa-${comic.formato === 'digital' ? 'download' : 'book'}"></i> ${formatoText} • 
+      <i class="fas fa-star"></i> ${comic.rating}/5.0
+    `;
+    
+    // Descripción completa
+    document.getElementById('modalComicDescripcion').textContent = comic.descripcion;
+    
+    // Detalles
+    const detallesContainer = document.getElementById('modalComicDetalles');
+    detallesContainer.innerHTML = `
+      <div class="logro-detalle"><i class="fas fa-user-edit"></i> <strong>Autor:</strong> ${comic.autor || 'No especificado'}</div>
+      <div class="logro-detalle"><i class="fas fa-paint-brush"></i> <strong>Dibujante:</strong> ${comic.dibujante || 'No especificado'}</div>
+      <div class="logro-detalle"><i class="fas fa-building"></i> <strong>Editorial:</strong> ${comic.editorial || 'No especificado'}</div>
+      <div class="logro-detalle"><i class="fas fa-file-alt"></i> <strong>Páginas:</strong> ${comic.paginas || 'No especificado'}</div>
+      <div class="logro-detalle"><i class="fas fa-box"></i> <strong>Stock:</strong> ${comic.stock || 0} unidades disponibles</div>
+    `;
+    
+    // Características
+    const caracteristicasContainer = document.getElementById('modalComicCaracteristicas');
+    caracteristicasContainer.innerHTML = '';
+    if (comic.caracteristicas && comic.caracteristicas.length > 0) {
+      comic.caracteristicas.forEach(caracteristica => {
+        caracteristicasContainer.innerHTML += `<div class="obra-detalle"><i class="fas fa-check-circle"></i> ${caracteristica}</div>`;
+      });
+    } else {
+      caracteristicasContainer.innerHTML = '<p style="color: #666; font-style: italic;">No hay características registradas</p>';
+    }
+    
+    // Precio y botón comprar
+    document.getElementById('modalComicPrecio').textContent = `$${comic.precio.toFixed(2)}`;
+    document.getElementById('btnComprarModal').setAttribute('data-comic-id', comicId);
+    
+    // Reseñas
+    const reseñasContainer = document.getElementById('modalComicResenas');
+    reseñasContainer.innerHTML = '';
+    if (comic.reseñas && comic.reseñas.length > 0) {
+      comic.reseñas.forEach(reseña => {
+        reseñasContainer.innerHTML += `<span class="personaje-tag-detalle" style="background: #4CAF50; margin: 5px;">${reseña}</span>`;
+      });
+    } else {
+      reseñasContainer.innerHTML = '<p style="color: #666; font-style: italic;">No hay reseñas disponibles</p>';
+    }
+    
+    // Badges
+    const badgesContainer = document.getElementById('modalComicBadges');
+    badgesContainer.innerHTML = '';
+    if (comic.nuevo) {
+      badgesContainer.innerHTML += `<span class="autor-badge" style="background: #ff3b3b;">NUEVO</span>`;
+    }
+    if (comic.popular) {
+      badgesContainer.innerHTML += `<span class="autor-badge" style="background: #ff9800;">POPULAR</span>`;
+    }
+    badgesContainer.innerHTML += `<span class="autor-badge" style="background: #2196F3;">${comic.formato.toUpperCase()}</span>`;
+    
+    // Mostrar/ocultar controles de administrador
+    const adminControls = document.getElementById('modalComicAdminControls');
+    if (esAdminComics) {
+      adminControls.style.display = 'block';
+    } else {
+      adminControls.style.display = 'none';
+    }
+    
+    // Mostrar modal
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // FUNCIONES DE ADMINISTRACIÓN
+
+  function abrirModalAgregarComic() {
+    if (!esAdminComics) {
+      mostrarNotificacion("Se requieren permisos de administrador", "error");
+      return;
+    }
+    
+    // Limpiar formulario
+    document.getElementById('formComicAdmin').reset();
+    document.getElementById('comicId').value = "";
+    document.getElementById('modalAdminTituloComic').textContent = "Agregar Nuevo Cómic";
+    
+    // Mostrar modal
+    document.getElementById('modalAdminComic').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function abrirModalEditarComic(comicId) {
+    if (!esAdminComics) {
+      mostrarNotificacion("Se requieren permisos de administrador", "error");
+      return;
+    }
+    
+    const comic = comicsDB[comicId];
+    if (!comic) {
+      mostrarNotificacion("Cómic no encontrado", "error");
+      return;
+    }
+    
+    // Rellenar formulario
+    document.getElementById('comicId').value = comicId;
+    document.getElementById('comicTitulo').value = comic.titulo;
+    document.getElementById('comicCategoria').value = comic.categoria;
+    document.getElementById('comicPrecio').value = comic.precio;
+    document.getElementById('comicFormato').value = comic.formato;
+    document.getElementById('comicStock').value = comic.stock || 0;
+    document.getElementById('comicImagen').value = comic.imagen || '';
+    document.getElementById('comicDescripcion').value = comic.descripcion;
+    document.getElementById('comicAutor').value = comic.autor || '';
+    document.getElementById('comicDibujante').value = comic.dibujante || '';
+    document.getElementById('comicEditorial').value = comic.editorial || '';
+    document.getElementById('comicPaginas').value = comic.paginas || '';
+    document.getElementById('comicRating').value = comic.rating || 0;
+    document.getElementById('comicEsNuevo').checked = comic.nuevo || false;
+    document.getElementById('comicEsPopular').checked = comic.popular || false;
+    
+    document.getElementById('modalAdminTituloComic').textContent = `Editar Cómic: ${comic.titulo}`;
+    
+    // Cerrar modal de detalles si está abierto
+    document.getElementById('modalComic').classList.remove('active');
+    
+    // Mostrar modal de edición
+    document.getElementById('modalAdminComic').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrarModalAdminComic() {
+    document.getElementById('modalAdminComic').classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  function guardarComic() {
+    if (!esAdminComics) {
+      mostrarNotificacion("Se requieren permisos de administrador", "error");
+      return;
+    }
+    
+    const comicId = document.getElementById('comicId').value;
+    const comic = {
+      titulo: document.getElementById('comicTitulo').value.trim(),
+      categoria: document.getElementById('comicCategoria').value,
+      precio: parseFloat(document.getElementById('comicPrecio').value),
+      formato: document.getElementById('comicFormato').value,
+      stock: parseInt(document.getElementById('comicStock').value),
+      imagen: document.getElementById('comicImagen').value.trim(),
+      descripcion: document.getElementById('comicDescripcion').value.trim(),
+      autor: document.getElementById('comicAutor').value.trim(),
+      dibujante: document.getElementById('comicDibujante').value.trim(),
+      editorial: document.getElementById('comicEditorial').value.trim(),
+      paginas: parseInt(document.getElementById('comicPaginas').value) || 0,
+      rating: parseFloat(document.getElementById('comicRating').value) || 0,
+      nuevo: document.getElementById('comicEsNuevo').checked,
+      popular: document.getElementById('comicEsPopular').checked
+    };
+    
+    // Validar campos requeridos
+    if (!comic.titulo || !comic.categoria || !comic.formato) {
+      mostrarNotificacion("Por favor completa todos los campos requeridos (*)", "error");
+      return;
+    }
+    
+    if (comic.precio <= 0) {
+      mostrarNotificacion("El precio debe ser mayor a 0", "error");
+      return;
+    }
+    
+    if (comic.stock < 0) {
+      mostrarNotificacion("El stock no puede ser negativo", "error");
+      return;
+    }
+    
+    // Asignar imagen por defecto si no se especifica
+    if (!comic.imagen) {
+      comic.imagen = `img/comic${Object.keys(comicsDB).length + 1}.png`;
+    }
+    
+    if (comicId) {
+      // Editar cómic existente
+      comicsDB[comicId] = { ...comicsDB[comicId], ...comic };
+      mostrarNotificacion(`Cómic "${comic.titulo}" actualizado correctamente`, "success");
+    } else {
+      // Agregar nuevo cómic
+      const nuevoId = Math.max(...Object.keys(comicsDB).map(Number)) + 1;
+      comic.id = nuevoId;
+      comicsDB[nuevoId] = comic;
+      mostrarNotificacion(`Cómic "${comic.titulo}" agregado correctamente`, "success");
+    }
+    
+    // Guardar en localStorage
+    guardarBaseDeDatosComics();
+    
+    // Actualizar arrays
+    comicsArray = Object.values(comicsDB);
+    comicsFiltrados = [...comicsArray];
+    
+    // Cerrar modal y recargar lista
+    cerrarModalAdminComic();
+    cargarComics();
+    cargarComicsNuevos();
+    actualizarContadoresCategorias();
+    actualizarEstadisticasAdmin();
+    
+    // Actualizar tabla si está abierta
+    if (document.getElementById('modalTablaComics').classList.contains('active')) {
+      cargarDatosTabla();
+    }
+  }
+
+  function eliminarComic(comicId) {
+    if (!esAdminComics) {
+      mostrarNotificacion("Se requieren permisos de administrador", "error");
+      return;
+    }
+    
+    const comic = comicsDB[comicId];
+    if (!comic) {
+      mostrarNotificacion("Cómic no encontrado", "error");
+      return;
+    }
+    
+    if (!confirm(`¿Estás seguro de que deseas eliminar el cómic "${comic.titulo}"? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+    
+    delete comicsDB[comicId];
+    
+    // Guardar en localStorage
+    guardarBaseDeDatosComics();
+    
+    // Actualizar arrays
+    comicsArray = Object.values(comicsDB);
+    comicsFiltrados = [...comicsArray];
+    
+    // Cerrar modales
+    document.getElementById('modalComic').classList.remove('active');
+    cerrarModalAdminComic();
+    document.body.style.overflow = 'auto';
+    
+    // Recargar lista
+    cargarComics();
+    cargarComicsNuevos();
+    actualizarContadoresCategorias();
+    actualizarEstadisticasAdmin();
+    
+    // Actualizar tabla si está abierta
+    if (document.getElementById('modalTablaComics').classList.contains('active')) {
+      cargarDatosTabla();
+    }
+    
+    mostrarNotificacion(`Cómic "${comic.titulo}" eliminado correctamente`, "success");
+  }
+
+  function duplicarComic(comicId) {
+    if (!esAdminComics) {
+      mostrarNotificacion("Se requieren permisos de administrador", "error");
+      return;
+    }
+    
+    const comic = comicsDB[comicId];
+    if (!comic) {
+      mostrarNotificacion("Cómic no encontrado", "error");
+      return;
+    }
+    
+    const nuevoId = Math.max(...Object.keys(comicsDB).map(Number)) + 1;
+    const comicDuplicado = { 
+      ...comic, 
+      titulo: comic.titulo + " (Copia)",
+      stock: 0, // Stock a 0 para duplicados
+      nuevo: false // No marcar como nuevo
+    };
+    comicsDB[nuevoId] = comicDuplicado;
+    
+    // Guardar en localStorage
+    guardarBaseDeDatosComics();
+    
+    // Actualizar arrays
+    comicsArray = Object.values(comicsDB);
+    comicsFiltrados = [...comicsArray];
+    
+    // Recargar lista
+    cargarComics();
+    cargarComicsNuevos();
+    actualizarContadoresCategorias();
+    actualizarEstadisticasAdmin();
+    
+    // Actualizar tabla si está abierta
+    if (document.getElementById('modalTablaComics').classList.contains('active')) {
+      cargarDatosTabla();
+    }
+    
+    mostrarNotificacion(`Cómic "${comic.titulo}" duplicado correctamente`, "success");
+  }
+
+  function mostrarModalAjustarStock(comicId) {
+    if (!esAdminComics) {
+      mostrarNotificacion("Se requieren permisos de administrador", "error");
+      return;
+    }
+    
+    const comic = comicsDB[comicId];
+    if (!comic) {
+      mostrarNotificacion("Cómic no encontrado", "error");
+      return;
+    }
+    
+    comicActualId = comicId;
+    
+    document.getElementById('modalStockTitulo').textContent = `Ajustar stock para: ${comic.titulo}`;
+    document.getElementById('modalStockActual').textContent = comic.stock || 0;
+    document.getElementById('nuevoStock').value = comic.stock || 0;
+    
+    // Cerrar modales anteriores
+    document.getElementById('modalComic').classList.remove('active');
+    
+    // Mostrar modal
+    document.getElementById('modalStockComic').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function mostrarModalGestionStockGlobal() {
+    if (!esAdminComics) {
+      mostrarNotificacion("Se requieren permisos de administrador", "error");
+      return;
+    }
+    
+    let contenido = '<h2 class="modal-autor-nombre">Gestión Global de Stock</h2>';
+    contenido += '<p style="color: #666; margin-bottom: 20px;">Selecciona un cómic para ajustar su stock:</p>';
+    
+    contenido += '<div style="max-height: 400px; overflow-y: auto; margin-bottom: 20px;">';
+    Object.keys(comicsDB).forEach(id => {
+      const comic = comicsDB[id];
+      contenido += `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
+          <div>
+            <strong>${comic.titulo}</strong><br>
+            <small style="color: #666;">Stock: ${comic.stock || 0} | Precio: $${comic.precio}</small>
+          </div>
+          <button class="btn-ajustar-stock-global" data-id="${id}" style="padding: 5px 10px; background: #2196F3; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Ajustar
+          </button>
+        </div>
+      `;
+    });
+    contenido += '</div>';
+    
+    // Crear modal dinámico
+    const modal = document.createElement('div');
+    modal.className = 'modal-autor';
+    modal.innerHTML = `
+      <div class="modal-autor-contenido" style="max-width: 600px;">
+        <button class="cerrar-modal" id="cerrarModalGlobalStock">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-autor-info" style="padding: 30px;">
+          ${contenido}
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+    
+    // Configurar eventos
+    document.getElementById('cerrarModalGlobalStock').addEventListener('click', () => {
+      document.body.removeChild(modal);
+      document.body.style.overflow = 'auto';
+    });
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        document.body.removeChild(modal);
+        document.body.style.overflow = 'auto';
+      }
+    });
+    
+    // Configurar botones de ajuste
+    document.querySelectorAll('.btn-ajustar-stock-global').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const comicId = this.getAttribute('data-id');
+        document.body.removeChild(modal);
+        document.body.style.overflow = 'auto';
+        mostrarModalAjustarStock(comicId);
+      });
+    });
+    
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrarModalStock() {
+    document.getElementById('modalStockComic').classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  function aplicarCambioStock() {
+    if (!esAdminComics) {
+      mostrarNotificacion("Se requieren permisos de administrador", "error");
+      return;
+    }
+    
+    const nuevoStock = parseInt(document.getElementById('nuevoStock').value);
+    const razon = document.getElementById('razonStock').value;
+    
+    if (isNaN(nuevoStock) || nuevoStock < 0) {
+      mostrarNotificacion("Ingresa un valor de stock válido", "error");
+      return;
+    }
+    
+    const comic = comicsDB[comicActualId];
+    if (!comic) {
+      mostrarNotificacion("Cómic no encontrado", "error");
+      return;
+    }
+    
+    const stockAnterior = comic.stock || 0;
+    comic.stock = nuevoStock;
+    
+    // Guardar cambios
+    guardarBaseDeDatosComics();
+    
+    // Cerrar modal
+    cerrarModalStock();
+    
+    // Actualizar interfaz
+    cargarComics();
+    actualizarEstadisticasAdmin();
+    
+    // Actualizar tabla si está abierta
+    if (document.getElementById('modalTablaComics').classList.contains('active')) {
+      cargarDatosTabla();
+    }
+    
+    // Registrar el cambio (podrías guardar esto en un historial)
+    mostrarNotificacion(`Stock actualizado de ${stockAnterior} a ${nuevoStock} unidades`, "success");
+  }
+
+  function exportarDatosComics() {
+    if (!esAdminComics) {
+      mostrarNotificacion("Se requieren permisos de administrador", "error");
+      return;
+    }
+    
+    const datos = JSON.stringify(comicsDB, null, 2);
+    const blob = new Blob([datos], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `comics-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    URL.revokeObjectURL(url);
+    
+    mostrarNotificacion("Datos exportados correctamente", "success");
+  }
+
+  // FUNCIÓN PARA AGREGAR AL CARRITO
+  function agregarAlCarritoComic(comic, comicId) {
+    // Primero, verificar si el usuario está logueado
+    const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+    if (!usuarioActual) {
+      mostrarNotificacion("Debes iniciar sesión para agregar productos al carrito.", "error");
+      localStorage.setItem("redirectAfterLogin", "Comics.html");
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1500);
+      return;
+    }
+    
+    // Verificar stock
+    if (comic.stock <= 0) {
+      mostrarNotificacion("Lo sentimos, este cómic está agotado.", "error");
+      return;
+    }
+    
+    // Intentar usar la función global si existe
+    if (window.agregarAlCarrito && typeof window.agregarAlCarrito === 'function') {
+      const exito = window.agregarAlCarrito(parseInt(comicId), "comic", 1);
+      if (exito) {
+        // Actualizar stock localmente
+        comic.stock--;
+        guardarBaseDeDatosComics();
+        actualizarEstadisticasAdmin();
+      }
+      return;
+    }
+    
+    // Si no existe la función global, usar el sistema manual
+    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+    const usuarioIndex = usuarios.findIndex(u => u.usuario === usuarioActual.usuario);
+    
+    if (usuarioIndex === -1) {
+      mostrarNotificacion("Error al actualizar el carrito", "error");
+      return;
+    }
+    
+    // Inicializar carrito si no existe
+    if (!usuarios[usuarioIndex].carrito) {
+      usuarios[usuarioIndex].carrito = [];
+    }
+    
+    // Buscar si el producto ya está en el carrito
+    const itemIndex = usuarios[usuarioIndex].carrito.findIndex(
+      item => item.productoId === parseInt(comicId) && item.tipo === "comic"
+    );
+    
+    if (itemIndex > -1) {
+      // Actualizar cantidad si ya existe
+      usuarios[usuarioIndex].carrito[itemIndex].cantidad += 1;
+    } else {
+      // Agregar nuevo item
+      usuarios[usuarioIndex].carrito.push({
+        productoId: parseInt(comicId),
+        tipo: "comic",
+        titulo: comic.titulo,
+        precio: comic.precio,
+        cantidad: 1,
+        fechaAgregado: new Date().toISOString(),
+        imagen: comic.imagen,
+        categoria: comic.categoria
+      });
+    }
+    
+    // Actualizar stock
+    comic.stock--;
+    
+    // Guardar cambios en ambas bases de datos
+    guardarBaseDeDatosComics();
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+    
+    // Actualizar usuario actual en localStorage
+    localStorage.setItem("usuarioActual", JSON.stringify(usuarios[usuarioIndex]));
+    
+    // Actualizar estadísticas de admin
+    actualizarEstadisticasAdmin();
+    
+    // Actualizar contador de carrito
+    actualizarContadorCarrito();
+    
+    mostrarNotificacion(`✅ ${comic.titulo} agregado al carrito`, "success");
+  }
+
+  // Función para actualizar contador de carrito
+  function actualizarContadorCarrito() {
+    const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+    let totalItems = 0;
+    
+    if (usuarioActual && usuarioActual.carrito) {
+      totalItems = usuarioActual.carrito.reduce((total, item) => total + item.cantidad, 0);
+    }
+    
+    // Actualizar contadores en la página
+    const carritoContador = document.getElementById('carritoContador');
+    const navCarritoContador = document.getElementById('navCarritoContador');
+    
+    if (carritoContador) {
+      carritoContador.textContent = totalItems;
+      carritoContador.style.display = totalItems > 0 ? 'flex' : 'none';
+    }
+    
+    if (navCarritoContador) {
+      navCarritoContador.textContent = totalItems;
+      navCarritoContador.style.display = totalItems > 0 ? 'inline-block' : 'none';
+    }
+    
+    // También actualizar en el perfil si existe
+    const perfilCarrito = document.getElementById('perfilCarrito');
+    if (perfilCarrito) {
+      perfilCarrito.textContent = totalItems;
+    }
+  }
+
+  // Función mejorada para mostrar notificaciones
+  function mostrarNotificacion(mensaje, tipo = "success") {
+    const notificacion = document.createElement('div');
+    const iconos = {
+      success: "fa-check-circle",
+      error: "fa-exclamation-circle",
+      warning: "fa-exclamation-triangle",
+      info: "fa-info-circle"
+    };
+    
+    notificacion.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: ${tipo === "success" ? "#4CAF50" : 
+                   tipo === "error" ? "#ff3b3b" : 
+                   tipo === "warning" ? "#ff9800" : "#2196F3"};
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      z-index: 10000;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      animation: slideInRight 0.5s ease;
+    `;
+    
+    notificacion.innerHTML = `
+      <i class="fas ${iconos[tipo] || iconos.success}" style="font-size: 24px;"></i>
+      <span>${mensaje}</span>
+    `;
+    
+    document.body.appendChild(notificacion);
+    
+    setTimeout(() => {
+      notificacion.style.animation = 'slideOutRight 0.5s ease';
+      setTimeout(() => notificacion.remove(), 500);
+    }, 3000);
+  }
+
+  function scrollToTop() {
+    window.scrollTo({
+      top: document.querySelector('.contenedor-principal').offsetTop - 100,
+      behavior: 'smooth'
+    });
+  }
+
+  // Agregar estilos de animación
+  const styleAnimaciones = document.createElement('style');
+  styleAnimaciones.textContent = `
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOutRight {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    .comic-admin-controls button:hover {
+      transform: scale(1.1);
+    }
+    
+    .btn-accion-tabla:hover {
+      transform: scale(1.1);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    
+    #btnAgregarComic:hover, #btnModoEdicionComics:hover, #btnGestionStock:hover, 
+    #btnVerTablaComics:hover, #btnExportarComics:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    #btnVerTablaComics {
+      animation: pulse-purple 2s infinite;
+    }
+    
+    @keyframes pulse-purple {
+      0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(156, 39, 176, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); }
+    }
+    
+    #tablaComicsAdmin tbody tr:hover {
+      background-color: #f5f5f5;
+      transform: translateY(-2px);
+      transition: all 0.3s ease;
+    }
+  `;
+  document.head.appendChild(styleAnimaciones);
+</script>
+
+<!-- ===== FOOTER CÓMIC ===== -->
+<footer>
+  <div class="footer-comic">
+    <div class="footer-borde-rojo"></div>
+    <div class="footer-contenido">
+      <img src="img/logo.png" alt="Footer Image" class="footer-img-comic">
+      <p class="footer-texto-comic">
+        Roldan Ortega Andrea Lizbeth, 5-I, Materia: Construye Aplicaciones Web
+      </p>
+      <div class="footer-detalles">
+        <span class="puntos-rojos">•••</span>
+        <span class="icono-corazon">❤️</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

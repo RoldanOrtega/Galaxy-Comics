@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autores - Galaxy Comics</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ===== ENCABEZADO ===== -->
+<header style="background: none; position: relative; overflow: hidden;">
+  <img src="img/banner-fondo.png" alt="Fondo tipo cómic"
+       style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+  <img src="img/logo.png" alt="Logo Galaxy Comics" class="logo">
+  <h1>GALAXY COMICS</h1>
+  
+  <!-- CONTENEDOR PARA USUARIO LOGUEADO -->
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <span id="nombreUsuarioHeader" style="display: none; font-family: 'Poppins', sans-serif; font-weight: bold; color: white; font-size: 16px; background: rgba(255, 59, 59, 0.8); padding: 8px 15px; border-radius: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+      <!-- Aquí aparecerá el nombre del usuario -->
+    </span>
+    
+    <a id="usuarioLink" href="#">
+      <img id="iconoUsuario" src="img/btn-login.png" alt="Iniciar sesión" class="btn-login">
+    </a>
+    
+    <!-- CONTADOR DE CARRITO -->
+    <a href="carrito.html" style="position: relative; text-decoration: none;">
+      <i class="fas fa-shopping-cart" style="font-size: 24px; color: white;"></i>
+      <span id="carritoContador" class="carrito-contador" style="display: none; position: absolute; top: -8px; right: -8px; background: #ff3b3b; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+        0
+      </span>
+    </a>
+  </div>
+</header>
+
+  <!-- ===== BARRA DE NAVEGACIÓN PRINCIPAL ===== -->
+  <nav>
+    <img src="img/nav-bar.png" alt="Barra de navegación" class="nav-bg">
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="Comics.html">Cómics</a></li>
+      <li><a href="Coleccion.html">Coleccionables</a></li>
+      <li><a href="Autores.html" class="active-nav">Autores</a></li>
+      <li><a href="Pedidos.html">Pedidos Personalizados</a></li>
+      <li><a href="carrito.html">🛒 Carrito <span id="navCarritoContador" class="carrito-contador" style="display: none; background: #ff3b3b; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px;">0</span></a></li>
+      <li><a href="historialPedidos.html">📦 Mis Pedidos</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== HERO SECTION AUTORES ===== -->
+  <section class="hero-autores">
+    <div class="hero-autores-content">
+      <h1 class="hero-autores-title">🎨 MAESTROS DEL CÓMIC</h1>
+      <p class="hero-autores-subtitle">
+        Conoce a las mentes creativas detrás de las historias más épicas. Desde leyendas clásicas 
+        hasta nuevas voces innovadoras, descubre a los artistas que dan vida a tus cómics favoritos.
+      </p>
+      <div class="hero-autores-stats">
+        <div class="stat-item">
+          <span class="stat-number" id="totalAutores">12</span>
+          <span class="stat-label">Autores en galería</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">65+</span>
+          <span class="stat-label">Años de experiencia</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">500+</span>
+          <span class="stat-label">Personajes creados</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PANEL DE ADMINISTRACIÓN (SOLO VISIBLE PARA ADMIN) ===== -->
+  <div id="adminPanel" class="contenedor-principal" style="display: none; margin-top: 20px; margin-bottom: 30px;">
+    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 20px 30px; border-radius: 15px; border: 3px solid #ff3b3b; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+      <h3 style="color: white; margin: 0 0 20px 0; font-family: 'Bangers', cursive; font-size: 26px; display: flex; align-items: center; gap: 15px;">
+        <i class="fas fa-user-shield"></i> PANEL DE ADMINISTRACIÓN
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+        <button id="btnAgregarAutor" style="padding: 12px 20px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-user-plus"></i> Agregar Autor
+        </button>
+        <button id="btnModoEdicion" style="padding: 12px 20px; background: #2196F3; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-edit"></i> Modo Edición
+        </button>
+        
+        <!-- NUEVO BOTÓN PARA VER TABLA DE AUTORES -->
+        <button id="btnVerTablaAutores" style="padding: 12px 20px; background: #9C27B0; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-table"></i> Ver Tabla de Autores
+        </button>
+        
+        <button id="btnExportarDatos" style="padding: 12px 20px; background: #607d8b; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+          <i class="fas fa-download"></i> Exportar Datos
+        </button>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px;">
+        <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center;">
+          <div style="font-family: 'Bangers', cursive; font-size: 24px; color: #ff3b3b;" id="adminTotalAutores">0</div>
+          <div style="font-size: 12px; color: #ddd;">Total Autores</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center;">
+          <div style="font-family: 'Bangers', cursive; font-size: 24px; color: #4CAF50;" id="adminAutoresMarvel">0</div>
+          <div style="font-size: 12px; color: #ddd;">Marvel</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center;">
+          <div style="font-family: 'Bangers', cursive; font-size: 24px; color: #2196F3;" id="adminAutoresDC">0</div>
+          <div style="font-size: 12px; color: #ddd;">DC Comics</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center;">
+          <div style="font-family: 'Bangers', cursive; font-size: 24px; color: #FF9800;" id="adminAutoresIndependientes">0</div>
+          <div style="font-size: 12px; color: #ddd;">Independientes</div>
+        </div>
+      </div>
+      <p style="color: #ddd; font-family: 'Poppins', sans-serif; font-size: 14px; margin: 0; text-align: center;">
+        <i class="fas fa-info-circle"></i> Puedes agregar, editar o eliminar autores de la base de datos
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== MODAL DE TABLA DE AUTORES (NUEVO - SOLO ADMIN) ===== -->
+  <div id="modalTablaAutores" class="modal-autor">
+    <div class="modal-autor-contenido" style="max-width: 95%; max-height: 90vh;">
+      <button class="cerrar-modal" id="cerrarModalTablaAutores">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-autor-info" style="padding: 30px; overflow: hidden;">
+        <h2 class="modal-autor-nombre">
+          <i class="fas fa-table"></i> TABLA DE AUTORES - MODO ADMINISTRACIÓN
+        </h2>
+        <p style="color: #666; font-family: 'Poppins', sans-serif; margin-bottom: 20px;">
+          Gestiona todos los autores en formato tabla. Puedes editar, eliminar y ver detalles rápidamente.
+        </p>
+        
+        <!-- CONTROLES DE TABLA -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="position: relative;">
+              <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+              <input type="text" id="buscarTablaAutores" placeholder="Buscar autores..." style="padding: 10px 10px 10px 40px; border: 2px solid #ddd; border-radius: 8px; width: 300px; font-family: 'Poppins', sans-serif;">
+            </div>
+            <select id="filtrarCategoriaTabla" style="padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Poppins', sans-serif; cursor: pointer;">
+              <option value="">Todas las categorías</option>
+              <option value="marvel">Marvel</option>
+              <option value="dc">DC Comics</option>
+              <option value="independiente">Independiente</option>
+              <option value="clasico">Clásico</option>
+              <option value="moderno">Moderno</option>
+            </select>
+          </div>
+          
+          <div style="display: flex; gap: 10px;">
+            <button id="btnActualizarTablaAutores" style="padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+              <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
+            <button id="btnAgregarDesdeTabla" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+              <i class="fas fa-user-plus"></i> Agregar Autor
+            </button>
+          </div>
+        </div>
+        
+        <!-- TABLA DE AUTORES -->
+        <div style="overflow-x: auto; max-height: 60vh; border: 1px solid #ddd; border-radius: 8px;">
+          <table id="tablaAutoresAdmin" style="width: 100%; border-collapse: collapse; font-family: 'Poppins', sans-serif;">
+            <thead style="background: #1a1a2e; color: white; position: sticky; top: 0; z-index: 10;">
+              <tr>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">ID</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Nombre</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Especialidad</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Categoría</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Logros</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Obras</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Personajes</th>
+                <th style="padding: 15px; text-align: left; border-bottom: 2px solid #ff3b3b;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaAutoresBody">
+              <!-- Los datos se cargarán aquí dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- RESUMEN -->
+        <div style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <strong>Total de autores:</strong> <span id="tablaTotalAutores">0</span>
+          </div>
+          <div>
+            <strong>Marvel:</strong> <span id="tablaAutoresMarvel">0</span>
+          </div>
+          <div>
+            <strong>DC Comics:</strong> <span id="tablaAutoresDC">0</span>
+          </div>
+          <div>
+            <strong>Independientes:</strong> <span id="tablaAutoresIndependientes">0</span>
+          </div>
+          <div>
+            <strong>Personajes creados:</strong> <span id="tablaTotalPersonajes">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FILTROS DE AUTORES ===== -->
+  <div class="autores-filtros">
+    <div class="filtros-container">
+      <button class="filtro-autor active" data-filtro="todos">
+        <i class="fas fa-th-large"></i> Todos
+      </button>
+      <button class="filtro-autor" data-filtro="marvel">
+        <i class="fas fa-bolt"></i> Marvel
+      </button>
+      <button class="filtro-autor" data-filtro="dc">
+        <i class="fas fa-shield-alt"></i> DC Comics
+      </button>
+      <button class="filtro-autor" data-filtro="independiente">
+        <i class="fas fa-paint-brush"></i> Independiente
+      </button>
+      <button class="filtro-autor" data-filtro="clasico">
+        <i class="fas fa-history"></i> Clásicos
+      </button>
+      <button class="filtro-autor" data-filtro="moderno">
+        <i class="fas fa-rocket"></i> Modernos
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== GRID DE AUTORES ===== -->
+  <div class="autores-container" id="autoresContainer">
+    <!-- Los autores se cargarán aquí automáticamente -->
+  </div>
+
+  <!-- ===== MODAL PARA DETALLES DEL AUTOR (EXISTENTE) ===== -->
+  <div id="modalAutor" class="modal-autor">
+    <div class="modal-autor-contenido">
+      <button class="cerrar-modal">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-autor-grid">
+        <div class="modal-autor-imagen-container">
+          <img id="modalAutorImagen" src="" alt="Autor" class="modal-autor-imagen">
+          <div class="modal-autor-badges" id="modalAutorBadges"></div>
+        </div>
+        <div class="modal-autor-info">
+          <h2 id="modalAutorNombre" class="modal-autor-nombre"></h2>
+          <div id="modalAutorEspecialidad" class="modal-autor-especialidad"></div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-scroll"></i> Biografía</h3>
+            <p id="modalAutorBiografia" class="modal-autor-biografia"></p>
+          </div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-trophy"></i> Logros Destacados</h3>
+            <div id="modalAutorLogros" class="modal-autor-logros"></div>
+          </div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-book-open"></i> Obras Principales</h3>
+            <div id="modalAutorObras" class="modal-autor-obras"></div>
+          </div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-users"></i> Personajes Creados</h3>
+            <div id="modalAutorPersonajes" class="modal-autor-personajes"></div>
+          </div>
+          
+          <div class="modal-autor-seccion">
+            <h3><i class="fas fa-lightbulb"></i> Curiosidades</h3>
+            <ul id="modalAutorCuriosidades" class="modal-autor-curiosidades"></ul>
+          </div>
+          
+          <!-- CONTROLES DE ADMINISTRADOR EN MODAL (solo visible para admin) -->
+          <div id="modalAutorAdminControls" style="display: none; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
+            <h3 style="color: #1a1a2e; font-family: 'Poppins', sans-serif; font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+              <i class="fas fa-user-shield"></i> Acciones de Administrador
+            </h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button id="btnEditarAutor" style="padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+                <i class="fas fa-edit"></i> Editar Autor
+              </button>
+              <button id="btnEliminarAutor" style="padding: 10px 20px; background: #ff3b3b; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+                <i class="fas fa-trash"></i> Eliminar Autor
+              </button>
+              <button id="btnDuplicarAutor" style="padding: 10px 20px; background: #9C27B0; color: white; border: none; border-radius: 8px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+                <i class="fas fa-copy"></i> Duplicar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL PARA AGREGAR/EDITAR AUTOR (NUEVO - SOLO ADMIN) ===== -->
+  <div id="modalAdminAutor" class="modal-autor">
+    <div class="modal-autor-contenido">
+      <button class="cerrar-modal" id="cerrarModalAdmin">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-autor-info" style="padding: 40px;">
+        <h2 class="modal-autor-nombre" id="modalAdminTitulo">Agregar Nuevo Autor</h2>
+        <p style="color: #666; font-family: 'Poppins', sans-serif; margin-bottom: 30px;">Completa todos los campos para agregar un nuevo autor a la base de datos.</p>
+        
+        <form id="formAutorAdmin" style="margin-top: 20px;">
+          <input type="hidden" id="autorId" value="">
+          
+          <div class="form-group">
+            <label for="autorNombre"><i class="fas fa-user"></i> Nombre Completo *</label>
+            <input type="text" id="autorNombre" class="form-input" required placeholder="Ej: Stan Lee">
+          </div>
+          
+          <div class="form-group">
+            <label for="autorEspecialidad"><i class="fas fa-graduation-cap"></i> Especialidad *</label>
+            <input type="text" id="autorEspecialidad" class="form-input" required placeholder="Ej: Creador de superhéroes">
+          </div>
+          
+          <div class="form-group">
+            <label for="autorBadge"><i class="fas fa-tag"></i> Categoría *</label>
+            <select id="autorBadge" class="form-select" required>
+              <option value="">Selecciona una categoría</option>
+              <option value="marvel">Marvel</option>
+              <option value="dc">DC Comics</option>
+              <option value="independiente">Independiente</option>
+              <option value="clasico">Clásico</option>
+              <option value="moderno">Moderno</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="autorImagen"><i class="fas fa-image"></i> URL de Imagen</label>
+            <input type="text" id="autorImagen" class="form-input" placeholder="https://ejemplo.com/imagen.jpg">
+            <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">Deja en blanco para usar imagen por defecto</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="autorDescripcion"><i class="fas fa-scroll"></i> Biografía *</label>
+            <textarea id="autorDescripcion" class="form-textarea" rows="4" required placeholder="Descripción completa del autor..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="autorLogros"><i class="fas fa-trophy"></i> Logros (separados por comas)</label>
+            <textarea id="autorLogros" class="form-textarea" rows="2" placeholder="Premio 1, Premio 2, Reconocimiento 3"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="autorObras"><i class="fas fa-book-open"></i> Obras Principales (separadas por comas)</label>
+            <textarea id="autorObras" class="form-textarea" rows="2" placeholder="Spider-Man, X-Men, Iron Man"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="autorPersonajes"><i class="fas fa-users"></i> Personajes Creados (separados por comas)</label>
+            <textarea id="autorPersonajes" class="form-textarea" rows="2" placeholder="Spider-Man, Hulk, Thor"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="autorCuriosidades"><i class="fas fa-lightbulb"></i> Curiosidades (una por línea)</label>
+            <textarea id="autorCuriosidades" class="form-textarea" rows="3" placeholder="• Apareció en cameos en películas&#10;• Servicio militar durante la guerra"></textarea>
+          </div>
+          
+          <div style="display: flex; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
+            <button type="submit" id="btnGuardarAutor" style="flex: 1; padding: 15px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+              <i class="fas fa-save"></i> Guardar Autor
+            </button>
+            <button type="button" id="btnCancelarAutor" style="flex: 1; padding: 15px; background: #666; color: white; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- ===== PERFIL FLOTANTE ===== -->
+<div id="perfilBox" class="perfil-box">
+  <div class="perfil-contenido">
+    <h2>👤 Perfil</h2>
+    <p><strong>Usuario:</strong> <span id="perfilUsuario"></span></p>
+    <p><strong>Nombre:</strong> <span id="perfilNombre"></span></p>
+    <p><strong>Fecha de nacimiento:</strong> <span id="perfilFecha"></span></p>
+    <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+    <p><strong>Pedidos realizados:</strong> <span id="perfilPedidos">0</span></p>
+    <p><strong>Productos en carrito:</strong> <span id="perfilCarrito">0</span></p>
+    <button id="cerrarSesion">Cerrar Sesión</button>
+  </div>
+</div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="script.js"></script>
+  <script src="funcionesUsuario.js"></script>
+  
+  <script>
+    // ===== BASE DE DATOS DE AUTORES =====
+    const autoresDB = {
+      // Datos iniciales de autores (los mismos que tenías)
+      1: {
+        id: 1,
+        nombre: "Stan Lee",
+        especialidad: "Creador de superhéroes",
+        descripcion: "Leyenda de Marvel Comics, creador de Spider-Man, X-Men, Iron Man y muchos más.",
+        imagen: "img/stan-lee.jpg",
+        badge: "marvel",
+        logros: ["Creador de Spider-Man", "Editor en jefe de Marvel", "Leyenda del cómic"],
+        obras: ["Spider-Man", "X-Men", "Iron Man", "Hulk"],
+        personajes: ["Spider-Man", "Iron Man", "Hulk", "Thor", "X-Men"],
+        curiosidades: ["Apareció en cameos en todas las películas de Marvel", "Servicio en el ejército durante WWII"]
+      },
+      2: {
+        id: 2,
+        nombre: "Jack Kirby",
+        especialidad: "Arte y creación",
+        descripcion: "El Rey del Cómic, co-creador de Captain America, X-Men, Avengers y Nuevos Dioses.",
+        imagen: "img/jack-kirby.jpg",
+        badge: "marvel",
+        logros: ["Co-creador de los Avengers", "Pionero del arte de cómic", "Influencia en generaciones"],
+        obras: ["Captain America", "Fantastic Four", "X-Men", "New Gods"],
+        personajes: ["Captain America", "Fantastic Four", "Silver Surfer", "Darkseid"],
+        curiosidades: ["Diseñó el estilo visual del Universo Marvel", "Sirvió en el ejército en la Segunda Guerra Mundial"]
+      },
+      3: {
+        id: 3,
+        nombre: "Frank Miller",
+        especialidad: "Cine negro y superhéroes oscuros",
+        descripcion: "Revolucionó el cómic con su estilo noir y narrativa visual innovadora.",
+        imagen: "img/frank-miller.jpg",
+        badge: "dc",
+        logros: ["Creador de Batman: The Dark Knight Returns", "Renovador del género noir", "Icono del cómic moderno"],
+        obras: ["Batman: The Dark Knight Returns", "Sin City", "300", "Daredevil"],
+        personajes: ["Batman (versión oscura)", "Elektra", "Martha Washington"],
+        curiosidades: ["Trabajó como artista en Marvel antes de crear sus obras más famosas", "Su estilo influenció el cine moderno"]
+      },
+      4: {
+        id: 4,
+        nombre: "Alan Moore",
+        especialidad: "Narrativa compleja y deconstrucción",
+        descripcion: "Considerado uno de los mejores escritores de cómics, maestro de la narrativa gráfica.",
+        imagen: "img/alan-moore.jpg",
+        badge: "independiente",
+        logros: ["Creador de Watchmen", "Revolucionó el cómic adulto", "Múltiples premios Eisner"],
+        obras: ["Watchmen", "V for Vendetta", "From Hell", "The League of Extraordinary Gentlemen"],
+        personajes: ["Rorschach", "V", "John Constantine"],
+        curiosidades: ["Practicante de magia ceremonial", "Rechazó créditos y regalías de adaptaciones cinematográficas"]
+      },
+      5: {
+        id: 5,
+        nombre: "Osamu Tezuka",
+        especialidad: "Manga y animación",
+        descripcion: "El Dios del Manga, creador de Astro Boy y pionero del anime japonés.",
+        imagen: "img/osamu-tezuka.jpg",
+        badge: "clasico",
+        logros: ["Padre del manga moderno", "Creador de Astro Boy", "Produjo más de 700 mangas"],
+        obras: ["Astro Boy", "Black Jack", "Kimba the White Lion", "Buddha"],
+        personajes: ["Astro Boy", "Black Jack", "Kimba"],
+        curiosidades: ["Estudiaba medicina antes de dedicarse al manga", "Creó más de 150,000 páginas de manga en su vida"]
+      },
+      6: {
+        id: 6,
+        nombre: "Hayao Miyazaki",
+        especialidad: "Animación y fantasía",
+        descripcion: "Cofundador de Studio Ghibli, creador de mundos fantásticos y personajes memorables.",
+        imagen: "img/hayao-miyazaki.jpg",
+        badge: "independiente",
+        logros: ["Premio Oscar por El Viaje de Chihiro", "Fundador de Studio Ghibli", "Leyenda de la animación"],
+        obras: ["El Viaje de Chihiro", "Mi Vecino Totoro", "La Princesa Mononoke", "El Castillo Ambulante"],
+        personajes: ["Totoro", "Chihiro", "Princesa Mononoke", "Howl"],
+        curiosidades: ["Dibuja cada storyboard a mano", "Se retiró oficialmente varias veces pero siempre regresa"]
+      },
+      7: {
+        id: 7,
+        imagen: "img/neil-gaiman.jpg",
+        nombre: "Neil Gaiman",
+        especialidad: "Fantasía oscura y mitología",
+        descripcion: "Maestro de la narrativa fantástica, creador de mundos donde lo mítico y lo moderno se encuentran.",
+        badge: "independiente",
+        logros: ["Creador de The Sandman", "Premio Hugo y Nebula", "Best-seller del New York Times"],
+        obras: ["The Sandman", "American Gods", "Coraline", "Stardust"],
+        personajes: ["Morpheus/Sueño", "Sombra", "Coraline"],
+        curiosidades: ["Escribe en cuadernos Moleskine", "Amigo personal de Terry Pratchett", "Apareció en cameos en Doctor Who"]
+      },
+      8: {
+        id: 8,
+        nombre: "Grant Morrison",
+        especialidad: "Metaficción y narrativas no lineales",
+        descripcion: "Visionario del cómic que mezcla misticismo, psicodelia y cultura pop en narrativas innovadoras.",
+        imagen: "img/grant-morrison.jpg",
+        badge: "moderno",
+        logros: ["Reinventó a los X-Men", "Autor de Batman épicos", "Pionero del realismo mágico en cómics"],
+        obras: ["All-Star Superman", "Batman: Arkham Asylum", "The Invisibles", "Doom Patrol"],
+        personajes: ["Superman (All-Star)", "Batman (Morrison)", "Flex Mentallo"],
+        curiosidades: ["Practica magia del caos", "Cree que los personajes de cómic son dioses modernos", "Escribe desnudo a veces"]
+      }
+    };
+
+    // Variables globales
+    let esAdmin = false;
+    let modoEdicion = false;
+    let autorActualId = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Inicializar la página
+      inicializarPagina();
+      verificarSesion();
+      actualizarContadorCarrito();
+      
+      // Verificar si es administrador
+      verificarAdmin();
+      
+      // Configurar eventos
+      configurarEventos();
+      
+      // Configurar modal de tabla
+      configurarModalTablaAutores();
+    });
+
+    // Inicializar la página
+    function inicializarPagina() {
+      // Cargar autores desde localStorage o usar los datos iniciales
+      cargarAutoresDesdeStorage();
+      
+      // Configurar filtros
+      configurarFiltros();
+      
+      // Configurar modales
+      configurarModalAutor();
+      configurarModalAdmin();
+      
+      // Cargar autores
+      cargarAutores();
+      
+      // Actualizar estadísticas de admin
+      actualizarEstadisticasAdmin();
+    }
+
+    // Cargar autores desde localStorage
+    function cargarAutoresDesdeStorage() {
+      const autoresGuardados = localStorage.getItem('autoresDB');
+      if (autoresGuardados) {
+        const parsed = JSON.parse(autoresGuardados);
+        Object.assign(autoresDB, parsed);
+      } else {
+        // Guardar datos iniciales en localStorage
+        guardarAutoresEnStorage();
+      }
+    }
+
+    // Guardar autores en localStorage
+    function guardarAutoresEnStorage() {
+      localStorage.setItem('autoresDB', JSON.stringify(autoresDB));
+    }
+
+    // Verificar si el usuario es administrador
+    function verificarAdmin() {
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      esAdmin = usuarioActual && usuarioActual.usuario === "admin" && usuarioActual.password === "admin123";
+      
+      if (esAdmin) {
+        // Mostrar panel de administración
+        document.getElementById("adminPanel").style.display = "block";
+        
+        // Agregar badge de ADMIN al nombre de usuario
+        const nombreUsuarioHeader = document.getElementById("nombreUsuarioHeader");
+        if (nombreUsuarioHeader) {
+          const textoOriginal = nombreUsuarioHeader.textContent;
+          nombreUsuarioHeader.innerHTML = textoOriginal + ' <span style="background: #ff3b3b; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px;">ADMIN</span>';
+        }
+        
+        // Activar controles de administración en tarjetas
+        activarControlesAdmin();
+      }
+    }
+
+    // Configurar modal de tabla de autores
+    function configurarModalTablaAutores() {
+      const modal = document.getElementById('modalTablaAutores');
+      const cerrarBtn = document.getElementById('cerrarModalTablaAutores');
+      const buscarInput = document.getElementById('buscarTablaAutores');
+      const categoriaSelect = document.getElementById('filtrarCategoriaTabla');
+      const actualizarBtn = document.getElementById('btnActualizarTablaAutores');
+      const agregarBtn = document.getElementById('btnAgregarDesdeTabla');
+      
+      // Cerrar modal
+      cerrarBtn.addEventListener('click', cerrarModalTablaAutores);
+      
+      // Cerrar al hacer clic fuera del contenido
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          cerrarModalTablaAutores();
+        }
+      });
+      
+      // Cerrar con ESC
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          cerrarModalTablaAutores();
+        }
+      });
+      
+      // Buscar en tiempo real
+      buscarInput.addEventListener('input', function() {
+        cargarDatosTablaAutores();
+      });
+      
+      // Filtrar por categoría
+      categoriaSelect.addEventListener('change', function() {
+        cargarDatosTablaAutores();
+      });
+      
+      // Actualizar tabla
+      actualizarBtn.addEventListener('click', function() {
+        cargarDatosTablaAutores();
+        mostrarNotificacion("Tabla actualizada", "success");
+      });
+      
+      // Agregar autor desde tabla
+      agregarBtn.addEventListener('click', function() {
+        cerrarModalTablaAutores();
+        setTimeout(() => {
+          abrirModalAgregarAutor();
+        }, 300);
+      });
+    }
+
+    // Mostrar tabla de autores
+    function mostrarTablaAutores() {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      document.getElementById('modalTablaAutores').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // Cargar datos en la tabla
+      cargarDatosTablaAutores();
+    }
+
+    // Cargar datos en la tabla de autores
+    function cargarDatosTablaAutores() {
+      if (!esAdmin) return;
+      
+      const tbody = document.getElementById('tablaAutoresBody');
+      const buscarTexto = document.getElementById('buscarTablaAutores').value.toLowerCase();
+      const categoriaFiltro = document.getElementById('filtrarCategoriaTabla').value;
+      
+      tbody.innerHTML = '';
+      
+      let totalAutores = 0;
+      let autoresMarvel = 0;
+      let autoresDC = 0;
+      let autoresIndependientes = 0;
+      let totalPersonajes = 0;
+      
+      Object.keys(autoresDB).forEach(id => {
+        const autor = autoresDB[id];
+        
+        // Aplicar filtros
+        if (buscarTexto && !autor.nombre.toLowerCase().includes(buscarTexto) && 
+            !autor.especialidad.toLowerCase().includes(buscarTexto) &&
+            !autor.descripcion.toLowerCase().includes(buscarTexto)) {
+          return;
+        }
+        
+        if (categoriaFiltro && autor.badge !== categoriaFiltro) {
+          return;
+        }
+        
+        // Calcular estadísticas
+        totalAutores++;
+        totalPersonajes += autor.personajes ? autor.personajes.length : 0;
+        
+        switch(autor.badge) {
+          case 'marvel':
+            autoresMarvel++;
+            break;
+          case 'dc':
+            autoresDC++;
+            break;
+          case 'independiente':
+            autoresIndependientes++;
+            break;
+        }
+        
+        // Crear fila de tabla
+        const fila = document.createElement('tr');
+        fila.style.borderBottom = '1px solid #eee';
+        fila.style.cursor = 'pointer';
+        fila.innerHTML = `
+          <td style="padding: 12px; color: #666; font-weight: bold;">${id}</td>
+          <td style="padding: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <img src="${autor.imagen || 'img/autor-default.jpg'}" alt="${autor.nombre}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+              <div>
+                <strong>${autor.nombre}</strong><br>
+                <small style="color: #666; font-size: 12px;">${autor.especialidad}</small>
+              </div>
+            </div>
+          </td>
+          <td style="padding: 12px;">${autor.especialidad}</td>
+          <td style="padding: 12px;">
+            <span style="background: ${getColorCategoria(autor.badge)}; color: white; padding: 3px 8px; border-radius: 4px; font-size: 12px;">
+              ${getBadgeText(autor.badge)}
+            </span>
+          </td>
+          <td style="padding: 12px;">
+            <div style="max-height: 60px; overflow-y: auto; font-size: 12px;">
+              ${autor.logros && autor.logros.length > 0 ? autor.logros.slice(0, 2).map(logro => `<div><i class="fas fa-trophy"></i> ${logro}</div>`).join('') : 'Sin logros'}
+              ${autor.logros && autor.logros.length > 2 ? `<div>+${autor.logros.length - 2} más</div>` : ''}
+            </div>
+          </td>
+          <td style="padding: 12px;">
+            <div style="max-height: 60px; overflow-y: auto; font-size: 12px;">
+              ${autor.obras && autor.obras.length > 0 ? autor.obras.slice(0, 2).map(obra => `<div><i class="fas fa-book"></i> ${obra}</div>`).join('') : 'Sin obras'}
+              ${autor.obras && autor.obras.length > 2 ? `<div>+${autor.obras.length - 2} más</div>` : ''}
+            </div>
+          </td>
+          <td style="padding: 12px;">
+            <div style="max-height: 60px; overflow-y: auto; font-size: 12px;">
+              ${autor.personajes && autor.personajes.length > 0 ? autor.personajes.slice(0, 2).map(personaje => `<div><i class="fas fa-user"></i> ${personaje}</div>`).join('') : 'Sin personajes'}
+              ${autor.personajes && autor.personajes.length > 2 ? `<div>+${autor.personajes.length - 2} más</div>` : ''}
+            </div>
+          </td>
+          <td style="padding: 12px;">
+            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+              <button class="btn-accion-tabla btn-ver-tabla" data-id="${id}" style="width: 30px; height: 30px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn-accion-tabla btn-editar-tabla" data-id="${id}" style="width: 30px; height: 30px; background: #FF9800; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-accion-tabla btn-eliminar-tabla" data-id="${id}" style="width: 30px; height: 30px; background: #ff3b3b; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        
+        tbody.appendChild(fila);
+        
+        // Configurar eventos de la fila
+        fila.addEventListener('click', function(e) {
+          if (!e.target.closest('.btn-accion-tabla')) {
+            mostrarDetallesAutor(parseInt(id));
+            cerrarModalTablaAutores();
+          }
+        });
+      });
+      
+      // Configurar botones de acción en la tabla
+      configurarBotonesTablaAutores();
+      
+      // Actualizar estadísticas en el pie de la tabla
+      document.getElementById('tablaTotalAutores').textContent = totalAutores;
+      document.getElementById('tablaAutoresMarvel').textContent = autoresMarvel;
+      document.getElementById('tablaAutoresDC').textContent = autoresDC;
+      document.getElementById('tablaAutoresIndependientes').textContent = autoresIndependientes;
+      document.getElementById('tablaTotalPersonajes').textContent = totalPersonajes;
+      
+      // Mostrar mensaje si no hay resultados
+      if (totalAutores === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 40px; color: #666;">
+              <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; color: #ddd;"></i>
+              <h3 style="font-family: 'Poppins', sans-serif;">No se encontraron autores</h3>
+              <p>No hay autores que coincidan con los filtros seleccionados.</p>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Configurar botones de acción en la tabla
+    function configurarBotonesTablaAutores() {
+      // Botón ver
+      document.querySelectorAll('.btn-ver-tabla').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const autorId = this.getAttribute('data-id');
+          cerrarModalTablaAutores();
+          setTimeout(() => {
+            mostrarDetallesAutor(parseInt(autorId));
+          }, 300);
+        });
+      });
+      
+      // Botón editar
+      document.querySelectorAll('.btn-editar-tabla').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const autorId = this.getAttribute('data-id');
+          cerrarModalTablaAutores();
+          setTimeout(() => {
+            abrirModalEditarAutor(parseInt(autorId));
+          }, 300);
+        });
+      });
+      
+      // Botón eliminar
+      document.querySelectorAll('.btn-eliminar-tabla').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const autorId = this.getAttribute('data-id');
+          if (confirm('¿Estás seguro de que deseas eliminar este autor? Esta acción no se puede deshacer.')) {
+            eliminarAutor(parseInt(autorId));
+            cargarDatosTablaAutores();
+            // Actualizar también la vista principal
+            const filtroActivo = document.querySelector('.filtro-autor.active').getAttribute('data-filtro');
+            cargarAutores(filtroActivo);
+            actualizarEstadisticasAdmin();
+          }
+        });
+      });
+    }
+
+    // Obtener color según categoría
+    function getColorCategoria(categoria) {
+      const colores = {
+        'marvel': '#ff3b3b',
+        'dc': '#2196F3',
+        'independiente': '#4CAF50',
+        'clasico': '#9C27B0',
+        'moderno': '#FF9800'
+      };
+      return colores[categoria] || '#666';
+    }
+
+    // Cerrar modal de tabla
+    function cerrarModalTablaAutores() {
+      document.getElementById('modalTablaAutores').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Activar controles de administración en tarjetas
+    function activarControlesAdmin() {
+      // Esta función se llama después de cargar los autores
+      // para agregar controles de admin a cada tarjeta
+    }
+
+    // Cargar autores en la página
+    function cargarAutores(filtro = 'todos') {
+      const container = document.getElementById('autoresContainer');
+      container.innerHTML = '';
+      
+      const autoresArray = Object.values(autoresDB);
+      let autoresFiltrados = autoresArray;
+      
+      // Aplicar filtro si no es 'todos'
+      if (filtro !== 'todos') {
+        autoresFiltrados = autoresArray.filter(autor => autor.badge === filtro);
+      }
+      
+      // Actualizar contador
+      document.getElementById('totalAutores').textContent = autoresArray.length;
+      
+      // Mostrar mensaje si no hay autores
+      if (autoresFiltrados.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #666;">
+            <i class="fas fa-user-slash" style="font-size: 60px; margin-bottom: 20px; color: #ddd;"></i>
+            <h3 style="font-family: 'Poppins', sans-serif;">No hay autores disponibles</h3>
+            <p>Prueba con otro filtro o contacta al administrador.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Crear tarjetas para cada autor
+      autoresFiltrados.forEach(autor => {
+        const autorHTML = crearAutorHTML(autor);
+        container.innerHTML += autorHTML;
+      });
+      
+      // Configurar eventos para las tarjetas
+      configurarEventosAutores();
+    }
+
+    // Crear HTML para una tarjeta de autor
+    function crearAutorHTML(autor) {
+      const badgeClass = autor.badge || 'independiente';
+      const badgeText = getBadgeText(autor.badge);
+      
+      // Agregar controles de admin si está en modo edición
+      const controlesAdmin = modoEdicion && esAdmin ? `
+        <div class="autor-admin-controls" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10;">
+          <button class="btn-editar-autor" data-id="${autor.id}" style="width: 30px; height: 30px; background: #2196F3; color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px;">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn-eliminar-autor" data-id="${autor.id}" style="width: 30px; height: 30px; background: #ff3b3b; color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px;">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      ` : '';
+      
+      return `
+        <div class="autor-card" data-id="${autor.id}" data-badge="${autor.badge}">
+          ${controlesAdmin}
+          <div class="autor-imagen-container">
+            <img src="${autor.imagen || 'img/autor-default.jpg'}" alt="${autor.nombre}" class="autor-imagen">
+            <div class="autor-badges">
+              <span class="autor-badge ${badgeClass}">${badgeText}</span>
+            </div>
+          </div>
+          <div class="autor-info">
+            <h3 class="autor-nombre">${autor.nombre}</h3>
+            <div class="autor-especialidad">
+              <i class="fas fa-paint-brush"></i> ${autor.especialidad}
+            </div>
+            <p class="autor-descripcion">${autor.descripcion.substring(0, 120)}...</p>
+            
+            <div class="autor-logros">
+              <div class="logro">
+                <i class="fas fa-trophy"></i>
+                <span>${autor.logros ? autor.logros.length : 0} logros</span>
+              </div>
+              <div class="logro">
+                <i class="fas fa-book"></i>
+                <span>${autor.obras ? autor.obras.length : 0} obras</span>
+              </div>
+            </div>
+            
+            <div class="autor-personajes">
+              ${autor.personajes ? autor.personajes.slice(0, 3).map(personaje => 
+                `<span class="personaje-tag">${personaje}</span>`
+              ).join('') : ''}
+              ${autor.personajes && autor.personajes.length > 3 ? 
+                `<span class="personaje-tag">+${autor.personajes.length - 3}</span>` : ''
+              }
+            </div>
+            
+            <button class="btn-ver-detalles" data-id="${autor.id}">
+              <i class="fas fa-eye"></i> Ver Detalles
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Obtener texto del badge
+    function getBadgeText(badge) {
+      const badges = {
+        'marvel': 'MARVEL',
+        'dc': 'DC COMICS',
+        'independiente': 'INDEPENDIENTE',
+        'clasico': 'CLÁSICO',
+        'moderno': 'MODERNO'
+      };
+      return badges[badge] || 'AUTOR';
+    }
+
+    // Configurar filtros
+    function configurarFiltros() {
+      document.querySelectorAll('.filtro-autor').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.filtro-autor').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          const filtro = this.getAttribute('data-filtro');
+          cargarAutores(filtro);
+        });
+      });
+    }
+
+    // Configurar eventos generales
+    function configurarEventos() {
+      // Botón agregar autor (admin)
+      document.getElementById('btnAgregarAutor').addEventListener('click', function() {
+        abrirModalAgregarAutor();
+      });
+      
+      // Botón modo edición (admin)
+      document.getElementById('btnModoEdicion').addEventListener('click', function() {
+        modoEdicion = !modoEdicion;
+        this.innerHTML = modoEdicion ? 
+          '<i class="fas fa-times"></i> Salir de Modo Edición' : 
+          '<i class="fas fa-edit"></i> Modo Edición';
+        this.style.background = modoEdicion ? '#ff9800' : '#2196F3';
+        cargarAutores();
+      });
+      
+      // NUEVO: Botón para ver tabla de autores
+      document.getElementById('btnVerTablaAutores').addEventListener('click', function() {
+        mostrarTablaAutores();
+      });
+      
+      // Botón exportar datos (admin)
+      document.getElementById('btnExportarDatos').addEventListener('click', function() {
+        exportarDatosAutores();
+      });
+    }
+
+    // Actualizar estadísticas de administración
+    function actualizarEstadisticasAdmin() {
+      if (!esAdmin) return;
+      
+      const autoresArray = Object.values(autoresDB);
+      const totalAutores = autoresArray.length;
+      const autoresMarvel = autoresArray.filter(autor => autor.badge === 'marvel').length;
+      const autoresDC = autoresArray.filter(autor => autor.badge === 'dc').length;
+      const autoresIndependientes = autoresArray.filter(autor => autor.badge === 'independiente').length;
+      
+      document.getElementById('adminTotalAutores').textContent = totalAutores;
+      document.getElementById('adminAutoresMarvel').textContent = autoresMarvel;
+      document.getElementById('adminAutoresDC').textContent = autoresDC;
+      document.getElementById('adminAutoresIndependientes').textContent = autoresIndependientes;
+    }
+
+    // Configurar eventos para las tarjetas de autores
+    function configurarEventosAutores() {
+      // Botones "Ver Detalles"
+      document.querySelectorAll('.btn-ver-detalles').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const autorId = parseInt(this.getAttribute('data-id'));
+          mostrarDetallesAutor(autorId);
+        });
+      });
+      
+      // Hacer clic en toda la tarjeta (excepto en controles admin)
+      document.querySelectorAll('.autor-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+          // No abrir detalles si se hace clic en controles de admin
+          if (!e.target.closest('.autor-admin-controls') && 
+              !e.target.classList.contains('btn-editar-autor') && 
+              !e.target.classList.contains('btn-eliminar-autor')) {
+            const autorId = parseInt(this.getAttribute('data-id'));
+            mostrarDetallesAutor(autorId);
+          }
+        });
+      });
+      
+      // Botones de edición (solo en modo edición)
+      document.querySelectorAll('.btn-editar-autor').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const autorId = parseInt(this.getAttribute('data-id'));
+          abrirModalEditarAutor(autorId);
+        });
+      });
+      
+      // Botones de eliminación (solo en modo edición)
+      document.querySelectorAll('.btn-eliminar-autor').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const autorId = parseInt(this.getAttribute('data-id'));
+          eliminarAutor(autorId);
+        });
+      });
+    }
+
+    // Configurar modal de detalles del autor
+    function configurarModalAutor() {
+      const modal = document.getElementById('modalAutor');
+      const cerrarBtn = modal.querySelector('.cerrar-modal');
+      
+      cerrarBtn.addEventListener('click', function() {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
+      });
+      
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          modal.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
+      });
+      
+      // Configurar botones de administrador en modal
+      document.getElementById('btnEditarAutor').addEventListener('click', function() {
+        abrirModalEditarAutor(autorActualId);
+      });
+      
+      document.getElementById('btnEliminarAutor').addEventListener('click', function() {
+        eliminarAutor(autorActualId);
+      });
+      
+      document.getElementById('btnDuplicarAutor').addEventListener('click', function() {
+        duplicarAutor(autorActualId);
+      });
+    }
+
+    // Configurar modal de administración
+    function configurarModalAdmin() {
+      const modal = document.getElementById('modalAdminAutor');
+      const cerrarBtn = document.getElementById('cerrarModalAdmin');
+      const cancelarBtn = document.getElementById('btnCancelarAutor');
+      const form = document.getElementById('formAutorAdmin');
+      
+      cerrarBtn.addEventListener('click', cerrarModalAdmin);
+      cancelarBtn.addEventListener('click', cerrarModalAdmin);
+      
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          cerrarModalAdmin();
+        }
+      });
+      
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        guardarAutor();
+      });
+    }
+
+    // Mostrar detalles del autor en modal
+    function mostrarDetallesAutor(autorId) {
+      const autor = autoresDB[autorId];
+      if (!autor) return;
+      
+      autorActualId = autorId;
+      
+      // Actualizar contenido del modal
+      document.getElementById('modalAutorImagen').src = autor.imagen || 'img/autor-default.jpg';
+      document.getElementById('modalAutorImagen').alt = autor.nombre;
+      document.getElementById('modalAutorNombre').textContent = autor.nombre;
+      document.getElementById('modalAutorEspecialidad').innerHTML = `
+        <i class="fas fa-paint-brush"></i> ${autor.especialidad}
+      `;
+      document.getElementById('modalAutorBiografia').textContent = autor.descripcion;
+      
+      // Logros
+      const logrosContainer = document.getElementById('modalAutorLogros');
+      logrosContainer.innerHTML = '';
+      if (autor.logros && autor.logros.length > 0) {
+        autor.logros.forEach(logro => {
+          logrosContainer.innerHTML += `<div class="logro-detalle"><i class="fas fa-trophy"></i> ${logro}</div>`;
+        });
+      } else {
+        logrosContainer.innerHTML = '<p style="color: #666; font-style: italic;">No hay logros registrados</p>';
+      }
+      
+      // Obras
+      const obrasContainer = document.getElementById('modalAutorObras');
+      obrasContainer.innerHTML = '';
+      if (autor.obras && autor.obras.length > 0) {
+        autor.obras.forEach(obra => {
+          obrasContainer.innerHTML += `<div class="obra-detalle"><i class="fas fa-book"></i> ${obra}</div>`;
+        });
+      } else {
+        obrasContainer.innerHTML = '<p style="color: #666; font-style: italic;">No hay obras registradas</p>';
+      }
+      
+      // Personajes
+      const personajesContainer = document.getElementById('modalAutorPersonajes');
+      personajesContainer.innerHTML = '';
+      if (autor.personajes && autor.personajes.length > 0) {
+        autor.personajes.forEach(personaje => {
+          personajesContainer.innerHTML += `<span class="personaje-tag-detalle">${personaje}</span>`;
+        });
+      } else {
+        personajesContainer.innerHTML = '<p style="color: #666; font-style: italic;">No hay personajes registrados</p>';
+      }
+      
+      // Curiosidades
+      const curiosidadesContainer = document.getElementById('modalAutorCuriosidades');
+      curiosidadesContainer.innerHTML = '';
+      if (autor.curiosidades && autor.curiosidades.length > 0) {
+        autor.curiosidades.forEach(curiosidad => {
+          curiosidadesContainer.innerHTML += `<li><i class="fas fa-lightbulb"></i> ${curiosidad}</li>`;
+        });
+      } else {
+        curiosidadesContainer.innerHTML = '<li style="color: #666; font-style: italic;">No hay curiosidades registradas</li>';
+      }
+      
+      // Badges
+      const badgesContainer = document.getElementById('modalAutorBadges');
+      badgesContainer.innerHTML = '';
+      badgesContainer.innerHTML += `<span class="autor-badge ${autor.badge}">${getBadgeText(autor.badge)}</span>`;
+      
+      // Mostrar/ocultar controles de administrador
+      const adminControls = document.getElementById('modalAutorAdminControls');
+      if (esAdmin) {
+        adminControls.style.display = 'block';
+      } else {
+        adminControls.style.display = 'none';
+      }
+      
+      // Mostrar modal
+      document.getElementById('modalAutor').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Abrir modal para agregar autor
+    function abrirModalAgregarAutor() {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      // Limpiar formulario
+      document.getElementById('formAutorAdmin').reset();
+      document.getElementById('autorId').value = "";
+      document.getElementById('modalAdminTitulo').textContent = "Agregar Nuevo Autor";
+      
+      // Mostrar modal
+      document.getElementById('modalAdminAutor').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Abrir modal para editar autor
+    function abrirModalEditarAutor(autorId) {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      const autor = autoresDB[autorId];
+      if (!autor) {
+        mostrarNotificacion("Autor no encontrado", "error");
+        return;
+      }
+      
+      // Rellenar formulario
+      document.getElementById('autorId').value = autor.id;
+      document.getElementById('autorNombre').value = autor.nombre;
+      document.getElementById('autorEspecialidad').value = autor.especialidad;
+      document.getElementById('autorBadge').value = autor.badge;
+      document.getElementById('autorImagen').value = autor.imagen || '';
+      document.getElementById('autorDescripcion').value = autor.descripcion;
+      document.getElementById('autorLogros').value = autor.logros ? autor.logros.join(', ') : '';
+      document.getElementById('autorObras').value = autor.obras ? autor.obras.join(', ') : '';
+      document.getElementById('autorPersonajes').value = autor.personajes ? autor.personajes.join(', ') : '';
+      document.getElementById('autorCuriosidades').value = autor.curiosidades ? autor.curiosidades.join('\n') : '';
+      
+      document.getElementById('modalAdminTitulo').textContent = `Editar Autor: ${autor.nombre}`;
+      
+      // Cerrar modal de detalles si está abierto
+      document.getElementById('modalAutor').classList.remove('active');
+      
+      // Mostrar modal de edición
+      document.getElementById('modalAdminAutor').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Cerrar modal de administración
+    function cerrarModalAdmin() {
+      document.getElementById('modalAdminAutor').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Guardar autor (agregar o editar)
+    function guardarAutor() {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      const autorId = document.getElementById('autorId').value;
+      const autor = {
+        nombre: document.getElementById('autorNombre').value.trim(),
+        especialidad: document.getElementById('autorEspecialidad').value.trim(),
+        badge: document.getElementById('autorBadge').value,
+        imagen: document.getElementById('autorImagen').value.trim(),
+        descripcion: document.getElementById('autorDescripcion').value.trim(),
+        logros: document.getElementById('autorLogros').value.split(',').map(l => l.trim()).filter(l => l),
+        obras: document.getElementById('autorObras').value.split(',').map(o => o.trim()).filter(o => o),
+        personajes: document.getElementById('autorPersonajes').value.split(',').map(p => p.trim()).filter(p => p),
+        curiosidades: document.getElementById('autorCuriosidades').value.split('\n').map(c => c.trim()).filter(c => c)
+      };
+      
+      // Validar campos requeridos
+      if (!autor.nombre || !autor.especialidad || !autor.badge || !autor.descripcion) {
+        mostrarNotificacion("Por favor completa todos los campos requeridos (*)", "error");
+        return;
+      }
+      
+      if (autorId) {
+        // Editar autor existente
+        autoresDB[autorId] = { ...autoresDB[autorId], ...autor };
+        mostrarNotificacion(`Autor "${autor.nombre}" actualizado correctamente`, "success");
+      } else {
+        // Agregar nuevo autor
+        const nuevoId = Math.max(...Object.keys(autoresDB).map(Number)) + 1;
+        autor.id = nuevoId;
+        autoresDB[nuevoId] = autor;
+        mostrarNotificacion(`Autor "${autor.nombre}" agregado correctamente`, "success");
+      }
+      
+      // Guardar en localStorage
+      guardarAutoresEnStorage();
+      
+      // Cerrar modal y recargar lista
+      cerrarModalAdmin();
+      
+      // Recargar la vista actual
+      const filtroActivo = document.querySelector('.filtro-autor.active').getAttribute('data-filtro');
+      cargarAutores(filtroActivo);
+      
+      // Actualizar estadísticas
+      actualizarEstadisticasAdmin();
+      
+      // Actualizar tabla si está abierta
+      if (document.getElementById('modalTablaAutores').classList.contains('active')) {
+        cargarDatosTablaAutores();
+      }
+    }
+
+    // Eliminar autor
+    function eliminarAutor(autorId) {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      const autor = autoresDB[autorId];
+      if (!autor) {
+        mostrarNotificacion("Autor no encontrado", "error");
+        return;
+      }
+      
+      if (!confirm(`¿Estás seguro de que deseas eliminar al autor "${autor.nombre}"? Esta acción no se puede deshacer.`)) {
+        return;
+      }
+      
+      delete autoresDB[autorId];
+      
+      // Guardar en localStorage
+      guardarAutoresEnStorage();
+      
+      // Cerrar modales
+      document.getElementById('modalAutor').classList.remove('active');
+      cerrarModalAdmin();
+      document.body.style.overflow = 'auto';
+      
+      // Recargar lista
+      const filtroActivo = document.querySelector('.filtro-autor.active').getAttribute('data-filtro');
+      cargarAutores(filtroActivo);
+      
+      // Actualizar estadísticas
+      actualizarEstadisticasAdmin();
+      
+      // Actualizar tabla si está abierta
+      if (document.getElementById('modalTablaAutores').classList.contains('active')) {
+        cargarDatosTablaAutores();
+      }
+      
+      mostrarNotificacion(`Autor "${autor.nombre}" eliminado correctamente`, "success");
+    }
+
+    // Duplicar autor
+    function duplicarAutor(autorId) {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      const autor = autoresDB[autorId];
+      if (!autor) {
+        mostrarNotificacion("Autor no encontrado", "error");
+        return;
+      }
+      
+      const nuevoId = Math.max(...Object.keys(autoresDB).map(Number)) + 1;
+      const autorDuplicado = { ...autor, id: nuevoId, nombre: autor.nombre + " (Copia)" };
+      autoresDB[nuevoId] = autorDuplicado;
+      
+      // Guardar en localStorage
+      guardarAutoresEnStorage();
+      
+      // Recargar lista
+      const filtroActivo = document.querySelector('.filtro-autor.active').getAttribute('data-filtro');
+      cargarAutores(filtroActivo);
+      
+      // Actualizar estadísticas
+      actualizarEstadisticasAdmin();
+      
+      // Actualizar tabla si está abierta
+      if (document.getElementById('modalTablaAutores').classList.contains('active')) {
+        cargarDatosTablaAutores();
+      }
+      
+      mostrarNotificacion(`Autor "${autor.nombre}" duplicado correctamente`, "success");
+    }
+
+    // Exportar datos de autores
+    function exportarDatosAutores() {
+      if (!esAdmin) {
+        mostrarNotificacion("Se requieren permisos de administrador", "error");
+        return;
+      }
+      
+      const datos = JSON.stringify(autoresDB, null, 2);
+      const blob = new Blob([datos], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `autores-backup-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      URL.revokeObjectURL(url);
+      
+      mostrarNotificacion("Datos exportados correctamente", "success");
+    }
+
+    // Función para mostrar notificaciones
+    function mostrarNotificacion(mensaje, tipo = "info") {
+      const notificacion = document.createElement('div');
+      const iconos = {
+        success: "fa-check-circle",
+        error: "fa-exclamation-circle",
+        warning: "fa-exclamation-triangle",
+        info: "fa-info-circle"
+      };
+      
+      notificacion.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${tipo === "success" ? "#4CAF50" : 
+                     tipo === "error" ? "#ff3b3b" : 
+                     tipo === "warning" ? "#ff9800" : "#2196F3"};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        z-index: 10000;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        animation: slideIn 0.5s ease;
+        max-width: 400px;
+      `;
+      
+      notificacion.innerHTML = `
+        <i class="fas ${iconos[tipo] || iconos.info}" style="font-size: 24px;"></i>
+        <span>${mensaje}</span>
+      `;
+      
+      document.body.appendChild(notificacion);
+      
+      setTimeout(() => {
+        notificacion.style.animation = 'slideOut 0.5s ease';
+        setTimeout(() => notificacion.remove(), 500);
+      }, 3000);
+    }
+
+    // Función para actualizar contador de carrito
+    function actualizarContadorCarrito() {
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      let totalItems = 0;
+      
+      if (usuarioActual && usuarioActual.carrito) {
+        totalItems = usuarioActual.carrito.reduce((total, item) => total + item.cantidad, 0);
+      }
+      
+      const carritoContador = document.getElementById('carritoContador');
+      const navCarritoContador = document.getElementById('navCarritoContador');
+      
+      if (carritoContador) {
+        carritoContador.textContent = totalItems;
+        carritoContador.style.display = totalItems > 0 ? 'flex' : 'none';
+      }
+      
+      if (navCarritoContador) {
+        navCarritoContador.textContent = totalItems;
+        navCarritoContador.style.display = totalItems > 0 ? 'inline-block' : 'none';
+      }
+      
+      const perfilCarrito = document.getElementById('perfilCarrito');
+      if (perfilCarrito) {
+        perfilCarrito.textContent = totalItems;
+      }
+    }
+
+    // Agregar estilos de animación
+    const styleAnimaciones = document.createElement('style');
+    styleAnimaciones.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+      
+      .autor-admin-controls button:hover {
+        transform: scale(1.1);
+      }
+      
+      #btnAgregarAutor:hover, #btnModoEdicion:hover, #btnVerTablaAutores:hover, #btnExportarDatos:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      }
+      
+      .btn-accion-tabla:hover {
+        transform: scale(1.1);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      }
+      
+      #tablaAutoresAdmin tbody tr:hover {
+        background-color: #f5f5f5;
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+      }
+      
+      #btnVerTablaAutores {
+        animation: pulse-purple 2s infinite;
+      }
+      
+      @keyframes pulse-purple {
+        0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(156, 39, 176, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); }
+      }
+    `;
+    document.head.appendChild(styleAnimaciones);
+  </script>
+
+<!-- ===== FOOTER CÓMIC ===== -->
+<footer>
+  <div class="footer-comic">
+    <div class="footer-borde-rojo"></div>
+    <div class="footer-contenido">
+      <img src="img/logo.png" alt="Footer Image" class="footer-img-comic">
+      <p class="footer-texto-comic">
+        Roldan Ortega Andrea Lizbeth, 5-I, Materia: Construye Aplicaciones Web
+      </p>
+      <div class="footer-detalles">
+        <span class="puntos-rojos">•••</span>
+        <span class="icono-corazon">❤️</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

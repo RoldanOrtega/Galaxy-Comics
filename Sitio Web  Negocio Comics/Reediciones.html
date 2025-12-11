@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reediciones - Galaxy Comics</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== ENCABEZADO ===== -->
+  <header style="background: none; position: relative; overflow: hidden;">
+    <img src="img/banner-fondo.png" alt="Fondo tipo cómic"
+         style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+    <img src="img/logo.png" alt="Logo Galaxy Comics" class="logo">
+    <h1>GALAXY COMICS</h1>
+    <a id="usuarioLink" href="#">
+      <img id="iconoUsuario" src="img/btn-login.png" alt="Iniciar sesión" class="btn-login">
+    </a>
+  </header>
+
+  <!-- ===== BARRA DE NAVEGACIÓN ===== -->
+  <nav style="position: relative; overflow: hidden;">
+    <img src="img/nav-bar.png" alt="Barra de navegación"
+         style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="Comics.html">Cómics</a></li>
+      <li><a href="Coleccion.html">Coleccionables</a></li>
+      <li><a href="Autores.html">Autores</a></li>
+      <li><a href="Reediciones.html" style="color:#ff3b3b;">Reediciones</a></li>
+      <li><a href="Pedidos.html">Pedidos Personalizados</a></li>
+      <li><a href="carrito.html">🛒 Carrito</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== SECCIÓN DE REEDICIONES ===== -->
+  <main>
+    <section class="comics-container">
+
+      <div class="comic">
+        <img src="img/reedicion1.png" alt="Reedición Superman clásica">
+        <h3>Superman Clásico</h3>
+        <p>Reedición de los primeros números de Superman. Portadas originales restauradas y artículos especiales incluidos.</p>
+      </div>
+
+      <div class="comic">
+        <img src="img/reedicion2.png" alt="Reedición Batman clásica">
+        <h3>Batman: Los primeros casos</h3>
+        <p>Revive las aventuras iniciales del Caballero Oscuro en Gotham con restauración de páginas y notas históricas.</p>
+      </div>
+
+      <div class="comic">
+        <img src="img/reedicion3.png" alt="Reedición Spider-Man clásica">
+        <h3>Spider-Man Retro</h3>
+        <p>Incluye los números antiguos de Spider-Man con portadas restauradas y contenido extra sobre los creadores.</p>
+      </div>
+
+      <div class="comic">
+        <img src="img/reedicion4.png" alt="Reedición X-Men">
+        <h3>X-Men Originales</h3>
+        <p>Reedición de los primeros cómics de los X-Men, con páginas remasterizadas y comentarios sobre la historia de los mutantes.</p>
+      </div>
+
+      <div class="comic">
+        <img src="img/reedicion5.png" alt="Reedición Wonder Woman">
+        <h3>Wonder Woman: Orígenes</h3>
+        <p>Recopilación de las primeras aventuras de Diana, restauradas y con material adicional sobre la creación del personaje.</p>
+      </div>
+
+      <div class="comic">
+        <img src="img/reedicion6.png" alt="Reedición Flash">
+        <h3>Flash: Edición Retro</h3>
+        <p>Todos los números antiguos de Flash reunidos en una edición especial con arte restaurado y datos curiosos.</p>
+      </div>
+
+      <div class="comic">
+        <img src="img/reedicion7.png" alt="Reedición Iron Man">
+        <h3>Iron Man: Colección Clásica</h3>
+        <p>Reedición de las primeras historias de Tony Stark como Iron Man, con portadas remasterizadas y comentarios del autor.</p>
+      </div>
+
+      <div class="comic">
+        <img src="img/reedicion8.png" alt="Reedición Hulk">
+        <h3>Hulk: Orígenes</h3>
+        <p>Revive los inicios de Hulk en una colección restaurada que incluye artículos y bocetos de los creadores.</p>
+      </div>
+
+      <div class="comic">
+        <img src="img/reedicion9.png" alt="Reedición Thor">
+        <h3>Thor: Mitología Marvel</h3>
+        <p>Edición especial que recopila las primeras aventuras de Thor, con arte restaurado y notas de los autores sobre la mitología.</p>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ===== PERFIL FLOTANTE ===== -->
+  <div id="perfilBox" class="perfil-box">
+    <div class="perfil-contenido">
+      <h2>Perfil del Usuario</h2>
+      <p><strong>Usuario:</strong> <span id="perfilUsuario"></span></p>
+      <p><strong>Fecha de nacimiento:</strong> <span id="perfilFecha"></span></p>
+      <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+      <button id="cerrarSesion">Cerrar Sesión</button>
+    </div>
+  </div>
+
+<!-- ===== SCRIPT COMPARTIDO ===== -->
+<script src="script.js"></script>
+
+<script>
+  // Código específico de cada página (si lo hay)
+  document.addEventListener('DOMContentLoaded', function() {
+    // Tu código específico aquí
+  });
+</script>
+
+</body>
+</html>

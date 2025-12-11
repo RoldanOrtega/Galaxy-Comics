@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito - Galaxy Comics</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- ===== ENCABEZADO ===== -->
+  <header style="background: none; position: relative; overflow: hidden;">
+    <img src="img/banner-fondo.png" alt="Fondo tipo cómic"
+         style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+    <img src="img/logo.png" alt="Logo Galaxy Comics" class="logo">
+    <h1>GALAXY COMICS</h1>
+    
+    <!-- CONTENEDOR PARA USUARIO LOGUEADO -->
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <span id="nombreUsuarioHeader" style="display: none; font-family: 'Poppins', sans-serif; font-weight: bold; color: white; font-size: 16px; background: rgba(255, 59, 59, 0.8); padding: 8px 15px; border-radius: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+        <!-- Aquí aparecerá el nombre del usuario -->
+      </span>
+      
+      <a id="usuarioLink" href="#">
+        <img id="iconoUsuario" src="img/btn-login.png" alt="Iniciar sesión" class="btn-login">
+      </a>
+      
+      <!-- CONTADOR DE CARRITO -->
+      <a href="carrito.html" style="position: relative; text-decoration: none;">
+        <i class="fas fa-shopping-cart" style="font-size: 24px; color: white;"></i>
+        <span id="carritoContador" class="carrito-contador" style="display: none; position: absolute; top: -8px; right: -8px; background: #ff3b3b; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+          0
+        </span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ===== BARRA DE NAVEGACIÓN ===== -->
+  <nav style="position: relative; overflow: hidden;">
+    <img src="img/nav-bar.png" alt="Barra de navegación"
+         style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="Comics.html">Cómics</a></li>
+      <li><a href="Coleccion.html">Coleccionables</a></li>
+      <li><a href="Autores.html">Autores</a></li>
+      <li><a href="Pedidos.html">Pedidos Personalizados</a></li>
+      <li><a href="carrito.html" style="color:#ff3b3b;">🛒 Carrito <span id="navCarritoContador" class="carrito-contador" style="display: none; background: #ff3b3b; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px;">0</span></a></li>
+      <li><a href="historialPedidos.html">📦 Mis Pedidos</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== CONTENIDO DEL CARRITO ===== -->
+  <main style="padding: 40px; min-height: 60vh;">
+    <div class="login-box" style="width: 90%; max-width: 1000px; margin: 0 auto;">
+      <h2 style="text-align: center; color: #b30000; margin-bottom: 30px;">
+        <i class="fas fa-shopping-cart"></i> Tu Carrito de Compras
+      </h2>
+      
+      <div id="carritoVacio" style="text-align: center; padding: 60px 20px; display: none;">
+        <i class="fas fa-shopping-cart" style="font-size: 80px; color: #ddd; margin-bottom: 20px;"></i>
+        <p style="font-size: 20px; color: #666; margin-bottom: 10px;">Tu carrito está vacío</p>
+        <p style="color: #999; margin-bottom: 30px;">Agrega algunos productos increíbles de nuestra tienda</p>
+        <a href="Comics.html" style="display: inline-block; padding: 12px 30px; background-color: #b30000; color: white; text-decoration: none; border-radius: 8px; font-family: 'Bangers'; font-size: 18px; transition: all 0.3s ease;">
+          <i class="fas fa-rocket"></i> ¡Explorar Cómics!
+        </a>
+      </div>
+      
+      <div id="carritoContenido">
+        <!-- Los productos se cargarán con JavaScript -->
+      </div>
+      
+      <div id="resumenCompra" style="margin-top: 40px; padding: 30px; background: #f8f8f8; border-radius: 12px; display: none; border: 2px solid #ff3b3b;">
+        <h3 style="color: #b30000; margin-bottom: 25px; font-family: 'Bangers'; font-size: 24px;">
+          <i class="fas fa-receipt"></i> Resumen de Compra
+        </h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 25px;">
+          <div style="background: white; padding: 15px; border-radius: 8px;">
+            <p style="margin: 0 0 8px 0; color: #666;">Productos en carrito:</p>
+            <p style="margin: 0; font-size: 24px; font-weight: bold; color: #333;" id="totalProductos">0</p>
+          </div>
+          
+          <div style="background: white; padding: 15px; border-radius: 8px;">
+            <p style="margin: 0 0 8px 0; color: #666;">Subtotal:</p>
+            <p style="margin: 0; font-size: 24px; font-weight: bold; color: #333;" id="subtotal">$0</p>
+          </div>
+          
+          <div style="background: white; padding: 15px; border-radius: 8px;">
+            <p style="margin: 0 0 8px 0; color: #666;">Envío:</p>
+            <p style="margin: 0; font-size: 24px; font-weight: bold; color: #333;" id="envio">Gratis</p>
+          </div>
+          
+          <div style="background: #ff3b3b; padding: 15px; border-radius: 8px; color: white;">
+            <p style="margin: 0 0 8px 0;">Total a pagar:</p>
+            <p style="margin: 0; font-size: 28px; font-weight: bold;" id="totalPagar">$0</p>
+          </div>
+        </div>
+        
+        <div style="background: #fff3cd; border: 2px solid #ffc107; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <p style="margin: 0; color: #856404; font-size: 14px;">
+            <i class="fas fa-shipping-fast"></i> Envío gratis en compras superiores a $50. Tu pedido llegará en 3-5 días hábiles.
+          </p>
+        </div>
+        
+        <button id="btnPagar" style="width: 100%; padding: 18px; background: linear-gradient(135deg, #b30000, #ff3b3b); color: white; border: none; border-radius: 10px; font-size: 20px; cursor: pointer; margin-top: 10px; font-family: 'Bangers'; letter-spacing: 1px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <i class="fas fa-credit-card"></i> 💳 Proceder al Pago
+        </button>
+        
+        <div style="text-align: center; margin-top: 20px;">
+          <a href="Comics.html" style="color: #666; text-decoration: none; font-size: 14px;">
+            <i class="fas fa-arrow-left"></i> Continuar comprando
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== PERFIL FLOTANTE ===== -->
+  <div id="perfilBox" class="perfil-box">
+    <div class="perfil-contenido">
+      <h2>👤 Perfil</h2>
+      <p><strong>Usuario:</strong> <span id="perfilUsuario"></span></p>
+      <p><strong>Nombre:</strong> <span id="perfilNombre"></span></p>
+      <p><strong>Fecha de nacimiento:</strong> <span id="perfilFecha"></span></p>
+      <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+      <p><strong>Pedidos realizados:</strong> <span id="perfilPedidos">0</span></p>
+      <p><strong>Productos en carrito:</strong> <span id="perfilCarrito">0</span></p>
+      <button id="cerrarSesion">Cerrar Sesión</button>
+    </div>
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="script.js"></script>
+  <script src="funcionesUsuario.js"></script>
+  <script src="procesarPago.js"></script>
+  
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        cargarCarrito();
+        // La funcionalidad del botón de pago ahora está en procesarPago.js
+    });
+    
+    function cargarCarrito() {
+        const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+        const carritoContenido = document.getElementById('carritoContenido');
+        const carritoVacio = document.getElementById('carritoVacio');
+        const resumenCompra = document.getElementById('resumenCompra');
+        
+        if (!usuarioActual || !usuarioActual.carrito || usuarioActual.carrito.length === 0) {
+            carritoVacio.style.display = 'block';
+            carritoContenido.innerHTML = '';
+            resumenCompra.style.display = 'none';
+            actualizarContadores(0, 0);
+            return;
+        }
+      
+      // Mostrar productos
+      carritoContenido.innerHTML = '';
+      carritoVacio.style.display = 'none';
+      resumenCompra.style.display = 'block';
+      
+      let subtotal = 0;
+      
+      usuarioActual.carrito.forEach((item, index) => {
+        const itemTotal = item.precio * item.cantidad;
+        subtotal += itemTotal;
+        
+        let productoHTML = '';
+        
+        // Verificar si es un pedido personalizado
+        if (item.tipo === 'pedido_personalizado' || item.productoId > 1000000) {
+          // HTML para pedidos personalizados
+          productoHTML = `
+            <div style="border-bottom: 2px solid #eee; padding: 20px 0; display: grid; grid-template-columns: 100px 1fr auto; gap: 20px; align-items: center; background: #fff8e1; border-left: 5px solid #ff9800;">
+              <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #ff9800, #ff5722); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                <i class="fas fa-paint-brush"></i>
+              </div>
+              <div>
+                <h4 style="margin: 0 0 10px 0; color: #333; font-family: 'Bangers';">${item.titulo || 'Pedido Personalizado'}</h4>
+                <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
+                  <strong>Tipo:</strong> Pedido Personalizado
+                </p>
+                ${item.detalles ? `
+                  <p style="margin: 0 0 5px 0; color: #666; font-size: 12px;">
+                    <strong>Personaje:</strong> ${item.detalles.personaje || 'Personalizado'}
+                  </p>
+                  <p style="margin: 0 0 5px 0; color: #666; font-size: 12px;">
+                    <strong>Estilo:</strong> ${item.detalles.estilo || 'Estándar'}
+                  </p>
+                  <p style="margin: 0 0 5px 0; color: #666; font-size: 12px;">
+                    <strong>Formato:</strong> ${item.detalles.formato || 'Digital'}
+                  </p>
+                ` : ''}
+                <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-weight: bold; min-width: 40px; text-align: center;">${item.cantidad}</span>
+                  </div>
+                  <button onclick="eliminarDelCarrito(${index})" style="padding: 8px 15px; background-color: #ff3b3b; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-trash"></i> Eliminar
+                  </button>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <p style="margin: 0 0 5px 0; font-size: 20px; font-weight: bold; color: #ff9800; font-family: 'Bangers';">$${item.precio.toFixed(2)}</p>
+                <p style="margin: 0; color: #666; font-size: 14px;">Total: <strong>$${itemTotal.toFixed(2)}</strong></p>
+              </div>
+            </div>
+          `;
+        } else {
+          // HTML para productos normales (cómics y coleccionables)
+          productoHTML = `
+            <div style="border-bottom: 2px solid #eee; padding: 20px 0; display: grid; grid-template-columns: 100px 1fr auto; gap: 20px; align-items: center;">
+              <div style="width: 100px; height: 100px; background: #f0f0f0; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                <img src="${item.imagen || 'img/comic1.png'}" alt="${item.titulo}" style="width: 100%; height: 100%; object-fit: cover;">
+              </div>
+              <div>
+                <h4 style="margin: 0 0 10px 0; color: #333; font-family: 'Bangers';">${item.titulo}</h4>
+                <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
+                  <strong>Tipo:</strong> ${item.tipo === 'comic' ? 'Cómic' : 'Coleccionable'}
+                </p>
+                <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <button onclick="actualizarCantidad(${index}, -1)" style="width: 30px; height: 30px; border: 1px solid #ddd; background: white; border-radius: 50%; cursor: pointer; font-size: 18px;">-</button>
+                    <span style="font-weight: bold; min-width: 40px; text-align: center;">${item.cantidad}</span>
+                    <button onclick="actualizarCantidad(${index}, 1)" style="width: 30px; height: 30px; border: 1px solid #ddd; background: white; border-radius: 50%; cursor: pointer; font-size: 18px;">+</button>
+                  </div>
+                  <button onclick="eliminarDelCarrito(${index})" style="padding: 8px 15px; background-color: #ff3b3b; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-trash"></i> Eliminar
+                  </button>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <p style="margin: 0 0 5px 0; font-size: 20px; font-weight: bold; color: #b30000; font-family: 'Bangers';">$${item.precio.toFixed(2)}</p>
+                <p style="margin: 0; color: #666; font-size: 14px;">Total: <strong>$${itemTotal.toFixed(2)}</strong></p>
+              </div>
+            </div>
+          `;
+        }
+        
+        carritoContenido.innerHTML += productoHTML;
+      });
+      
+      // Calcular total
+      const envio = subtotal > 50 ? 0 : 4.99;
+      const total = subtotal + envio;
+      
+      // Actualizar resumen
+      document.getElementById('totalProductos').textContent = usuarioActual.carrito.reduce((total, item) => total + item.cantidad, 0);
+      document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+      document.getElementById('envio').textContent = envio === 0 ? 'Gratis' : `$${envio.toFixed(2)}`;
+      document.getElementById('totalPagar').textContent = `$${total.toFixed(2)}`;
+      
+      // Actualizar contadores
+      actualizarContadores(usuarioActual.carrito.length, total);
+    }
+    
+    function actualizarCantidad(index, cambio) {
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      if (!usuarioActual || !usuarioActual.carrito) return;
+      
+      // Verificar si es un pedido personalizado (no se puede cambiar cantidad)
+      const item = usuarioActual.carrito[index];
+      if (item.tipo === 'pedido_personalizado' || item.productoId > 1000000) {
+        mostrarNotificacion("No puedes cambiar la cantidad de un pedido personalizado", "warning");
+        return;
+      }
+      
+      const nuevaCantidad = item.cantidad + cambio;
+      
+      if (nuevaCantidad < 1) {
+        eliminarDelCarrito(index);
+        return;
+      }
+      
+      if (nuevaCantidad > 10) {
+        mostrarNotificacion("Máximo 10 unidades por producto", "warning");
+        return;
+      }
+      
+      usuarioActual.carrito[index].cantidad = nuevaCantidad;
+      
+      // Actualizar en localStorage
+      localStorage.setItem("usuarioActual", JSON.stringify(usuarioActual));
+      
+      // Actualizar en base de datos de usuarios
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      const usuarioIndex = usuarios.findIndex(u => u.usuario === usuarioActual.usuario);
+      if (usuarioIndex > -1) {
+        usuarios[usuarioIndex].carrito = usuarioActual.carrito;
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+      }
+      
+      cargarCarrito();
+      mostrarNotificacion("Cantidad actualizada", "success");
+    }
+    
+    function eliminarDelCarrito(index) {
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      if (!usuarioActual || !usuarioActual.carrito) return;
+      
+      const productoEliminado = usuarioActual.carrito[index];
+      
+      // Si es un pedido personalizado, también eliminarlo de la base de datos global
+      if (productoEliminado.tipo === 'pedido_personalizado' || productoEliminado.productoId > 1000000) {
+        const pedidosGlobales = JSON.parse(localStorage.getItem("pedidosGlobales")) || [];
+        const pedidoIndex = pedidosGlobales.findIndex(p => p.id === productoEliminado.productoId);
+        if (pedidoIndex > -1) {
+          pedidosGlobales.splice(pedidoIndex, 1);
+          localStorage.setItem("pedidosGlobales", JSON.stringify(pedidosGlobales));
+        }
+      }
+      
+      usuarioActual.carrito.splice(index, 1);
+      
+      // Actualizar en localStorage
+      localStorage.setItem("usuarioActual", JSON.stringify(usuarioActual));
+      
+      // Actualizar en base de datos de usuarios
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      const usuarioIndex = usuarios.findIndex(u => u.usuario === usuarioActual.usuario);
+      if (usuarioIndex > -1) {
+        usuarios[usuarioIndex].carrito = usuarioActual.carrito;
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+      }
+      
+      cargarCarrito();
+      mostrarNotificacion(`${productoEliminado.titulo || 'Producto'} eliminado del carrito`, "info");
+    }
+    
+    function actualizarContadores(cantidad, total) {
+      // Actualizar contador en el botón de carrito
+      const carritoContador = document.getElementById('carritoContador');
+      const navCarritoContador = document.getElementById('navCarritoContador');
+      
+      if (carritoContador) {
+        carritoContador.textContent = cantidad;
+        carritoContador.style.display = cantidad > 0 ? 'flex' : 'none';
+      }
+      
+      if (navCarritoContador) {
+        navCarritoContador.textContent = cantidad;
+        navCarritoContador.style.display = cantidad > 0 ? 'inline-block' : 'none';
+      }
+    }
+    
+    function procesarPago() {
+      const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+      if (!usuarioActual || !usuarioActual.carrito || usuarioActual.carrito.length === 0) {
+        mostrarNotificacion("El carrito está vacío", "error");
+        return;
+      }
+      
+      // Simular procesamiento de pago
+      const total = parseFloat(document.getElementById('totalPagar').textContent.replace('$', ''));
+      
+      // Separar pedidos personalizados de productos normales
+      const pedidosPersonalizados = usuarioActual.carrito.filter(item => 
+        item.tipo === 'pedido_personalizado' || item.productoId > 1000000
+      );
+      const productosNormales = usuarioActual.carrito.filter(item => 
+        item.tipo !== 'pedido_personalizado' && item.productoId <= 1000000
+      );
+      
+      // Crear pedido principal
+      const pedidoId = Date.now();
+      const pedido = {
+        id: pedidoId,
+        usuario: usuarioActual.usuario,
+        items: productosNormales,
+        pedidosPersonalizados: pedidosPersonalizados,
+        total: total,
+        fechaPedido: new Date().toISOString(),
+        estado: "completado",
+        numeroSeguimiento: `GC-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+      };
+      
+      // Actualizar estado de pedidos personalizados en la base de datos global
+      if (pedidosPersonalizados.length > 0) {
+        const pedidosGlobales = JSON.parse(localStorage.getItem("pedidosGlobales")) || [];
+        pedidosPersonalizados.forEach(pedidoPersonalizado => {
+          const pedidoIndex = pedidosGlobales.findIndex(p => p.id === pedidoPersonalizado.productoId);
+          if (pedidoIndex > -1) {
+            pedidosGlobales[pedidoIndex].estado = "pagado";
+            pedidosGlobales[pedidoIndex].pedidoPrincipalId = pedidoId;
+            pedidosGlobales[pedidoIndex].fechaPago = new Date().toISOString();
+          }
+        });
+        localStorage.setItem("pedidosGlobales", JSON.stringify(pedidosGlobales));
+      }
+      
+      // Agregar pedido al usuario
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      const usuarioIndex = usuarios.findIndex(u => u.usuario === usuarioActual.usuario);
+      
+      if (usuarioIndex > -1) {
+        if (!usuarios[usuarioIndex].pedidos) {
+          usuarios[usuarioIndex].pedidos = [];
+        }
+        usuarios[usuarioIndex].pedidos.push(pedido);
+        
+        // Limpiar carrito
+        usuarios[usuarioIndex].carrito = [];
+        
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+        localStorage.setItem("usuarioActual", JSON.stringify(usuarios[usuarioIndex]));
+      }
+      
+      // Mostrar confirmación
+      let confirmacionHTML = `
+        <div style="text-align: center; padding: 40px;">
+          <div style="background: #4CAF50; color: white; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px;">
+            <i class="fas fa-check"></i>
+          </div>
+          <h3 style="color: #4CAF50; margin-bottom: 20px;">¡Pago Completado!</h3>
+          <p style="color: #666; margin-bottom: 10px;">Tu pedido #${pedido.id} ha sido procesado exitosamente.</p>
+          <p style="color: #666; margin-bottom: 10px;">Total pagado: <strong>$${total.toFixed(2)}</strong></p>
+          <p style="color: #666; margin-bottom: 30px;">Número de seguimiento: <strong>${pedido.numeroSeguimiento}</strong></p>
+      `;
+      
+      // Si hay pedidos personalizados, mostrar información adicional
+      if (pedidosPersonalizados.length > 0) {
+        confirmacionHTML += `
+          <div style="background: #fff8e1; border: 2px solid #ff9800; border-radius: 10px; padding: 15px; margin: 20px 0; text-align: left;">
+            <h4 style="color: #ff9800; margin-top: 0; margin-bottom: 10px;">
+              <i class="fas fa-paint-brush"></i> Tus Pedidos Personalizados
+            </h4>
+            <p style="color: #666; font-size: 14px; margin-bottom: 10px;">
+              Hemos recibido ${pedidosPersonalizados.length} pedido(s) personalizado(s). 
+              Te contactaremos pronto para discutir los detalles y fechas de entrega.
+            </p>
+            <ul style="color: #666; font-size: 13px; margin: 0; padding-left: 20px;">
+              ${pedidosPersonalizados.map(p => `<li>${p.titulo || 'Pedido Personalizado'} - $${p.precio.toFixed(2)}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+      
+      confirmacionHTML += `
+          <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <button onclick="window.location.href='index.html'" style="padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-home"></i> Ir al Inicio
+            </button>
+            <button onclick="window.location.href='Comics.html'" style="padding: 10px 20px; background: #ff3b3b; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-shopping-cart"></i> Seguir Comprando
+            </button>
+            <button onclick="window.location.href='Pedidos.html'" style="padding: 10px 20px; background: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-paint-brush"></i> Otro Pedido Personalizado
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('carritoContenido').innerHTML = confirmacionHTML;
+      document.getElementById('resumenCompra').style.display = 'none';
+      
+      // Actualizar contadores
+      actualizarContadores(0, 0);
+      
+      // Enviar notificación de éxito
+      mostrarNotificacion(`¡Pago completado! Pedido #${pedido.id} procesado.`, "success");
+      
+      // Agregar notificación al sistema
+      const notificacion = {
+        usuario: usuarioActual.usuario,
+        tipo: "compra_exitosa",
+        mensaje: `Tu compra #${pedido.id} ha sido completada. Total: $${total.toFixed(2)}`,
+        fecha: new Date().toISOString(),
+        leida: false,
+        pedidoId: pedido.id
+      };
+      
+      // Guardar notificación
+      const notificaciones = JSON.parse(localStorage.getItem("notificaciones")) || [];
+      notificaciones.push(notificacion);
+      localStorage.setItem("notificaciones", JSON.stringify(notificaciones));
+    }
+    
+    function mostrarNotificacion(mensaje, tipo = "info") {
+      const notificacion = document.createElement('div');
+      const iconos = {
+        success: "fa-check-circle",
+        error: "fa-exclamation-circle",
+        warning: "fa-exclamation-triangle",
+        info: "fa-info-circle"
+      };
+      
+      notificacion.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${tipo === "success" ? "#4CAF50" : 
+                     tipo === "error" ? "#ff3b3b" : 
+                     tipo === "warning" ? "#ff9800" : "#2196F3"};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        z-index: 10000;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        animation: slideIn 0.5s ease;
+        max-width: 400px;
+      `;
+      
+      notificacion.innerHTML = `
+        <i class="fas ${iconos[tipo] || iconos.info}" style="font-size: 24px;"></i>
+        <span>${mensaje}</span>
+      `;
+      
+      document.body.appendChild(notificacion);
+      
+      setTimeout(() => {
+        notificacion.style.animation = 'slideOut 0.5s ease';
+        setTimeout(() => notificacion.remove(), 500);
+      }, 3000);
+    }
+    
+    // Agregar estilos de animación
+    const estiloAnimaciones = document.createElement('style');
+    estiloAnimaciones.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(estiloAnimaciones);
+  </script>
+
+<!-- ===== FOOTER CÓMIC ===== -->
+<footer>
+  <div class="footer-comic">
+    <div class="footer-borde-rojo"></div>
+    <div class="footer-contenido">
+      <img src="img/logo.png" alt="Footer Image" class="footer-img-comic">
+      <p class="footer-texto-comic">
+        Roldan Ortega Andrea Lizbeth, 5-I, Materia: Construye Aplicaciones Web
+      </p>
+      <div class="footer-detalles">
+        <span class="puntos-rojos">•••</span>
+        <span class="icono-corazon">❤️</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
