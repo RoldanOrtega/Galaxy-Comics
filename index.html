@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galaxy Comics</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===== ENCABEZADO ===== -->
+<header style="background: none; position: relative; overflow: hidden;">
+  <img src="img/banner-fondo.png" alt="Fondo tipo cómic"
+       style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+  <img src="img/logo.png" alt="Logo Galaxy Comics" class="logo">
+  <h1>GALAXY COMICS</h1>
+  
+  <!-- CONTENEDOR PARA USUARIO LOGUEADO -->
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <span id="nombreUsuarioHeader" style="display: none; font-family: 'Poppins', sans-serif; font-weight: bold; color: white; font-size: 16px; background: rgba(255, 59, 59, 0.8); padding: 8px 15px; border-radius: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+      <!-- Aquí aparecerá el nombre del usuario -->
+    </span>
+    
+    <a id="usuarioLink" href="#">
+      <img id="iconoUsuario" src="img/btn-login.png" alt="Iniciar sesión" class="btn-login">
+    </a>
+    
+    <!-- CONTADOR DE CARRITO -->
+    <a href="carrito.html" style="position: relative; text-decoration: none;">
+      <i class="fas fa-shopping-cart" style="font-size: 24px; color: white;"></i>
+      <span id="carritoContador" class="carrito-contador" style="display: none; position: absolute; top: -8px; right: -8px; background: #ff3b3b; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+        0
+      </span>
+    </a>
+  </div>
+</header>
+
+  <!-- ===== BARRA DE NAVEGACIÓN ===== -->
+  <nav style="position: relative; overflow: hidden;">
+    <img src="img/nav-bar.png" alt="Barra de navegación"
+         style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="Comics.html">Comics</a></li>
+      <li><a href="Coleccion.html">Coleccionables</a></li>
+      <li><a href="Autores.html">Autores</a></li>
+      <li><a href="Pedidos.html">Pedidos Personalizados</a></li>
+      <li><a href="carrito.html">🛒 Carrito <span id="navCarritoContador" class="carrito-contador" style="display: none; background: #ff3b3b; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px;">0</span></a></li>
+      <li><a href="historialPedidos.html">📦 Mis Pedidos</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== SECCIÓN PRINCIPAL ===== -->
+  <main>
+    <div style="position: relative; display:inline-block;">
+      <img src="img/globo-texto.png" alt="Globo de texto"
+           style="width:900px; display:block;">
+
+      <div style="position:absolute; top:80px; left:90px; width:770px; color:#000; font-family:'Poppins', sans-serif;">
+        <p>Esta tienda de cómics en línea está diseñada para los amantes del mundo del cómic, ofreciendo una experiencia interactiva y fácil de navegar para descubrir, comprar y coleccionar historias gráficas.</p>
+        <p>Esta tienda web no solo facilita la compra y exploración de cómics, sino que también fomenta la comunidad de fans al ofrecer información y artículos exclusivos, haciendo que la experiencia de cada visitante sea completa y personalizada.</p>
+      </div>
+    </div>
+
+    <img src="img/superman.png" alt="Superman volando" class="superman">
+  </main>
+
+<!-- ===== PERFIL FLOTANTE ===== -->
+<div id="perfilBox" class="perfil-box">
+  <div class="perfil-contenido">
+    <h2>👤 Perfil</h2>
+    <p><strong>Usuario:</strong> <span id="perfilUsuario"></span></p>
+    <p><strong>Nombre:</strong> <span id="perfilNombre"></span></p>
+    <p><strong>Fecha de nacimiento:</strong> <span id="perfilFecha"></span></p>
+    <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+    <p><strong>Pedidos realizados:</strong> <span id="perfilPedidos">0</span></p>
+    <p><strong>Productos en carrito:</strong> <span id="perfilCarrito">0</span></p>
+    <button id="cerrarSesion">Cerrar Sesión</button>
+  </div>
+</div>
+
+<!-- ===== SCRIPT COMPARTIDO ===== -->
+<script src="script.js"></script>
+<script src="funcionesUsuario.js"></script>
+
+<script>
+  // Código específico del index
+  document.addEventListener('DOMContentLoaded', function() {
+    // El sistema se inicializa desde funcionesUsuario.js
+  });
+</script>
+
+<!-- ===== FOOTER CÓMIC ===== -->
+<footer>
+  <div class="footer-comic">
+    <div class="footer-borde-rojo"></div>
+    <div class="footer-contenido">
+      <img src="img/logo.png" alt="Footer Image" class="footer-img-comic">
+      <p class="footer-texto-comic">
+        Roldan Ortega Andrea Lizbeth, 5-I, Materia: Construye Aplicaciones Web
+      </p>
+      <div class="footer-detalles">
+        <span class="puntos-rojos">•••</span>
+        <span class="icono-corazon">❤️</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
